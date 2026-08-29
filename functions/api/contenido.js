@@ -2,6 +2,28 @@ export async function onRequestGet(context) {
 
     try {
 
+        const url = new URL(context.request.url);
+
+        const evento =
+            url.searchParams.get("evento");
+
+        if (!evento) {
+
+            return new Response(
+                JSON.stringify({
+                    ok: false,
+                    error: "Falta indicar el evento."
+                }),
+                {
+                    status: 400,
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+        }
+
         const cloudName =
             context.env.CLOUDINARY_CLOUD_NAME;
 
@@ -11,17 +33,21 @@ export async function onRequestGet(context) {
         const apiSecret =
             context.env.CLOUDINARY_API_SECRET;
 
-        if (!cloudName || !apiKey || !apiSecret) {
+        if (!cloudName ||
+            !apiKey ||
+            !apiSecret) {
 
             return new Response(
                 JSON.stringify({
                     ok: false,
-                    error: "Faltan variables de Cloudinary."
+                    error:
+                        "Faltan variables de Cloudinary."
                 }),
                 {
                     status: 500,
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type":
+                            "application/json"
                     }
                 }
             );
@@ -41,61 +67,91 @@ export async function onRequestGet(context) {
 
         /*
         ============================================
-        CONSULTA DE RECURSOS
+        FUNCIÓN DE BÚSQUEDA
         ============================================
         */
 
-        const endpoint =
-            "https://api.cloudinary.com/v1_1/" +
-            cloudName +
-            "/resources/image/upload";
+        async function buscar(expression) {
 
-        const respuesta =
-            await fetch(
-                endpoint,
-                {
-                    method: "GET",
+            const endpoint =
+                "https://api.cloudinary.com/v1_1/" +
+                cloudName +
+                "/resources/search";
 
-                    headers: {
-                        "Authorization":
-                            "Basic " +
-                            autorizacion
-                    }
-                }
+            const cuerpo =
+                new URLSearchParams();
+
+            cuerpo.append(
+                "expression",
+                expression
             );
 
-        const texto =
-            await respuesta.text();
-
-        if (!respuesta.ok) {
-
-            return new Response(
-                JSON.stringify({
-                    ok: false,
-                    status: respuesta.status,
-                    respuesta: texto
-                }),
-                {
-                    status: 500,
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    }
-                }
+            cuerpo.append(
+                "max_results",
+                "500"
             );
+
+            const respuesta =
+                await fetch(
+                    endpoint,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Authorization":
+                                "Basic " +
+                                autorizacion,
+
+                            "Content-Type":
+                                "application/x-www-form-urlencoded"
+                        },
+
+                        body: cuerpo.toString()
+                    }
+                );
+
+            const texto =
+                await respuesta.text();
+
+            if (!respuesta.ok) {
+
+                throw new Error(
+                    "Cloudinary respondió " +
+                    respuesta.status +
+                    ": " +
+                    texto
+                );
+            }
+
+            return JSON.parse(texto);
         }
-
-        const datos =
-            JSON.parse(texto);
 
         /*
         ============================================
-        PREPARAR INFORMACIÓN DE DIAGNÓSTICO
+        BUSCAR TODO EL EVENTO
+        ============================================
+        */
+
+        const expresion =
+            "public_id:" +
+            "NOVA_MOMENTS/" +
+            evento +
+            "/*";
+
+        const resultado =
+            await buscar(expresion);
+
+        /*
+        ============================================
+        PREPARAR RESULTADOS
         ============================================
         */
 
         const recursos =
-            (datos.resources || []).map(
+            resultado.resources || [];
+
+        const informacion =
+            recursos.map(
                 function(recurso) {
 
                     return {
@@ -114,9 +170,6 @@ export async function onRequestGet(context) {
 
                         format:
                             recurso.format || null,
-
-                        folder:
-                            recurso.folder || null,
 
                         secure_url:
                             recurso.secure_url || null
@@ -138,14 +191,16 @@ export async function onRequestGet(context) {
 
                 ok: true,
 
-                mensaje:
-                    "Diagnóstico Cloudinary",
+                evento: evento,
+
+                expresion:
+                    expresion,
 
                 cantidad:
-                    recursos.length,
+                    informacion.length,
 
                 recursos:
-                    recursos
+                    informacion
 
             }),
 
@@ -172,6 +227,9 @@ export async function onRequestGet(context) {
                 ok: false,
 
                 error:
+                    "Error al consultar Cloudinary.",
+
+                detalle:
                     error.message
 
             }),
