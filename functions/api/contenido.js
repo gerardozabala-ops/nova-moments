@@ -2,24 +2,6 @@ export async function onRequestGet(context) {
 
     try {
 
-        const url = new URL(context.request.url);
-        const evento = url.searchParams.get("evento");
-
-        if (!evento) {
-            return new Response(
-                JSON.stringify({
-                    ok: false,
-                    error: "Falta indicar el evento."
-                }),
-                {
-                    status: 400,
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
-        }
-
         const cloudName =
             context.env.CLOUDINARY_CLOUD_NAME;
 
@@ -30,6 +12,7 @@ export async function onRequestGet(context) {
             context.env.CLOUDINARY_API_SECRET;
 
         if (!cloudName || !apiKey || !apiSecret) {
+
             return new Response(
                 JSON.stringify({
                     ok: false,
@@ -46,7 +29,7 @@ export async function onRequestGet(context) {
 
         /*
         ============================================
-        AUTENTICACIÓN CLOUDINARY
+        AUTENTICACIÓN
         ============================================
         */
 
@@ -58,123 +41,89 @@ export async function onRequestGet(context) {
 
         /*
         ============================================
-        FUNCIÓN PARA CONSULTAR UNA CARPETA
+        CONSULTA DE RECURSOS
         ============================================
         */
 
-        async function obtenerRecursos(carpeta) {
+        const endpoint =
+            "https://api.cloudinary.com/v1_1/" +
+            cloudName +
+            "/resources/image/upload";
 
-            const endpoint =
-                "https://api.cloudinary.com/v1_1/" +
-                cloudName +
-                "/resources/search";
+        const respuesta =
+            await fetch(
+                endpoint,
+                {
+                    method: "GET",
 
-            const respuesta =
-                await fetch(
-                    endpoint,
-                    {
-                        method: "GET",
-
-                        headers: {
-                            "Authorization":
-                                "Basic " +
-                                autorizacion
-                        }
+                    headers: {
+                        "Authorization":
+                            "Basic " +
+                            autorizacion
                     }
-                );
+                }
+            );
 
-            if (!respuesta.ok) {
+        const texto =
+            await respuesta.text();
 
-                const texto =
-                    await respuesta.text();
+        if (!respuesta.ok) {
 
-                throw new Error(
-                    "Cloudinary respondió " +
-                    respuesta.status +
-                    ": " +
-                    texto
-                );
-            }
-
-            const datos =
-                await respuesta.json();
-
-            /*
-            ========================================
-            FILTRAR RECURSOS DE LA CARPETA
-            ========================================
-            */
-
-            const recursos =
-                (datos.resources || [])
-                .filter(function(recurso) {
-
-                    return recurso.folder === carpeta;
-
-                });
-
-            return recursos.map(
-                function(recurso) {
-
-                    return {
-                        url:
-                            recurso.secure_url,
-
-                        tipo:
-                            recurso.resource_type,
-
-                        formato:
-                            recurso.format,
-
-                        nombre:
-                            recurso.public_id
-
-                    };
-
+            return new Response(
+                JSON.stringify({
+                    ok: false,
+                    status: respuesta.status,
+                    respuesta: texto
+                }),
+                {
+                    status: 500,
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    }
                 }
             );
         }
 
-        /*
-        ============================================
-        CARPETAS DEL EVENTO
-        ============================================
-        */
-
-        const carpetaPortada =
-            "NOVA_MOMENTS/" +
-            evento +
-            "/PORTADA";
-
-        const carpetaFotos =
-            "NOVA_MOMENTS/" +
-            evento +
-            "/FOTOS";
-
-        const carpetaVideos =
-            "NOVA_MOMENTS/" +
-            evento +
-            "/VIDEOS";
+        const datos =
+            JSON.parse(texto);
 
         /*
         ============================================
-        OBTENER CONTENIDO
+        PREPARAR INFORMACIÓN DE DIAGNÓSTICO
         ============================================
         */
 
-        const portada =
-            await obtenerRecursos(
-                carpetaPortada
-            );
+        const recursos =
+            (datos.resources || []).map(
+                function(recurso) {
 
-        const fotos =
-            await obtenerRecursos(
-                carpetaFotos
-            );
+                    return {
 
-        const videos =
-            await obtenerRecursos(
-                carpetaVideos
+                        public_id:
+                            recurso.public_id || null,
+
+                        asset_id:
+                            recurso.asset_id || null,
+
+                        resource_type:
+                            recurso.resource_type || null,
+
+                        type:
+                            recurso.type || null,
+
+                        format:
+                            recurso.format || null,
+
+                        folder:
+                            recurso.folder || null,
+
+                        secure_url:
+                            recurso.secure_url || null
+
+                    };
+
+                }
             );
 
         /*
@@ -189,22 +138,14 @@ export async function onRequestGet(context) {
 
                 ok: true,
 
-                evento: evento,
+                mensaje:
+                    "Diagnóstico Cloudinary",
 
-                portada: portada,
+                cantidad:
+                    recursos.length,
 
-                fotos: fotos,
-
-                videos: videos,
-
-                total_portada:
-                    portada.length,
-
-                total_fotos:
-                    fotos.length,
-
-                total_videos:
-                    videos.length
+                recursos:
+                    recursos
 
             }),
 
@@ -231,9 +172,6 @@ export async function onRequestGet(context) {
                 ok: false,
 
                 error:
-                    "Error al consultar Cloudinary.",
-
-                detalle:
                     error.message
 
             }),
