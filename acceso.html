@@ -1,0 +1,709 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Acceso | NOVA MOMENTS</title>
+
+
+<link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+>
+
+<link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap"
+rel="stylesheet"
+>
+
+
+<style>
+
+* {
+
+    box-sizing: border-box;
+
+    margin: 0;
+
+    padding: 0;
+
+}
+
+
+body {
+
+    min-height: 100vh;
+
+    background: #121212;
+
+    color: #ffffff;
+
+    font-family:
+        'Inter',
+        Arial,
+        sans-serif;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+}
+
+
+.access-container {
+
+    width: 100%;
+
+    max-width: 430px;
+
+}
+
+
+.brand {
+
+    text-align: center;
+
+    margin-bottom: 35px;
+
+}
+
+
+.brand-nova {
+
+    display: block;
+
+    font-family:
+        'Montserrat',
+        sans-serif;
+
+    font-size: 27px;
+
+    font-weight: 500;
+
+    letter-spacing: 8px;
+
+}
+
+
+.brand-moments {
+
+    display: block;
+
+    margin-top: 6px;
+
+    font-family:
+        'Montserrat',
+        sans-serif;
+
+    font-size: 10px;
+
+    letter-spacing: 6px;
+
+    color: #999999;
+
+}
+
+
+.access-box {
+
+    background: #1b1b1b;
+
+    border:
+        1px solid #2d2d2d;
+
+    border-radius: 12px;
+
+    padding: 40px 35px;
+
+    box-shadow:
+        0 20px 60px
+        rgba(0,0,0,0.35);
+
+}
+
+
+.access-title {
+
+    text-align: center;
+
+    font-family:
+        'Montserrat',
+        sans-serif;
+
+    font-size: 22px;
+
+    font-weight: 400;
+
+    margin-bottom: 10px;
+
+}
+
+
+.access-subtitle {
+
+    text-align: center;
+
+    color: #999999;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    margin-bottom: 30px;
+
+}
+
+
+.field {
+
+    margin-bottom: 18px;
+
+}
+
+
+.field label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #cccccc;
+
+    font-size: 11px;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+}
+
+
+.field input {
+
+    width: 100%;
+
+    height: 48px;
+
+    padding: 0 15px;
+
+    border:
+        1px solid #383838;
+
+    border-radius: 6px;
+
+    outline: none;
+
+    background: #111111;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+}
+
+
+.field input:focus {
+
+    border-color: #888888;
+
+}
+
+
+.login-button {
+
+    width: 100%;
+
+    height: 48px;
+
+    margin-top: 8px;
+
+    border: none;
+
+    border-radius: 24px;
+
+    background: #ffffff;
+
+    color: #111111;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+}
+
+
+.login-button:hover {
+
+    background: #dddddd;
+
+}
+
+
+.error {
+
+    display: none;
+
+    margin-top: 18px;
+
+    padding: 12px;
+
+    border:
+        1px solid #5a3030;
+
+    border-radius: 6px;
+
+    background: #291818;
+
+    color: #ffb0b0;
+
+    text-align: center;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+
+}
+
+
+.demo-info {
+
+    margin-top: 25px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid #2c2c2c;
+
+    text-align: center;
+
+    color: #777777;
+
+    font-size: 11px;
+
+    line-height: 1.7;
+
+}
+
+
+.demo-info strong {
+
+    color: #aaaaaa;
+
+}
+
+
+.back-link {
+
+    display: block;
+
+    margin-top: 25px;
+
+    text-align: center;
+
+    color: #777777;
+
+    text-decoration: none;
+
+    font-size: 11px;
+
+}
+
+
+.back-link:hover {
+
+    color: #ffffff;
+
+}
+
+
+@media (max-width:480px) {
+
+    .access-box {
+
+        padding:
+            32px 25px;
+
+    }
+
+    .brand-nova {
+
+        font-size: 23px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="access-container">
+
+
+<div class="brand">
+
+<span class="brand-nova">
+NOVA
+</span>
+
+<span class="brand-moments">
+MOMENTS
+</span>
+
+</div>
+
+
+
+<div class="access-box">
+
+
+<h1 class="access-title">
+Tu experiencia
+</h1>
+
+
+<p class="access-subtitle">
+
+Ingresá con los datos que recibiste
+para acceder a tus fotos y videos.
+
+</p>
+
+
+
+<form id="accessForm">
+
+
+<div class="field">
+
+<label for="usuario">
+Usuario
+</label>
+
+<input
+    type="text"
+    id="usuario"
+    autocomplete="username"
+    placeholder="Ingresá tu usuario"
+    required
+>
+
+</div>
+
+
+
+<div class="field">
+
+<label for="password">
+Contraseña
+</label>
+
+<input
+    type="password"
+    id="password"
+    autocomplete="current-password"
+    placeholder="Ingresá tu contraseña"
+    required
+>
+
+</div>
+
+
+
+<button
+    type="submit"
+    class="login-button"
+>
+
+INGRESAR
+
+</button>
+
+
+<div
+    id="error"
+    class="error"
+></div>
+
+
+</form>
+
+
+
+<div class="demo-info">
+
+<strong>Acceso de prueba</strong>
+
+<br>
+
+Usuario: mariajuan
+
+<br>
+
+Contraseña: 8392
+
+<br><br>
+
+Usuario: roberto50
+
+<br>
+
+Contraseña: 4721
+
+</div>
+
+
+</div>
+
+
+
+<a
+    href="index.html"
+    class="back-link"
+>
+
+← VOLVER A NOVA MOMENTS
+
+</a>
+
+
+</div>
+
+
+
+<!-- =========================================
+     CARGAR BASE DE DATOS
+========================================= -->
+
+<script src="js/clientes.js?v=3"></script>
+
+
+
+<script>
+
+/*
+====================================================
+SISTEMA DE ACCESO
+====================================================
+*/
+
+
+const formulario =
+    document.getElementById(
+        "accessForm"
+    );
+
+
+const usuarioInput =
+    document.getElementById(
+        "usuario"
+    );
+
+
+const passwordInput =
+    document.getElementById(
+        "password"
+    );
+
+
+const error =
+    document.getElementById(
+        "error"
+    );
+
+
+
+formulario.addEventListener(
+    "submit",
+    function(e) {
+
+        e.preventDefault();
+
+
+        const usuario =
+            usuarioInput.value
+            .trim()
+            .toLowerCase();
+
+
+        const password =
+            passwordInput.value
+            .trim();
+
+
+
+        /*
+        ============================================
+        VERIFICAR BASE DE DATOS
+        ============================================
+        */
+
+        if (
+            typeof USUARIOS ===
+            "undefined"
+        ) {
+
+            mostrarError(
+                "No se pudo cargar clientes.js."
+            );
+
+            return;
+
+        }
+
+
+
+        if (
+            typeof EVENTOS ===
+            "undefined"
+        ) {
+
+            mostrarError(
+                "No se pudo cargar la base de eventos."
+            );
+
+            return;
+
+        }
+
+
+
+        /*
+        ============================================
+        BUSCAR USUARIO
+        ============================================
+        */
+
+        const datos =
+            USUARIOS[usuario];
+
+
+
+        if (!datos) {
+
+            mostrarError(
+                "Usuario o contraseña incorrectos."
+            );
+
+            return;
+
+        }
+
+
+
+        /*
+        ============================================
+        COMPROBAR CONTRASEÑA
+        ============================================
+        */
+
+        if (
+            datos.password !== password
+        ) {
+
+            mostrarError(
+                "Usuario o contraseña incorrectos."
+            );
+
+            return;
+
+        }
+
+
+
+        /*
+        ============================================
+        COMPROBAR EVENTO
+        ============================================
+        */
+
+        if (
+            !EVENTOS[datos.evento]
+        ) {
+
+            mostrarError(
+                "La experiencia asociada a este usuario no existe."
+            );
+
+            return;
+
+        }
+
+
+
+        /*
+        ============================================
+        GUARDAR SESIÓN
+        ============================================
+        */
+
+        sessionStorage.setItem(
+            "nova_usuario",
+            usuario
+        );
+
+
+        sessionStorage.setItem(
+            "nova_evento",
+            datos.evento
+        );
+
+
+
+        /*
+        ============================================
+        ENTRAR
+        ============================================
+        */
+
+        window.location.href =
+            "experiencia.html";
+
+    }
+);
+
+
+
+function mostrarError(mensaje) {
+
+    error.textContent =
+        mensaje;
+
+    error.style.display =
+        "block";
+
+}
+
+</script>
+
+
+</body>
+
+</html>
+```

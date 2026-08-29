@@ -1,0 +1,1361 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>NOVA MOMENTS</title>
+
+<link
+  rel="preconnect"
+  href="https://fonts.googleapis.com"
+>
+
+<link
+  rel="preconnect"
+  href="https://fonts.googleapis.com"
+  crossorigin
+>
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap"
+  rel="stylesheet"
+>
+
+
+<style>
+
+/* ==================================================
+   GENERAL
+================================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #101010;
+  color: #ffffff;
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+
+/* ==================================================
+   HEADER
+================================================== */
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 70px;
+
+  padding: 0 45px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: rgba(10, 10, 10, 0.88);
+
+  backdrop-filter: blur(10px);
+
+  border-bottom: 1px solid #222;
+
+  z-index: 100;
+}
+
+.logo {
+  color: #ffffff;
+  text-decoration: none;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-nova {
+  font-size: 20px;
+  letter-spacing: 6px;
+}
+
+.logo-moments {
+  margin-top: 4px;
+
+  font-size: 8px;
+  letter-spacing: 5px;
+
+  color: #888888;
+}
+
+.logout {
+  background: transparent;
+
+  color: #ffffff;
+
+  border: 1px solid #666666;
+
+  padding: 8px 18px;
+
+  border-radius: 20px;
+
+  font-size: 10px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.logout:hover {
+  background: #ffffff;
+  color: #111111;
+}
+
+
+/* ==================================================
+   HERO / PORTADA
+================================================== */
+
+.hero {
+  position: relative;
+
+  min-height: 78vh;
+
+  display: flex;
+  align-items: flex-end;
+
+  background-color: #181818;
+
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.hero::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.05) 20%,
+      rgba(0,0,0,0.35) 55%,
+      rgba(0,0,0,0.96) 100%
+    );
+}
+
+.hero-content {
+  position: relative;
+
+  z-index: 2;
+
+  width: 100%;
+
+  padding:
+    70px 7% 65px;
+}
+
+.label {
+  font-size: 10px;
+
+  letter-spacing: 4px;
+
+  color: #aaaaaa;
+
+  margin-bottom: 15px;
+}
+
+.client-name {
+  font-family: Georgia, serif;
+
+  font-size:
+    clamp(42px, 6vw, 72px);
+
+  font-weight: 400;
+
+  line-height: 1.1;
+}
+
+.event-name {
+  margin-top: 14px;
+
+  color: #dddddd;
+
+  font-size: 15px;
+
+  letter-spacing: 2px;
+}
+
+.event-date {
+  margin-top: 9px;
+
+  color: #888888;
+
+  font-size: 12px;
+}
+
+
+/* ==================================================
+   CONTENIDO
+================================================== */
+
+main {
+  padding: 65px 6%;
+}
+
+.section {
+  margin-bottom: 70px;
+}
+
+.section-title {
+  font-size: 12px;
+
+  letter-spacing: 3px;
+
+  color: #cccccc;
+
+  margin-bottom: 22px;
+}
+
+
+/* ==================================================
+   FOTOGRAFÍAS
+================================================== */
+
+.photo-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 10px;
+}
+
+.photo {
+  position: relative;
+
+  aspect-ratio: 4 / 3;
+
+  overflow: hidden;
+
+  background: #1b1b1b;
+
+  cursor: pointer;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+
+  transition:
+    transform 0.4s ease,
+    opacity 0.4s ease;
+}
+
+.photo:hover img {
+  transform: scale(1.05);
+}
+
+.photo::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,0.18),
+      transparent
+    );
+
+  pointer-events: none;
+}
+
+
+/* ==================================================
+   VIDEOS
+================================================== */
+
+.video-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 15px;
+}
+
+.video {
+  position: relative;
+
+  aspect-ratio: 16 / 9;
+
+  overflow: hidden;
+
+  background: #1b1b1b;
+
+  cursor: pointer;
+}
+
+.video video {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+.video-placeholder {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #191919;
+
+  color: #777777;
+}
+
+.play {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  width: 52px;
+  height: 52px;
+
+  border:
+    1px solid rgba(255,255,255,0.75);
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(0,0,0,0.35);
+
+  font-size: 16px;
+
+  padding-left: 3px;
+
+  pointer-events: none;
+}
+
+
+/* ==================================================
+   SIN CONTENIDO
+================================================== */
+
+.empty {
+  padding: 35px 20px;
+
+  border:
+    1px solid #292929;
+
+  color: #666666;
+
+  text-align: center;
+
+  font-size: 12px;
+
+  grid-column: 1 / -1;
+}
+
+
+/* ==================================================
+   FOOTER
+================================================== */
+
+footer {
+  padding: 40px;
+
+  text-align: center;
+
+  color: #444444;
+
+  border-top:
+    1px solid #222222;
+
+  font-size: 9px;
+
+  letter-spacing: 2px;
+}
+
+
+/* ==================================================
+   VISOR DE FOTOGRAFÍA
+================================================== */
+
+.lightbox {
+  position: fixed;
+
+  inset: 0;
+
+  background:
+    rgba(0,0,0,0.94);
+
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px;
+
+  z-index: 500;
+}
+
+.lightbox.active {
+  display: flex;
+}
+
+.lightbox img {
+  max-width: 95vw;
+  max-height: 90vh;
+
+  object-fit: contain;
+}
+
+.close-lightbox {
+  position: absolute;
+
+  top: 20px;
+  right: 25px;
+
+  width: 42px;
+  height: 42px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #ffffff;
+
+  font-size: 32px;
+
+  cursor: pointer;
+}
+
+
+/* ==================================================
+   MENSAJE DE ERROR
+================================================== */
+
+.page-message {
+  min-height: 100vh;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  padding: 30px;
+}
+
+.page-message-box {
+  max-width: 450px;
+}
+
+.page-message h2 {
+  font-family: Georgia, serif;
+
+  font-size: 30px;
+
+  font-weight: 400;
+
+  margin-bottom: 12px;
+}
+
+.page-message p {
+  color: #888888;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+
+/* ==================================================
+   RESPONSIVE
+================================================== */
+
+@media (max-width: 900px) {
+
+  .photo-grid {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+
+  .video-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  header {
+    height: 62px;
+
+    padding:
+      0 18px;
+  }
+
+  .logo-nova {
+    font-size: 17px;
+  }
+
+  .logo-moments {
+    font-size: 7px;
+  }
+
+  .logout {
+    padding:
+      7px 14px;
+
+    font-size: 9px;
+  }
+
+  .hero {
+    min-height: 70vh;
+  }
+
+  .hero-content {
+    padding:
+      50px 24px;
+  }
+
+  .client-name {
+    font-size: 45px;
+  }
+
+  .event-name {
+    font-size: 13px;
+  }
+
+  main {
+    padding:
+      45px 16px;
+  }
+
+  .section {
+    margin-bottom: 55px;
+  }
+
+  .photo-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+
+    gap: 6px;
+  }
+
+  .video-grid {
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+  }
+
+}
+
+
+/* ==================================================
+   MUY PEQUEÑAS
+================================================== */
+
+@media (max-width: 380px) {
+
+  .client-name {
+    font-size: 38px;
+  }
+
+  .photo-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     HEADER
+================================================== -->
+
+<header>
+
+  <a
+    href="index.html"
+    class="logo"
+    aria-label="NOVA MOMENTS"
+  >
+
+    <span class="logo-nova">
+      NOVA
+    </span>
+
+    <span class="logo-moments">
+      MOMENTS
+    </span>
+
+  </a>
+
+
+  <button
+    class="logout"
+    id="logoutButton"
+  >
+    CERRAR SESIÓN
+  </button>
+
+</header>
+
+
+
+<!-- ==================================================
+     EXPERIENCIA
+================================================== -->
+
+<div id="app">
+
+
+  <section
+    class="hero"
+    id="hero"
+  >
+
+    <div class="hero-content">
+
+      <div class="label">
+        NOVA MOMENTS
+      </div>
+
+
+      <h1
+        class="client-name"
+        id="clientName"
+      >
+        Cargando...
+      </h1>
+
+
+      <div
+        class="event-name"
+        id="eventName"
+      >
+      </div>
+
+
+      <div
+        class="event-date"
+        id="eventDate"
+      >
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <main>
+
+
+    <!-- ==============================================
+         FOTOGRAFÍAS
+    =============================================== -->
+
+    <section class="section">
+
+      <h2 class="section-title">
+        FOTOGRAFÍAS
+      </h2>
+
+
+      <div
+        class="photo-grid"
+        id="photos"
+      >
+      </div>
+
+    </section>
+
+
+
+    <!-- ==============================================
+         VIDEOS
+    =============================================== -->
+
+    <section class="section">
+
+      <h2 class="section-title">
+        VIDEOS
+      </h2>
+
+
+      <div
+        class="video-grid"
+        id="videos"
+      >
+      </div>
+
+    </section>
+
+
+  </main>
+
+
+
+  <footer>
+    NOVA MOMENTS
+  </footer>
+
+
+</div>
+
+
+
+<!-- ==================================================
+     VISOR DE FOTOS
+================================================== -->
+
+<div
+  class="lightbox"
+  id="lightbox"
+>
+
+  <button
+    class="close-lightbox"
+    id="closeLightbox"
+    aria-label="Cerrar"
+  >
+    ×
+  </button>
+
+
+  <img
+    id="lightboxImage"
+    src=""
+    alt="Fotografía"
+  >
+
+</div>
+
+
+
+<!-- ==================================================
+     CLIENTES.JS
+================================================== -->
+
+<script src="js/clientes.js?v=4"></script>
+
+
+
+<!-- ==================================================
+     LÓGICA DE LA EXPERIENCIA
+================================================== -->
+
+<script>
+
+(function () {
+
+
+  /* ==================================================
+     OBTENER SESIÓN
+  ================================================== */
+
+  const usuario =
+    sessionStorage.getItem(
+      "nova_usuario"
+    );
+
+
+  const eventoId =
+    sessionStorage.getItem(
+      "nova_evento"
+    );
+
+
+
+  /* ==================================================
+     SI NO HAY SESIÓN
+  ================================================== */
+
+  if (
+    !usuario ||
+    !eventoId
+  ) {
+
+    window.location.href =
+      "acceso.html";
+
+    return;
+
+  }
+
+
+
+  /* ==================================================
+     COMPROBAR BASE DE DATOS
+  ================================================== */
+
+  if (
+    typeof EVENTOS ===
+    "undefined"
+  ) {
+
+    mostrarError(
+      "No se pudo cargar la información de la experiencia."
+    );
+
+    return;
+
+  }
+
+
+
+  /* ==================================================
+     BUSCAR EVENTO
+  ================================================== */
+
+  const evento =
+    EVENTOS[eventoId];
+
+
+  if (!evento) {
+
+    mostrarError(
+      "La experiencia asociada a este acceso no existe."
+    );
+
+    return;
+
+  }
+
+
+
+  /* ==================================================
+     DATOS PRINCIPALES
+  ================================================== */
+
+  document.getElementById(
+    "clientName"
+  ).textContent =
+    evento.nombre || "";
+
+
+  document.getElementById(
+    "eventName"
+  ).textContent =
+    evento.evento || "";
+
+
+  document.getElementById(
+    "eventDate"
+  ).textContent =
+    evento.fecha || "";
+
+
+
+  /* ==================================================
+     PORTADA
+  ================================================== */
+
+  if (
+    evento.portada
+  ) {
+
+    document.getElementById(
+      "hero"
+    ).style.backgroundImage =
+      `url("${evento.portada}")`;
+
+  }
+
+
+
+  /* ==================================================
+     FOTOGRAFÍAS
+  ================================================== */
+
+  const photosContainer =
+    document.getElementById(
+      "photos"
+    );
+
+
+  if (
+    Array.isArray(evento.fotos) &&
+    evento.fotos.length > 0
+  ) {
+
+
+    evento.fotos.forEach(
+      function (url) {
+
+
+        if (!url) {
+          return;
+        }
+
+
+        const photo =
+          document.createElement(
+            "div"
+          );
+
+
+        photo.className =
+          "photo";
+
+
+        const image =
+          document.createElement(
+            "img"
+          );
+
+
+        image.src =
+          url;
+
+
+        image.alt =
+          "Fotografía del evento";
+
+
+        image.loading =
+          "lazy";
+
+
+        photo.appendChild(
+          image
+        );
+
+
+        photo.addEventListener(
+          "click",
+          function () {
+
+            abrirLightbox(
+              url
+            );
+
+          }
+        );
+
+
+        photosContainer.appendChild(
+          photo
+        );
+
+      }
+    );
+
+
+  } else {
+
+
+    photosContainer.innerHTML =
+      `
+      <div class="empty">
+        Todavía no hay fotografías disponibles.
+      </div>
+      `;
+
+  }
+
+
+
+  /* ==================================================
+     VIDEOS
+  ================================================== */
+
+  const videosContainer =
+    document.getElementById(
+      "videos"
+    );
+
+
+  if (
+    Array.isArray(evento.videos) &&
+    evento.videos.length > 0
+  ) {
+
+
+    evento.videos.forEach(
+      function (video) {
+
+
+        let videoUrl = "";
+        let thumbnail = "";
+
+
+        /*
+        -----------------------------------------------
+        Si es simplemente una URL
+        -----------------------------------------------
+        */
+
+        if (
+          typeof video ===
+          "string"
+        ) {
+
+          videoUrl =
+            video;
+
+        }
+
+
+        /*
+        -----------------------------------------------
+        Si es un objeto
+        -----------------------------------------------
+        */
+
+        else if (
+          typeof video ===
+          "object"
+        ) {
+
+          videoUrl =
+            video.url || "";
+
+          thumbnail =
+            video.portada || "";
+
+        }
+
+
+        if (!videoUrl) {
+          return;
+        }
+
+
+        const card =
+          document.createElement(
+            "div"
+          );
+
+
+        card.className =
+          "video";
+
+
+        /*
+        -----------------------------------------------
+        VIDEO
+        -----------------------------------------------
+        */
+
+        const player =
+          document.createElement(
+            "video"
+          );
+
+
+        player.src =
+          videoUrl;
+
+        player.preload =
+          "metadata";
+
+        player.muted =
+          true;
+
+        player.playsInline =
+          true;
+
+
+        if (thumbnail) {
+
+          player.poster =
+            thumbnail;
+
+        }
+
+
+        card.appendChild(
+          player
+        );
+
+
+        /*
+        -----------------------------------------------
+        BOTÓN PLAY
+        -----------------------------------------------
+        */
+
+        const play =
+          document.createElement(
+            "div"
+          );
+
+
+        play.className =
+          "play";
+
+        play.textContent =
+          "▶";
+
+
+        card.appendChild(
+          play
+        );
+
+
+        /*
+        -----------------------------------------------
+        CLICK
+        -----------------------------------------------
+        */
+
+        card.addEventListener(
+          "click",
+          function () {
+
+            if (
+              player.paused
+            ) {
+
+              player.controls =
+                true;
+
+              player.muted =
+                false;
+
+              player.play();
+
+              play.style.display =
+                "none";
+
+            } else {
+
+              player.pause();
+
+            }
+
+          }
+        );
+
+
+        videosContainer.appendChild(
+          card
+        );
+
+      }
+    );
+
+
+  } else {
+
+
+    videosContainer.innerHTML =
+      `
+      <div class="empty">
+        Todavía no hay videos disponibles.
+      </div>
+      `;
+
+  }
+
+
+
+  /* ==================================================
+     LIGHTBOX
+  ================================================== */
+
+  const lightbox =
+    document.getElementById(
+      "lightbox"
+    );
+
+
+  const lightboxImage =
+    document.getElementById(
+      "lightboxImage"
+    );
+
+
+  const closeLightbox =
+    document.getElementById(
+      "closeLightbox"
+    );
+
+
+
+  function abrirLightbox(url) {
+
+    lightboxImage.src =
+      url;
+
+    lightbox.classList.add(
+      "active"
+    );
+
+  }
+
+
+
+  function cerrarLightbox() {
+
+    lightbox.classList.remove(
+      "active"
+    );
+
+    lightboxImage.src =
+      "";
+
+  }
+
+
+
+  closeLightbox.addEventListener(
+    "click",
+    cerrarLightbox
+  );
+
+
+  lightbox.addEventListener(
+    "click",
+    function (event) {
+
+      if (
+        event.target ===
+        lightbox
+      ) {
+
+        cerrarLightbox();
+
+      }
+
+    }
+  );
+
+
+  document.addEventListener(
+    "keydown",
+    function (event) {
+
+      if (
+        event.key ===
+        "Escape"
+      ) {
+
+        cerrarLightbox();
+
+      }
+
+    }
+  );
+
+
+
+  /* ==================================================
+     CERRAR SESIÓN
+  ================================================== */
+
+  document.getElementById(
+    "logoutButton"
+  ).addEventListener(
+    "click",
+    function () {
+
+
+      sessionStorage.removeItem(
+        "nova_usuario"
+      );
+
+
+      sessionStorage.removeItem(
+        "nova_evento"
+      );
+
+
+      window.location.href =
+        "acceso.html";
+
+    }
+  );
+
+
+})();
+
+
+
+/* ==================================================
+   ERROR
+================================================== */
+
+function mostrarError(mensaje) {
+
+  document.body.innerHTML = `
+
+    <div class="page-message">
+
+      <div class="page-message-box">
+
+        <h2>
+          NOVA MOMENTS
+        </h2>
+
+        <p>
+          ${mensaje}
+        </p>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+</script>
+
+
+</body>
+
+</html>
+```
