@@ -1,10 +1,8 @@
-```javascript
 export async function onRequestGet(context) {
 
     try {
 
         const url = new URL(context.request.url);
-
         const evento = url.searchParams.get("evento");
 
         if (!evento) {
@@ -39,60 +37,39 @@ export async function onRequestGet(context) {
             );
         }
 
-        /*
-        ==================================================
-        CARPETA DEL EVENTO
-        ==================================================
-        */
+        var carpeta = "NOVA_MOMENTS/" + evento + "/FOTOS";
 
-        const carpeta = `NOVA_MOMENTS/${evento}/FOTOS`;
+        var timestamp = Math.floor(Date.now() / 1000);
 
-        /*
-        ==================================================
-        TIMESTAMP
-        ==================================================
-        */
+        var parametros =
+            "prefix=" + carpeta +
+            "&timestamp=" + timestamp +
+            apiSecret;
 
-        const timestamp = Math.floor(Date.now() / 1000);
+        var encoder = new TextEncoder();
+        var data = encoder.encode(parametros);
 
-        /*
-        ==================================================
-        FIRMA CLOUDINARY
-        ==================================================
-        */
-
-        const parametros =
-            `prefix=${carpeta}&timestamp=${timestamp}${apiSecret}`;
-
-        const encoder = new TextEncoder();
-
-        const data = encoder.encode(parametros);
-
-        const hashBuffer = await crypto.subtle.digest(
+        var hashBuffer = await crypto.subtle.digest(
             "SHA-1",
             data
         );
 
-        const hashArray = Array.from(
+        var hashArray = Array.from(
             new Uint8Array(hashBuffer)
         );
 
-        const signature = hashArray
-            .map(
-                b => b.toString(16).padStart(2, "0")
-            )
+        var signature = hashArray
+            .map(function(b) {
+                return b.toString(16).padStart(2, "0");
+            })
             .join("");
 
-        /*
-        ==================================================
-        CONSULTAR CLOUDINARY
-        ==================================================
-        */
+        var cloudinaryUrl =
+            "https://api.cloudinary.com/v1_1/" +
+            cloudName +
+            "/resources/search";
 
-        const cloudinaryUrl =
-            `https://api.cloudinary.com/v1_1/${cloudName}/resources/search`;
-
-        const response = await fetch(
+        var response = await fetch(
             cloudinaryUrl,
             {
                 method: "POST",
@@ -105,7 +82,7 @@ export async function onRequestGet(context) {
                 body: new URLSearchParams({
 
                     expression:
-                        `folder="${carpeta}"`,
+                        "folder=\"" + carpeta + "\"",
 
                     timestamp:
                         timestamp.toString(),
@@ -120,7 +97,7 @@ export async function onRequestGet(context) {
             }
         );
 
-        const dataCloudinary =
+        var dataCloudinary =
             await response.json();
 
         if (!response.ok) {
@@ -129,13 +106,11 @@ export async function onRequestGet(context) {
                 JSON.stringify({
                     error:
                         "Cloudinary rechazó la solicitud.",
-
                     detalle:
                         dataCloudinary
                 }),
                 {
                     status: 500,
-
                     headers: {
                         "Content-Type":
                             "application/json"
@@ -144,84 +119,47 @@ export async function onRequestGet(context) {
             );
         }
 
-        /*
-        ==================================================
-        PREPARAR FOTOS
-        ==================================================
-        */
-
-        const fotos =
+        var fotos =
             (dataCloudinary.resources || [])
-                .map(
-                    recurso =>
-                        recurso.secure_url
-                );
-
-        /*
-        ==================================================
-        RESPUESTA
-        ==================================================
-        */
+                .map(function(recurso) {
+                    return recurso.secure_url;
+                });
 
         return new Response(
-
             JSON.stringify({
-
-                evento:
-                    evento,
-
-                carpeta:
-                    carpeta,
-
-                fotos:
-                    fotos
-
+                evento: evento,
+                carpeta: carpeta,
+                fotos: fotos
             }),
-
             {
-
                 status: 200,
-
                 headers: {
                     "Content-Type":
                         "application/json",
-
                     "Cache-Control":
                         "no-store"
                 }
-
             }
-
         );
 
     } catch (error) {
 
         return new Response(
-
             JSON.stringify({
-
                 error:
                     "Error interno de la función.",
-
                 detalle:
                     error.message
-
             }),
-
             {
-
                 status: 500,
-
                 headers: {
                     "Content-Type":
                         "application/json"
                 }
-
             }
-
         );
 
     }
 
 }
-```
