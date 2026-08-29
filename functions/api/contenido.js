@@ -8,7 +8,6 @@ export async function onRequestGet(context) {
         const evento = url.searchParams.get("evento");
 
         if (!evento) {
-
             return new Response(
                 JSON.stringify({
                     error: "Falta indicar el evento."
@@ -20,26 +19,13 @@ export async function onRequestGet(context) {
                     }
                 }
             );
-
         }
 
+        const cloudName = context.env.CLOUDINARY_CLOUD_NAME;
+        const apiKey = context.env.CLOUDINARY_API_KEY;
+        const apiSecret = context.env.CLOUDINARY_API_SECRET;
 
-        const cloudName =
-            context.env.CLOUDINARY_CLOUD_NAME;
-
-        const apiKey =
-            context.env.CLOUDINARY_API_KEY;
-
-        const apiSecret =
-            context.env.CLOUDINARY_API_SECRET;
-
-
-        if (
-            !cloudName ||
-            !apiKey ||
-            !apiSecret
-        ) {
-
+        if (!cloudName || !apiKey || !apiSecret) {
             return new Response(
                 JSON.stringify({
                     error: "Las variables de Cloudinary no están configuradas."
@@ -51,25 +37,23 @@ export async function onRequestGet(context) {
                     }
                 }
             );
-
         }
-
 
         /*
         ==================================================
-        CLOUDINARY
+        CARPETA DEL EVENTO
         ==================================================
         */
 
-        const carpeta =
-            `NOVA_MOMENTS/${evento}/FOTOS`;
+        const carpeta = `NOVA_MOMENTS/${evento}/FOTOS`;
 
+        /*
+        ==================================================
+        TIMESTAMP
+        ==================================================
+        */
 
-        const timestamp =
-            Math.floor(
-                Date.now() / 1000
-            );
-
+        const timestamp = Math.floor(Date.now() / 1000);
 
         /*
         ==================================================
@@ -80,42 +64,24 @@ export async function onRequestGet(context) {
         const parametros =
             `prefix=${carpeta}&timestamp=${timestamp}${apiSecret}`;
 
+        const encoder = new TextEncoder();
 
-        const encoder =
-            new TextEncoder();
+        const data = encoder.encode(parametros);
 
+        const hashBuffer = await crypto.subtle.digest(
+            "SHA-1",
+            data
+        );
 
-        const data =
-            encoder.encode(
-                parametros
-            );
+        const hashArray = Array.from(
+            new Uint8Array(hashBuffer)
+        );
 
-
-        const hashBuffer =
-            await crypto.subtle.digest(
-                "SHA-1",
-                data
-            );
-
-
-        const hashArray =
-            Array.from(
-                new Uint8Array(
-                    hashBuffer
-                )
-            );
-
-
-        const signature =
-            hashArray
-                .map(
-                    b =>
-                        b
-                            .toString(16)
-                            .padStart(2, "0")
-                )
-                .join("");
-
+        const signature = hashArray
+            .map(
+                b => b.toString(16).padStart(2, "0")
+            )
+            .join("");
 
         /*
         ==================================================
@@ -126,68 +92,61 @@ export async function onRequestGet(context) {
         const cloudinaryUrl =
             `https://api.cloudinary.com/v1_1/${cloudName}/resources/search`;
 
+        const response = await fetch(
+            cloudinaryUrl,
+            {
+                method: "POST",
 
-        const response =
-            await fetch(
-                cloudinaryUrl,
-                {
-                    method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+                },
 
-                    headers: {
-                        "Content-Type":
-                            "application/x-www-form-urlencoded"
-                    },
+                body: new URLSearchParams({
 
-                    body:
-                        new URLSearchParams({
+                    expression:
+                        `folder="${carpeta}"`,
 
-                            expression:
-                                `folder="${carpeta}"`,
+                    timestamp:
+                        timestamp.toString(),
 
-                            timestamp:
-                                timestamp.toString(),
+                    api_key:
+                        apiKey,
 
-                            api_key:
-                                apiKey,
+                    signature:
+                        signature
 
-                            signature:
-                                signature
-
-                        })
-                }
-            );
-
+                })
+            }
+        );
 
         const dataCloudinary =
             await response.json();
 
-
-        if (
-            !response.ok
-        ) {
+        if (!response.ok) {
 
             return new Response(
                 JSON.stringify({
                     error:
                         "Cloudinary rechazó la solicitud.",
+
                     detalle:
                         dataCloudinary
                 }),
                 {
                     status: 500,
+
                     headers: {
                         "Content-Type":
                             "application/json"
                     }
                 }
             );
-
         }
-
 
         /*
         ==================================================
-        PREPARAR RESULTADO
+        PREPARAR FOTOS
         ==================================================
         */
 
@@ -198,6 +157,11 @@ export async function onRequestGet(context) {
                         recurso.secure_url
                 );
 
+        /*
+        ==================================================
+        RESPUESTA
+        ==================================================
+        */
 
         return new Response(
 
@@ -229,7 +193,6 @@ export async function onRequestGet(context) {
             }
 
         );
-
 
     } catch (error) {
 
