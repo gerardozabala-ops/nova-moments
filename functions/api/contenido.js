@@ -11,20 +11,26 @@ export async function onRequestGet(context) {
         const apiSecret =
             context.env.CLOUDINARY_API_SECRET;
 
+        const evento =
+            context.params.evento ||
+            new URL(context.request.url)
+                .searchParams
+                .get("evento");
+
         if (!cloudName || !apiKey || !apiSecret) {
 
-            return new Response(
-                JSON.stringify({
-                    ok: false,
-                    error: "Faltan variables de Cloudinary."
-                }),
-                {
-                    status: 500,
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
+            return respuesta({
+                ok: false,
+                error: "Faltan variables de Cloudinary."
+            }, 500);
+        }
+
+        if (!evento) {
+
+            return respuesta({
+                ok: false,
+                error: "Falta indicar el evento."
+            }, 400);
         }
 
         /*
@@ -39,170 +45,239 @@ export async function onRequestGet(context) {
 
         /*
         ============================================
-        BUSCAR RECURSOS
+        OBTENER IMÁGENES
         ============================================
         */
 
-        const endpoint =
-            "https://api.cloudinary.com/v1_1/" +
-            cloudName +
-            "/resources/image/upload";
-
-        const parametros =
-            new URLSearchParams();
-
-        parametros.append(
-            "max_results",
-            "500"
-        );
-
-        const respuesta =
-            await fetch(
-                endpoint +
-                "?" +
-                parametros.toString(),
-                {
-                    method: "GET",
-
-                    headers: {
-                        "Authorization":
-                            autorizacion
-                    }
-                }
-            );
-
-        const texto =
-            await respuesta.text();
-
-        if (!respuesta.ok) {
-
-            return new Response(
-                JSON.stringify({
-                    ok: false,
-                    status: respuesta.status,
-                    respuesta: texto
-                }),
-                {
-                    status: respuesta.status,
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    }
-                }
-            );
-        }
-
-        const datos =
-            JSON.parse(texto);
-
-        const recursos =
-            datos.resources || [];
-
-        /*
-        ============================================
-        FILTRAR EVT-0001
-        ============================================
-        */
-
-        const encontrados =
-            recursos.filter(
-                function(recurso) {
-
-                    const carpeta =
-                        recurso.asset_folder || "";
-
-                    return carpeta.startsWith(
-                        "NOVA_MOMENTS/EVT-0001/"
-                    );
-
-                }
+        const imagenes =
+            await obtenerRecursos(
+                cloudName,
+                autorizacion,
+                "image"
             );
 
         /*
         ============================================
-        DEVOLVER SOLO INFORMACIÓN NECESARIA
+        OBTENER VIDEOS
         ============================================
         */
 
-        const resultado =
-            encontrados.map(
-                function(recurso) {
-
-                    return {
-
-                        public_id:
-                            recurso.public_id,
-
-                        asset_folder:
-                            recurso.asset_folder,
-
-                        resource_type:
-                            recurso.resource_type,
-
-                        format:
-                            recurso.format
-
-                    };
-
-                }
+        const videos =
+            await obtenerRecursos(
+                cloudName,
+                autorizacion,
+                "video"
             );
 
-        return new Response(
+        /*
+        ============================================
+        FILTRAR POR EVENTO Y CARPETA
+        ============================================
+        */
 
-            JSON.stringify({
+        const prefijo =
+            "NOVA_MOMENTS/" +
+            evento +
+            "/";
 
-                ok: true,
+        const recursosImagen =
+            imagenes.filter(
+                recurso =>
+                    (recurso.asset_folder || "")
+                        .startsWith(prefijo)
+            );
 
-                evento:
-                    "EVT-0001",
+        const recursosVideo =
+            videos.filter(
+                recurso =>
+                    (recurso.asset_folder || "")
+                        .startsWith(prefijo)
+            );
 
-                cantidad:
-                    resultado.length,
+        /*
+        ============================================
+        SEPARAR PORTADA Y FOTOS
+        ============================================
+        */
 
-                recursos:
-                    resultado
+        const portada =
+            recursosImagen.filter(
+                recurso =>
+                    (recurso.asset_folder || "")
+                        .endsWith("/PORTADA")
+            );
 
-            }),
+        const fotos =
+            recursosImagen.filter(
+                recurso =>
+                    (recurso.asset_folder || "")
+                        .endsWith("/FOTOS")
+            );
 
-            {
-                status: 200,
+        const listaVideos =
+            recursosVideo.filter(
+                recurso =>
+                    (recurso.asset_folder || "")
+                        .endsWith("/VIDEOS")
+            );
 
-                headers: {
-                    "Content-Type":
-                        "application/json",
+        /*
+        ============================================
+        FORMATO DE RESPUESTA
+        ============================================
+        */
 
-                    "Cache-Control":
-                        "no-store"
-                }
+        return respuesta({
 
-            }
+            ok: true,
 
-        );
+            evento: evento,
+
+            portada:
+                convertirRecursos(portada),
+
+            fotos:
+                convertirRecursos(fotos),
+
+            videos:
+                convertirRecursos(listaVideos),
+
+            total_portada:
+                portada.length,
+
+            total_fotos:
+                fotos.length,
+
+            total_videos:
+                listaVideos.length
+
+        });
 
     } catch (error) {
 
-        return new Response(
+        return respuesta({
 
-            JSON.stringify({
+            ok: false,
 
-                ok: false,
+            error:
+                error.message
 
-                error:
-                    error.message
-
-            }),
-
-            {
-                status: 500,
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                }
-            }
-
-        );
+        }, 500);
 
     }
+}
 
+
+/*
+====================================================
+OBTENER RECURSOS DE CLOUDINARY
+====================================================
+*/
+
+async function obtenerRecursos(
+    cloudName,
+    autorizacion,
+    tipo
+) {
+
+    const endpoint =
+        "https://api.cloudinary.com/v1_1/" +
+        cloudName +
+        "/resources/" +
+        tipo +
+        "/upload";
+
+    const url =
+        endpoint +
+        "?max_results=500";
+
+    const respuestaCloudinary =
+        await fetch(
+            url,
+            {
+                method: "GET",
+
+                headers: {
+                    "Authorization":
+                        autorizacion
+                }
+            }
+        );
+
+    const texto =
+        await respuestaCloudinary.text();
+
+    if (!respuestaCloudinary.ok) {
+
+        throw new Error(
+            "Cloudinary rechazó la consulta de " +
+            tipo +
+            ": " +
+            texto
+        );
+    }
+
+    const datos =
+        JSON.parse(texto);
+
+    return datos.resources || [];
+}
+
+
+/*
+====================================================
+CONVERTIR RECURSOS
+====================================================
+*/
+
+function convertirRecursos(recursos) {
+
+    return recursos.map(
+        recurso => ({
+
+            public_id:
+                recurso.public_id,
+
+            asset_folder:
+                recurso.asset_folder,
+
+            resource_type:
+                recurso.resource_type,
+
+            format:
+                recurso.format,
+
+            secure_url:
+                recurso.secure_url
+
+        })
+    );
+}
+
+
+/*
+====================================================
+RESPUESTA JSON
+====================================================
+*/
+
+function respuesta(datos, status = 200) {
+
+    return new Response(
+
+        JSON.stringify(datos),
+
+        {
+            status: status,
+
+            headers: {
+                "Content-Type":
+                    "application/json",
+
+                "Cache-Control":
+                    "no-store"
+            }
+        }
+
+    );
 }
