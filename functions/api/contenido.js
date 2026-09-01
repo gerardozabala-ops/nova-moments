@@ -11,16 +11,32 @@ export async function onRequestGet(context) {
         const apiSecret =
             context.env.CLOUDINARY_API_SECRET;
 
+        const folderId =
+            "d025466ca18937a7e1574c946615dfcf79";
+
+        /*
+        ============================================
+        AUTENTICACIÓN
+        ============================================
+        */
+
         const credenciales =
             apiKey + ":" + apiSecret;
 
         const autorizacion =
             btoa(credenciales);
 
+        /*
+        ============================================
+        CONSULTAR CARPETA
+        ============================================
+        */
+
         const endpoint =
             "https://api.cloudinary.com/v1_1/" +
             cloudName +
-            "/asset_folders";
+            "/asset_folders/" +
+            folderId;
 
         const respuesta =
             await fetch(
@@ -42,9 +58,13 @@ export async function onRequestGet(context) {
         if (!respuesta.ok) {
 
             return new Response(
-                texto,
-                {
+                JSON.stringify({
+                    ok: false,
                     status: respuesta.status,
+                    respuesta: texto
+                }),
+                {
+                    status: 500,
                     headers: {
                         "Content-Type":
                             "application/json"
@@ -56,28 +76,11 @@ export async function onRequestGet(context) {
         const datos =
             JSON.parse(texto);
 
-        const carpetas =
-            datos.folders || [];
-
         /*
         ============================================
-        BUSCAR SOLAMENTE CARPETAS NOVA_MOMENTS
+        RESPUESTA MÍNIMA
         ============================================
         */
-
-        const nova =
-            carpetas.filter(
-                function(carpeta) {
-
-                    const nombre =
-                        carpeta.name || "";
-
-                    return nombre
-                        .toUpperCase()
-                        .includes("NOVA");
-
-                }
-            );
 
         return new Response(
 
@@ -85,11 +88,16 @@ export async function onRequestGet(context) {
 
                 ok: true,
 
-                cantidad:
-                    nova.length,
+                nombre:
+                    datos.name || null,
 
-                carpetas:
-                    nova
+                ruta:
+                    datos.path || null,
+
+                cantidad:
+                    datos.asset_count ??
+                    datos.count ??
+                    null
 
             }),
 
@@ -98,10 +106,7 @@ export async function onRequestGet(context) {
 
                 headers: {
                     "Content-Type":
-                        "application/json",
-
-                    "Cache-Control":
-                        "no-store"
+                        "application/json"
                 }
             }
 
