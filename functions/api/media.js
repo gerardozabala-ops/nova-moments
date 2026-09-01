@@ -9,22 +9,14 @@ export async function onRequestGet(context) {
     const apiSecret =
         context.env.CLOUDINARY_API_SECRET;
 
-
     const auth =
         btoa(`${apiKey}:${apiSecret}`);
-
-
-    const prefix =
-        "HOME/MOMENTOS NOVA/EVT-0001";
-
 
     const endpoint =
         `https://api.cloudinary.com/v1_1/${cloudName}/resources/image/upload`;
 
-
     const url =
-        `${endpoint}?prefix=${encodeURIComponent(prefix)}&max_results=100`;
-
+        `${endpoint}?max_results=100`;
 
     const response =
         await fetch(
@@ -39,10 +31,8 @@ export async function onRequestGet(context) {
             }
         );
 
-
     const texto =
         await response.text();
-
 
     return new Response(
         texto,
