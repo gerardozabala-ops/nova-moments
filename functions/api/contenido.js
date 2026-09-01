@@ -14,29 +14,16 @@ export async function onRequestGet(context) {
         const folderId =
             "d025466ca18937a7e1574c946615dfcf79";
 
-        /*
-        ============================================
-        AUTENTICACIÓN
-        ============================================
-        */
-
         const credenciales =
             apiKey + ":" + apiSecret;
 
         const autorizacion =
             btoa(credenciales);
 
-        /*
-        ============================================
-        CONSULTAR CARPETA
-        ============================================
-        */
-
         const endpoint =
             "https://api.cloudinary.com/v1_1/" +
             cloudName +
-            "/asset_folders/" +
-            folderId;
+            "/asset_folders";
 
         const respuesta =
             await fetch(
@@ -52,16 +39,12 @@ export async function onRequestGet(context) {
                 }
             );
 
-        const texto =
-            await respuesta.text();
-
         if (!respuesta.ok) {
 
             return new Response(
                 JSON.stringify({
                     ok: false,
-                    status: respuesta.status,
-                    respuesta: texto
+                    status: respuesta.status
                 }),
                 {
                     status: 500,
@@ -74,13 +57,42 @@ export async function onRequestGet(context) {
         }
 
         const datos =
-            JSON.parse(texto);
+            await respuesta.json();
 
-        /*
-        ============================================
-        RESPUESTA MÍNIMA
-        ============================================
-        */
+        const carpetas =
+            datos.folders || [];
+
+        const encontrada =
+            carpetas.find(
+                function(carpeta) {
+
+                    return (
+                        carpeta.external_id ===
+                        folderId ||
+                        carpeta.id ===
+                        folderId
+                    );
+
+                }
+            );
+
+        if (!encontrada) {
+
+            return new Response(
+                JSON.stringify({
+                    ok: false,
+                    mensaje:
+                        "No se encontró ese ID entre las Asset Folders devueltas."
+                }),
+                {
+                    status: 404,
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+        }
 
         return new Response(
 
@@ -89,15 +101,13 @@ export async function onRequestGet(context) {
                 ok: true,
 
                 nombre:
-                    datos.name || null,
+                    encontrada.name || null,
 
                 ruta:
-                    datos.path || null,
+                    encontrada.path || null,
 
-                cantidad:
-                    datos.asset_count ??
-                    datos.count ??
-                    null
+                parent_id:
+                    encontrada.parent_id || null
 
             }),
 
