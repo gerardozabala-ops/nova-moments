@@ -21,7 +21,8 @@ export async function onRequestGet(context) {
                 {
                     status: 500,
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type":
+                            "application/json"
                     }
                 }
             );
@@ -29,7 +30,7 @@ export async function onRequestGet(context) {
 
         /*
         ============================================
-        AUTENTICACIÓN CLOUDINARY
+        AUTENTICACIÓN
         ============================================
         */
 
@@ -41,42 +42,18 @@ export async function onRequestGet(context) {
 
         /*
         ============================================
-        ASSET FOLDER A PROBAR
-        ============================================
-        */
-
-        const assetFolder =
-            "HOGAR/NOVA_MOMENTS/EVT-0001/FOTOS";
-
-        /*
-        ============================================
-        CONSULTAR ASSET FOLDER
+        LISTAR ASSET FOLDERS
         ============================================
         */
 
         const endpoint =
             "https://api.cloudinary.com/v1_1/" +
             cloudName +
-            "/resources/by_asset_folder";
-
-        const parametros =
-            new URLSearchParams();
-
-        parametros.append(
-            "asset_folder",
-            assetFolder
-        );
-
-        parametros.append(
-            "max_results",
-            "500"
-        );
+            "/asset_folders";
 
         const respuesta =
             await fetch(
-                endpoint +
-                "?" +
-                parametros.toString(),
+                endpoint,
                 {
                     method: "GET",
 
@@ -97,7 +74,6 @@ export async function onRequestGet(context) {
                 JSON.stringify({
                     ok: false,
                     status: respuesta.status,
-                    asset_folder: assetFolder,
                     respuesta: texto
                 }),
                 {
@@ -115,45 +91,7 @@ export async function onRequestGet(context) {
 
         /*
         ============================================
-        MOSTRAR RECURSOS ENCONTRADOS
-        ============================================
-        */
-
-        const recursos =
-            (datos.resources || []).map(
-                function(recurso) {
-
-                    return {
-
-                        public_id:
-                            recurso.public_id || null,
-
-                        asset_id:
-                            recurso.asset_id || null,
-
-                        resource_type:
-                            recurso.resource_type || null,
-
-                        type:
-                            recurso.type || null,
-
-                        format:
-                            recurso.format || null,
-
-                        asset_folder:
-                            recurso.asset_folder || null,
-
-                        secure_url:
-                            recurso.secure_url || null
-
-                    };
-
-                }
-            );
-
-        /*
-        ============================================
-        RESPUESTA
+        RESPUESTA DE DIAGNÓSTICO
         ============================================
         */
 
@@ -163,14 +101,11 @@ export async function onRequestGet(context) {
 
                 ok: true,
 
-                asset_folder:
-                    assetFolder,
+                mensaje:
+                    "Asset Folders reconocidas por Cloudinary",
 
-                cantidad:
-                    recursos.length,
-
-                recursos:
-                    recursos,
+                carpetas:
+                    datos.folders || [],
 
                 next_cursor:
                     datos.next_cursor || null
