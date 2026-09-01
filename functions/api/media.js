@@ -28,7 +28,7 @@ export async function onRequestGet(context) {
 
         /*
         ==================================================
-        CONFIGURACIÓN CLOUDINARY
+        CREDENCIALES CLOUDINARY
         ==================================================
         */
 
@@ -51,126 +51,8 @@ export async function onRequestGet(context) {
             return new Response(
                 JSON.stringify({
                     ok: false,
-                    error: "Faltan las credenciales de Cloudinary."
-                }),
-                {
-                    status: 500,
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
-
-        }
-
-
-        /*
-        ==================================================
-        CONSULTAR CLOUDINARY
-        ==================================================
-        */
-
-        const timestamp =
-            Math.floor(
-                Date.now() / 1000
-            );
-
-
-        const folder =
-            `NOVA_MOMENTS/${eventoId}`;
-
-
-        /*
-        ==================================================
-        GENERAR FIRMA
-        ==================================================
-        */
-
-        const encoder =
-            new TextEncoder();
-
-
-        const datosFirma =
-            `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-
-
-        const hashBuffer =
-            await crypto.subtle.digest(
-                "SHA-1",
-                encoder.encode(datosFirma)
-            );
-
-
-        const hashArray =
-            Array.from(
-                new Uint8Array(hashBuffer)
-            );
-
-
-        const signature =
-            hashArray
-                .map(
-                    byte =>
-                        byte
-                            .toString(16)
-                            .padStart(2, "0")
-                )
-                .join("");
-
-
-        /*
-        ==================================================
-        BUSCAR RECURSOS
-        ==================================================
-        */
-
-        const searchUrl =
-            `https://api.cloudinary.com/v1_1/${cloudName}/resources/search`;
-
-
-        const response =
-            await fetch(
-                searchUrl,
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body: JSON.stringify({
-
-                        expression:
-                            `folder:${folder}/*`,
-
-                        max_results: 500,
-
-                        sort_by: [
-                            {
-                                public_id: "asc"
-                            }
-                        ]
-
-                    })
-                }
-            );
-
-
-        if (!response.ok) {
-
-            const texto =
-                await response.text();
-
-            console.error(
-                "Cloudinary:",
-                texto
-            );
-
-            return new Response(
-                JSON.stringify({
-                    ok: false,
-                    error: "Cloudinary rechazó la consulta."
+                    error:
+                        "Faltan las credenciales de Cloudinary."
                 }),
                 {
                     status: 500,
@@ -184,50 +66,179 @@ export async function onRequestGet(context) {
         }
 
 
-        const data =
-            await response.json();
+        /*
+        ==================================================
+        AUTENTICACIÓN
+        ==================================================
+        */
+
+        const auth =
+            btoa(
+                `${apiKey}:${apiSecret}`
+            );
 
 
         /*
         ==================================================
-        SEPARAR FOTOS Y VIDEOS
+        FUNCIÓN PARA BUSCAR UNA CARPETA
         ==================================================
         */
 
-        const fotos = [];
-
-        const videos = [];
-
-
-        for (
-            const recurso
-            of (data.resources || [])
+        async function buscarCarpeta(
+            nombreCarpeta
         ) {
 
-            const url =
-                recurso.secure_url;
+            const folder =
+                `HOME/MOMENTOS NOVA/${eventoId}/${nombreCarpeta}`;
 
 
-            if (
-                recurso.resource_type ===
-                "image"
-            ) {
+            const response =
+                await fetch(
+                    `https://api.cloudinary.com/v1_1/${cloudName}/resources/search`,
+                    {
+                        method: "POST",
 
-                fotos.push(url);
+                        headers: {
+
+                            "Authorization":
+                                `Basic ${auth}`,
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            expression:
+                                `folder:"${folder}"`,
+
+                            max_results: 500
+
+                        })
+
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                const texto =
+                    await response.text();
+
+                console.error(
+                    "Cloudinary:",
+                    texto
+                );
+
+                throw new Error(
+                    `Error consultando ${nombreCarpeta}`
+                );
 
             }
 
 
-            if (
-                recurso.resource_type ===
-                "video"
-            ) {
+            const data =
+                await response.json();
 
-                videos.push(url);
 
-            }
+            return data.resources || [];
 
         }
+
+
+        /*
+        ==================================================
+        BUSCAR PORTADA
+        ==================================================
+        */
+
+        const portadaRecursos =
+            await buscarCarpeta(
+                "PORTADA"
+            );
+
+
+        /*
+        ==================================================
+        BUSCAR FOTOS
+        ==================================================
+        */
+
+        const fotosRecursos =
+            await buscarCarpeta(
+                "FOTOS"
+            );
+
+
+        /*
+        ==================================================
+        BUSCAR VIDEOS
+        ==================================================
+        */
+
+        const videosRecursos =
+            await buscarCarpeta(
+                "VIDEOS"
+            );
+
+
+        /*
+        ==================================================
+        OBTENER PORTADA
+        ==================================================
+        */
+
+        let portada = null;
+
+
+        if (
+            portadaRecursos.length > 0
+        ) {
+
+            portada =
+                portadaRecursos[0]
+                    .secure_url;
+
+        }
+
+
+        /*
+        ==================================================
+        OBTENER FOTOS
+        ==================================================
+        */
+
+        const fotos =
+            fotosRecursos
+                .filter(
+                    recurso =>
+                        recurso.resource_type ===
+                        "image"
+                )
+                .map(
+                    recurso =>
+                        recurso.secure_url
+                );
+
+
+        /*
+        ==================================================
+        OBTENER VIDEOS
+        ==================================================
+        */
+
+        const videos =
+            videosRecursos
+                .filter(
+                    recurso =>
+                        recurso.resource_type ===
+                        "video"
+                )
+                .map(
+                    recurso =>
+                        recurso.secure_url
+                );
 
 
         /*
@@ -242,6 +253,8 @@ export async function onRequestGet(context) {
                 ok: true,
 
                 evento: eventoId,
+
+                portada: portada,
 
                 fotos: fotos,
 
@@ -266,11 +279,16 @@ export async function onRequestGet(context) {
 
         return new Response(
             JSON.stringify({
+
                 ok: false,
-                error: "Error interno del servidor."
+
+                error:
+                    "Error al consultar Cloudinary."
+
             }),
             {
                 status: 500,
+
                 headers: {
                     "Content-Type":
                         "application/json"
