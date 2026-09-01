@@ -11,29 +11,61 @@ export async function onRequestGet(context) {
         const apiSecret =
             context.env.CLOUDINARY_API_SECRET;
 
-        const publicId = "DSC_2570";
+        if (!cloudName || !apiKey || !apiSecret) {
 
-        const credenciales =
-            apiKey + ":" + apiSecret;
+            return new Response(
+                JSON.stringify({
+                    ok: false,
+                    error: "Faltan variables de Cloudinary."
+                }),
+                {
+                    status: 500,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+        }
+
+        /*
+        ============================================
+        AUTENTICACIÓN
+        ============================================
+        */
 
         const autorizacion =
-            btoa(credenciales);
+            "Basic " +
+            btoa(apiKey + ":" + apiSecret);
+
+        /*
+        ============================================
+        BUSCAR RECURSOS
+        ============================================
+        */
 
         const endpoint =
             "https://api.cloudinary.com/v1_1/" +
             cloudName +
-            "/resources/image/upload/" +
-            encodeURIComponent(publicId);
+            "/resources/image/upload";
+
+        const parametros =
+            new URLSearchParams();
+
+        parametros.append(
+            "max_results",
+            "500"
+        );
 
         const respuesta =
             await fetch(
-                endpoint,
+                endpoint +
+                "?" +
+                parametros.toString(),
                 {
                     method: "GET",
 
                     headers: {
                         "Authorization":
-                            "Basic " +
                             autorizacion
                     }
                 }
@@ -63,26 +95,72 @@ export async function onRequestGet(context) {
         const datos =
             JSON.parse(texto);
 
+        const recursos =
+            datos.resources || [];
+
+        /*
+        ============================================
+        FILTRAR EVT-0001
+        ============================================
+        */
+
+        const encontrados =
+            recursos.filter(
+                function(recurso) {
+
+                    const carpeta =
+                        recurso.asset_folder || "";
+
+                    return carpeta.startsWith(
+                        "NOVA_MOMENTS/EVT-0001/"
+                    );
+
+                }
+            );
+
+        /*
+        ============================================
+        DEVOLVER SOLO INFORMACIÓN NECESARIA
+        ============================================
+        */
+
+        const resultado =
+            encontrados.map(
+                function(recurso) {
+
+                    return {
+
+                        public_id:
+                            recurso.public_id,
+
+                        asset_folder:
+                            recurso.asset_folder,
+
+                        resource_type:
+                            recurso.resource_type,
+
+                        format:
+                            recurso.format
+
+                    };
+
+                }
+            );
+
         return new Response(
 
             JSON.stringify({
 
                 ok: true,
 
-                public_id:
-                    datos.public_id || null,
+                evento:
+                    "EVT-0001",
 
-                asset_folder:
-                    datos.asset_folder || null,
+                cantidad:
+                    resultado.length,
 
-                resource_type:
-                    datos.resource_type || null,
-
-                format:
-                    datos.format || null,
-
-                secure_url:
-                    datos.secure_url || null
+                recursos:
+                    resultado
 
             }),
 
@@ -96,6 +174,7 @@ export async function onRequestGet(context) {
                     "Cache-Control":
                         "no-store"
                 }
+
             }
 
         );
