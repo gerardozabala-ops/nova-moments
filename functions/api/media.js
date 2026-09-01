@@ -80,51 +80,37 @@ export async function onRequestGet(context) {
 
         /*
         ==================================================
-        FUNCIÓN PARA BUSCAR UNA CARPETA
+        FUNCIÓN PARA OBTENER RECURSOS
         ==================================================
         */
 
-        async function buscarCarpeta(
-            nombreCarpeta
+        async function obtenerRecursos(
+            resourceType,
+            prefix
         ) {
 
-            const folder =
-                `HOME/MOMENTOS NOVA/${eventoId}/${nombreCarpeta}`;
+            const endpoint =
+                `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/list`;
 
 
-            const response =
+            const respuesta =
                 await fetch(
-                    `https://api.cloudinary.com/v1_1/${cloudName}/resources/search`,
+                    `${endpoint}?prefix=${encodeURIComponent(prefix)}&max_results=500`,
                     {
-                        method: "POST",
+                        method: "GET",
 
                         headers: {
-
                             "Authorization":
-                                `Basic ${auth}`,
-
-                            "Content-Type":
-                                "application/json"
-
-                        },
-
-                        body: JSON.stringify({
-
-                            expression:
-                                `folder:"${folder}"`,
-
-                            max_results: 500
-
-                        })
-
+                                `Basic ${auth}`
+                        }
                     }
                 );
 
 
-            if (!response.ok) {
+            if (!respuesta.ok) {
 
                 const texto =
-                    await response.text();
+                    await respuesta.text();
 
                 console.error(
                     "Cloudinary:",
@@ -132,94 +118,57 @@ export async function onRequestGet(context) {
                 );
 
                 throw new Error(
-                    `Error consultando ${nombreCarpeta}`
+                    `Cloudinary error ${resourceType}`
                 );
 
             }
 
 
-            const data =
-                await response.json();
-
-
-            return data.resources || [];
+            return await respuesta.json();
 
         }
 
 
         /*
         ==================================================
-        BUSCAR PORTADA
+        RUTAS
         ==================================================
         */
 
-        const portadaRecursos =
-            await buscarCarpeta(
-                "PORTADA"
+        const base =
+            `HOME/MOMENTOS NOVA/${eventoId}`;
+
+
+        const portadaPrefix =
+            `${base}/PORTADA/`;
+
+
+        const fotosPrefix =
+            `${base}/FOTOS/`;
+
+
+        const videosPrefix =
+            `${base}/VIDEOS/`;
+
+
+        /*
+        ==================================================
+        OBTENER IMÁGENES
+        ==================================================
+        */
+
+        const imagenesPortada =
+            await obtenerRecursos(
+                "image",
+                portadaPrefix
             );
 
 
-        /*
-        ==================================================
-        BUSCAR FOTOS
-        ==================================================
-        */
-
-        const fotosRecursos =
-            await buscarCarpeta(
-                "FOTOS"
+        const imagenesFotos =
+            await obtenerRecursos(
+                "image",
+                fotosPrefix
             );
-
-
-        /*
-        ==================================================
-        BUSCAR VIDEOS
-        ==================================================
-        */
-
-        const videosRecursos =
-            await buscarCarpeta(
-                "VIDEOS"
-            );
-
-
-        /*
-        ==================================================
-        OBTENER PORTADA
-        ==================================================
-        */
-
-        let portada = null;
-
-
-        if (
-            portadaRecursos.length > 0
-        ) {
-
-            portada =
-                portadaRecursos[0]
-                    .secure_url;
-
-        }
-
-
-        /*
-        ==================================================
-        OBTENER FOTOS
-        ==================================================
-        */
-
-        const fotos =
-            fotosRecursos
-                .filter(
-                    recurso =>
-                        recurso.resource_type ===
-                        "image"
-                )
-                .map(
-                    recurso =>
-                        recurso.secure_url
-                );
 
 
         /*
@@ -228,16 +177,58 @@ export async function onRequestGet(context) {
         ==================================================
         */
 
-        const videos =
-            videosRecursos
-                .filter(
-                    recurso =>
-                        recurso.resource_type ===
-                        "video"
-                )
+        const videosCloudinary =
+            await obtenerRecursos(
+                "video",
+                videosPrefix
+            );
+
+
+        /*
+        ==================================================
+        PORTADA
+        ==================================================
+        */
+
+        let portada = null;
+
+
+        if (
+            imagenesPortada.resources &&
+            imagenesPortada.resources.length > 0
+        ) {
+
+            portada =
+                `https://res.cloudinary.com/${cloudName}/image/upload/${imagenesPortada.resources[0].public_id}`;
+
+        }
+
+
+        /*
+        ==================================================
+        FOTOS
+        ==================================================
+        */
+
+        const fotos =
+            (imagenesFotos.resources || [])
                 .map(
                     recurso =>
-                        recurso.secure_url
+                        `https://res.cloudinary.com/${cloudName}/image/upload/${recurso.public_id}`
+                );
+
+
+        /*
+        ==================================================
+        VIDEOS
+        ==================================================
+        */
+
+        const videos =
+            (videosCloudinary.resources || [])
+                .map(
+                    recurso =>
+                        `https://res.cloudinary.com/${cloudName}/video/upload/${recurso.public_id}`
                 );
 
 
@@ -283,6 +274,7 @@ export async function onRequestGet(context) {
                 ok: false,
 
                 error:
+                    error.message ||
                     "Error al consultar Cloudinary."
 
             }),
