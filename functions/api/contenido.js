@@ -11,8 +11,7 @@ export async function onRequestGet(context) {
         const apiSecret =
             context.env.CLOUDINARY_API_SECRET;
 
-        const folderId =
-            "d025466ca18937a7e1574c946615dfcf79";
+        const publicId = "DSC_2570";
 
         const credenciales =
             apiKey + ":" + apiSecret;
@@ -23,7 +22,8 @@ export async function onRequestGet(context) {
         const endpoint =
             "https://api.cloudinary.com/v1_1/" +
             cloudName +
-            "/asset_folders";
+            "/resources/image/upload/" +
+            encodeURIComponent(publicId);
 
         const respuesta =
             await fetch(
@@ -39,15 +39,19 @@ export async function onRequestGet(context) {
                 }
             );
 
+        const texto =
+            await respuesta.text();
+
         if (!respuesta.ok) {
 
             return new Response(
                 JSON.stringify({
                     ok: false,
-                    status: respuesta.status
+                    status: respuesta.status,
+                    respuesta: texto
                 }),
                 {
-                    status: 500,
+                    status: respuesta.status,
                     headers: {
                         "Content-Type":
                             "application/json"
@@ -57,42 +61,7 @@ export async function onRequestGet(context) {
         }
 
         const datos =
-            await respuesta.json();
-
-        const carpetas =
-            datos.folders || [];
-
-        const encontrada =
-            carpetas.find(
-                function(carpeta) {
-
-                    return (
-                        carpeta.external_id ===
-                        folderId ||
-                        carpeta.id ===
-                        folderId
-                    );
-
-                }
-            );
-
-        if (!encontrada) {
-
-            return new Response(
-                JSON.stringify({
-                    ok: false,
-                    mensaje:
-                        "No se encontró ese ID entre las Asset Folders devueltas."
-                }),
-                {
-                    status: 404,
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    }
-                }
-            );
-        }
+            JSON.parse(texto);
 
         return new Response(
 
@@ -100,14 +69,20 @@ export async function onRequestGet(context) {
 
                 ok: true,
 
-                nombre:
-                    encontrada.name || null,
+                public_id:
+                    datos.public_id || null,
 
-                ruta:
-                    encontrada.path || null,
+                asset_folder:
+                    datos.asset_folder || null,
 
-                parent_id:
-                    encontrada.parent_id || null
+                resource_type:
+                    datos.resource_type || null,
+
+                format:
+                    datos.format || null,
+
+                secure_url:
+                    datos.secure_url || null
 
             }),
 
@@ -116,7 +91,10 @@ export async function onRequestGet(context) {
 
                 headers: {
                     "Content-Type":
-                        "application/json"
+                        "application/json",
+
+                    "Cache-Control":
+                        "no-store"
                 }
             }
 
