@@ -2,28 +2,6 @@ export async function onRequestGet(context) {
 
     try {
 
-        const url = new URL(context.request.url);
-
-        const evento =
-            url.searchParams.get("evento");
-
-        if (!evento) {
-
-            return new Response(
-                JSON.stringify({
-                    ok: false,
-                    error: "Falta indicar el evento."
-                }),
-                {
-                    status: 400,
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    }
-                }
-            );
-        }
-
         const cloudName =
             context.env.CLOUDINARY_CLOUD_NAME;
 
@@ -33,21 +11,17 @@ export async function onRequestGet(context) {
         const apiSecret =
             context.env.CLOUDINARY_API_SECRET;
 
-        if (!cloudName ||
-            !apiKey ||
-            !apiSecret) {
+        if (!cloudName || !apiKey || !apiSecret) {
 
             return new Response(
                 JSON.stringify({
                     ok: false,
-                    error:
-                        "Faltan variables de Cloudinary."
+                    error: "Faltan variables de Cloudinary."
                 }),
                 {
                     status: 500,
                     headers: {
-                        "Content-Type":
-                            "application/json"
+                        "Content-Type": "application/json"
                     }
                 }
             );
@@ -55,7 +29,7 @@ export async function onRequestGet(context) {
 
         /*
         ============================================
-        AUTENTICACIÓN
+        AUTENTICACIÓN CLOUDINARY
         ============================================
         */
 
@@ -67,91 +41,86 @@ export async function onRequestGet(context) {
 
         /*
         ============================================
-        FUNCIÓN DE BÚSQUEDA
+        ASSET FOLDER A PROBAR
         ============================================
         */
 
-        async function buscar(expression) {
+        const assetFolder =
+            "HOGAR/NOVA_MOMENTS/EVT-0001/FOTOS";
 
-            const endpoint =
-                "https://api.cloudinary.com/v1_1/" +
-                cloudName +
-                "/resources/search";
+        /*
+        ============================================
+        CONSULTAR ASSET FOLDER
+        ============================================
+        */
 
-            const cuerpo =
-                new URLSearchParams();
+        const endpoint =
+            "https://api.cloudinary.com/v1_1/" +
+            cloudName +
+            "/resources/by_asset_folder";
 
-            cuerpo.append(
-                "expression",
-                expression
-            );
+        const parametros =
+            new URLSearchParams();
 
-            cuerpo.append(
-                "max_results",
-                "500"
-            );
+        parametros.append(
+            "asset_folder",
+            assetFolder
+        );
 
-            const respuesta =
-                await fetch(
-                    endpoint,
-                    {
-                        method: "POST",
+        parametros.append(
+            "max_results",
+            "500"
+        );
 
-                        headers: {
-                            "Authorization":
-                                "Basic " +
-                                autorizacion,
+        const respuesta =
+            await fetch(
+                endpoint +
+                "?" +
+                parametros.toString(),
+                {
+                    method: "GET",
 
-                            "Content-Type":
-                                "application/x-www-form-urlencoded"
-                        },
-
-                        body: cuerpo.toString()
+                    headers: {
+                        "Authorization":
+                            "Basic " +
+                            autorizacion
                     }
-                );
+                }
+            );
 
-            const texto =
-                await respuesta.text();
+        const texto =
+            await respuesta.text();
 
-            if (!respuesta.ok) {
+        if (!respuesta.ok) {
 
-                throw new Error(
-                    "Cloudinary respondió " +
-                    respuesta.status +
-                    ": " +
-                    texto
-                );
-            }
-
-            return JSON.parse(texto);
+            return new Response(
+                JSON.stringify({
+                    ok: false,
+                    status: respuesta.status,
+                    asset_folder: assetFolder,
+                    respuesta: texto
+                }),
+                {
+                    status: 500,
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
         }
 
-        /*
-        ============================================
-        BUSCAR TODO EL EVENTO
-        ============================================
-        */
-
-        const expresion =
-            "public_id:" +
-            "NOVA_MOMENTS/" +
-            evento +
-            "/*";
-
-        const resultado =
-            await buscar(expresion);
+        const datos =
+            JSON.parse(texto);
 
         /*
         ============================================
-        PREPARAR RESULTADOS
+        MOSTRAR RECURSOS ENCONTRADOS
         ============================================
         */
 
         const recursos =
-            resultado.resources || [];
-
-        const informacion =
-            recursos.map(
+            (datos.resources || []).map(
                 function(recurso) {
 
                     return {
@@ -170,6 +139,9 @@ export async function onRequestGet(context) {
 
                         format:
                             recurso.format || null,
+
+                        asset_folder:
+                            recurso.asset_folder || null,
 
                         secure_url:
                             recurso.secure_url || null
@@ -191,16 +163,17 @@ export async function onRequestGet(context) {
 
                 ok: true,
 
-                evento: evento,
-
-                expresion:
-                    expresion,
+                asset_folder:
+                    assetFolder,
 
                 cantidad:
-                    informacion.length,
+                    recursos.length,
 
                 recursos:
-                    informacion
+                    recursos,
+
+                next_cursor:
+                    datos.next_cursor || null
 
             }),
 
@@ -227,9 +200,6 @@ export async function onRequestGet(context) {
                 ok: false,
 
                 error:
-                    "Error al consultar Cloudinary.",
-
-                detalle:
                     error.message
 
             }),
