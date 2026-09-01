@@ -4,33 +4,21 @@ export async function onRequestGet(context) {
 
         const url = new URL(context.request.url);
 
-        const eventoId =
-            url.searchParams.get("evento");
-
+        const eventoId = url.searchParams.get("evento");
 
         if (!eventoId) {
 
-            return new Response(
-                JSON.stringify({
-                    ok: false,
-                    error: "No se indicó el evento."
-                }),
-                {
-                    status: 400,
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
+            return respuesta({
+                ok: false,
+                error: "No se indicó el evento."
+            }, 400);
 
         }
 
 
-        /*
-        ==================================================
-        CREDENCIALES CLOUDINARY
-        ==================================================
-        */
+        // =========================================
+        // CREDENCIALES
+        // =========================================
 
         const cloudName =
             context.env.CLOUDINARY_CLOUD_NAME;
@@ -42,60 +30,61 @@ export async function onRequestGet(context) {
             context.env.CLOUDINARY_API_SECRET;
 
 
-        if (
-            !cloudName ||
-            !apiKey ||
-            !apiSecret
-        ) {
+        if (!cloudName || !apiKey || !apiSecret) {
 
-            return new Response(
-                JSON.stringify({
-                    ok: false,
-                    error:
-                        "Faltan las credenciales de Cloudinary."
-                }),
-                {
-                    status: 500,
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    }
-                }
-            );
+            return respuesta({
+                ok: false,
+                error: "Faltan las credenciales de Cloudinary."
+            }, 500);
 
         }
 
 
-        /*
-        ==================================================
-        AUTENTICACIÓN
-        ==================================================
-        */
+        // =========================================
+        // AUTENTICACIÓN
+        // =========================================
 
         const auth =
-            btoa(
-                `${apiKey}:${apiSecret}`
-            );
+            btoa(`${apiKey}:${apiSecret}`);
 
 
-        /*
-        ==================================================
-        FUNCIÓN PARA OBTENER RECURSOS
-        ==================================================
-        */
+        // =========================================
+        // CARPETAS
+        // =========================================
 
-        async function obtenerRecursos(
+        const base =
+            `HOME/MOMENTOS NOVA/${eventoId}`;
+
+
+        // =========================================
+        // FUNCIÓN PARA LISTAR RECURSOS
+        // =========================================
+
+        async function listar(
             resourceType,
             prefix
         ) {
 
             const endpoint =
-                `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/list`;
+                `https://api.cloudinary.com/v1_1/${cloudName}/resources/${resourceType}/upload`;
+
+            const parametros =
+                new URLSearchParams();
+
+            parametros.set(
+                "prefix",
+                prefix
+            );
+
+            parametros.set(
+                "max_results",
+                "500"
+            );
 
 
-            const respuesta =
+            const response =
                 await fetch(
-                    `${endpoint}?prefix=${encodeURIComponent(prefix)}&max_results=500`,
+                    `${endpoint}?${parametros.toString()}`,
                     {
                         method: "GET",
 
@@ -107,187 +96,162 @@ export async function onRequestGet(context) {
                 );
 
 
-            if (!respuesta.ok) {
+            if (!response.ok) {
 
                 const texto =
-                    await respuesta.text();
+                    await response.text();
 
                 console.error(
-                    "Cloudinary:",
+                    "Cloudinary error:",
                     texto
                 );
 
                 throw new Error(
-                    `Cloudinary error ${resourceType}`
+                    `Cloudinary respondió ${response.status}`
                 );
 
             }
 
 
-            return await respuesta.json();
+            return await response.json();
 
         }
 
 
-        /*
-        ==================================================
-        RUTAS
-        ==================================================
-        */
+        // =========================================
+        // PORTADA
+        // =========================================
 
-        const base =
-            `HOME/MOMENTOS NOVA/${eventoId}`;
-
-
-        const portadaPrefix =
-            `${base}/PORTADA/`;
-
-
-        const fotosPrefix =
-            `${base}/FOTOS/`;
-
-
-        const videosPrefix =
-            `${base}/VIDEOS/`;
-
-
-        /*
-        ==================================================
-        OBTENER IMÁGENES
-        ==================================================
-        */
-
-        const imagenesPortada =
-            await obtenerRecursos(
+        const portadaData =
+            await listar(
                 "image",
-                portadaPrefix
+                `${base}/PORTADA/`
             );
 
 
-        const imagenesFotos =
-            await obtenerRecursos(
+        // =========================================
+        // FOTOS
+        // =========================================
+
+        const fotosData =
+            await listar(
                 "image",
-                fotosPrefix
+                `${base}/FOTOS/`
             );
 
 
-        /*
-        ==================================================
-        OBTENER VIDEOS
-        ==================================================
-        */
+        // =========================================
+        // VIDEOS
+        // =========================================
 
-        const videosCloudinary =
-            await obtenerRecursos(
+        const videosData =
+            await listar(
                 "video",
-                videosPrefix
+                `${base}/VIDEOS/`
             );
 
 
-        /*
-        ==================================================
-        PORTADA
-        ==================================================
-        */
+        // =========================================
+        // PORTADA
+        // =========================================
 
         let portada = null;
 
 
         if (
-            imagenesPortada.resources &&
-            imagenesPortada.resources.length > 0
+            portadaData.resources &&
+            portadaData.resources.length > 0
         ) {
 
+            const recurso =
+                portadaData.resources[0];
+
             portada =
-                `https://res.cloudinary.com/${cloudName}/image/upload/${imagenesPortada.resources[0].public_id}`;
+                `https://res.cloudinary.com/${cloudName}/image/upload/${recurso.public_id}`;
 
         }
 
 
-        /*
-        ==================================================
-        FOTOS
-        ==================================================
-        */
+        // =========================================
+        // FOTOS
+        // =========================================
 
         const fotos =
-            (imagenesFotos.resources || [])
+            (fotosData.resources || [])
                 .map(
                     recurso =>
                         `https://res.cloudinary.com/${cloudName}/image/upload/${recurso.public_id}`
                 );
 
 
-        /*
-        ==================================================
-        VIDEOS
-        ==================================================
-        */
+        // =========================================
+        // VIDEOS
+        // =========================================
 
         const videos =
-            (videosCloudinary.resources || [])
+            (videosData.resources || [])
                 .map(
                     recurso =>
                         `https://res.cloudinary.com/${cloudName}/video/upload/${recurso.public_id}`
                 );
 
 
-        /*
-        ==================================================
-        RESPUESTA
-        ==================================================
-        */
+        // =========================================
+        // RESPUESTA
+        // =========================================
 
-        return new Response(
-            JSON.stringify({
+        return respuesta({
 
-                ok: true,
+            ok: true,
 
-                evento: eventoId,
+            evento: eventoId,
 
-                portada: portada,
+            portada: portada,
 
-                fotos: fotos,
+            fotos: fotos,
 
-                videos: videos
+            videos: videos
 
-            }),
-            {
-                status: 200,
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                }
-            }
-        );
+        });
 
 
     } catch (error) {
 
         console.error(error);
 
+        return respuesta({
 
-        return new Response(
-            JSON.stringify({
+            ok: false,
 
-                ok: false,
+            error: error.message ||
+                "Error al consultar Cloudinary."
 
-                error:
-                    error.message ||
-                    "Error al consultar Cloudinary."
-
-            }),
-            {
-                status: 500,
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                }
-            }
-        );
+        }, 500);
 
     }
+
+}
+
+
+// =========================================
+// RESPUESTA JSON
+// =========================================
+
+function respuesta(
+    datos,
+    status = 200
+) {
+
+    return new Response(
+        JSON.stringify(datos),
+        {
+            status: status,
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            }
+        }
+    );
 
 }
