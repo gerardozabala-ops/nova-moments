@@ -11,40 +11,11 @@ export async function onRequestGet(context) {
         const apiSecret =
             context.env.CLOUDINARY_API_SECRET;
 
-        if (!cloudName || !apiKey || !apiSecret) {
-
-            return new Response(
-                JSON.stringify({
-                    ok: false,
-                    error: "Faltan variables de Cloudinary."
-                }),
-                {
-                    status: 500,
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    }
-                }
-            );
-        }
-
-        /*
-        ============================================
-        AUTENTICACIÓN
-        ============================================
-        */
-
         const credenciales =
             apiKey + ":" + apiSecret;
 
         const autorizacion =
             btoa(credenciales);
-
-        /*
-        ============================================
-        LISTAR ASSET FOLDERS
-        ============================================
-        */
 
         const endpoint =
             "https://api.cloudinary.com/v1_1/" +
@@ -71,13 +42,9 @@ export async function onRequestGet(context) {
         if (!respuesta.ok) {
 
             return new Response(
-                JSON.stringify({
-                    ok: false,
-                    status: respuesta.status,
-                    respuesta: texto
-                }),
+                texto,
                 {
-                    status: 500,
+                    status: respuesta.status,
                     headers: {
                         "Content-Type":
                             "application/json"
@@ -89,11 +56,28 @@ export async function onRequestGet(context) {
         const datos =
             JSON.parse(texto);
 
+        const carpetas =
+            datos.folders || [];
+
         /*
         ============================================
-        RESPUESTA DE DIAGNÓSTICO
+        BUSCAR SOLAMENTE CARPETAS NOVA_MOMENTS
         ============================================
         */
+
+        const nova =
+            carpetas.filter(
+                function(carpeta) {
+
+                    const nombre =
+                        carpeta.name || "";
+
+                    return nombre
+                        .toUpperCase()
+                        .includes("NOVA");
+
+                }
+            );
 
         return new Response(
 
@@ -101,14 +85,11 @@ export async function onRequestGet(context) {
 
                 ok: true,
 
-                mensaje:
-                    "Asset Folders reconocidas por Cloudinary",
+                cantidad:
+                    nova.length,
 
                 carpetas:
-                    datos.folders || [],
-
-                next_cursor:
-                    datos.next_cursor || null
+                    nova
 
             }),
 
