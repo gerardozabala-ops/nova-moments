@@ -1,5 +1,5 @@
-```html
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
@@ -7,12 +7,12 @@
 <meta charset="UTF-8">
 
 <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+
 >
 
 <title>Acceso | NOVA MOMENTS</title>
-
 
 <link
     rel="preconnect"
@@ -30,19 +30,13 @@ href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&famil
 rel="stylesheet"
 >
 
-
 <style>
 
 * {
-
     box-sizing: border-box;
-
     margin: 0;
-
     padding: 0;
-
 }
-
 
 body {
 
@@ -67,7 +61,6 @@ body {
 
 }
 
-
 .access-container {
 
     width: 100%;
@@ -76,7 +69,6 @@ body {
 
 }
 
-
 .brand {
 
     text-align: center;
@@ -84,7 +76,6 @@ body {
     margin-bottom: 35px;
 
 }
-
 
 .brand-nova {
 
@@ -101,7 +92,6 @@ body {
     letter-spacing: 8px;
 
 }
-
 
 .brand-moments {
 
@@ -121,7 +111,6 @@ body {
 
 }
 
-
 .access-box {
 
     background: #1b1b1b;
@@ -139,7 +128,6 @@ body {
 
 }
 
-
 .access-title {
 
     text-align: center;
@@ -156,7 +144,6 @@ body {
 
 }
 
-
 .access-subtitle {
 
     text-align: center;
@@ -171,13 +158,11 @@ body {
 
 }
 
-
 .field {
 
     margin-bottom: 18px;
 
 }
-
 
 .field label {
 
@@ -194,7 +179,6 @@ body {
     text-transform: uppercase;
 
 }
-
 
 .field input {
 
@@ -219,13 +203,11 @@ body {
 
 }
 
-
 .field input:focus {
 
     border-color: #888888;
 
 }
-
 
 .login-button {
 
@@ -253,13 +235,11 @@ body {
 
 }
 
-
 .login-button:hover {
 
     background: #dddddd;
 
 }
-
 
 .error {
 
@@ -286,7 +266,6 @@ body {
 
 }
 
-
 .demo-info {
 
     margin-top: 25px;
@@ -306,13 +285,11 @@ body {
 
 }
 
-
 .demo-info strong {
 
     color: #aaaaaa;
 
 }
-
 
 .back-link {
 
@@ -330,13 +307,11 @@ body {
 
 }
 
-
 .back-link:hover {
 
     color: #ffffff;
 
 }
-
 
 @media (max-width:480px) {
 
@@ -359,12 +334,9 @@ body {
 
 </head>
 
-
 <body>
 
-
 <div class="access-container">
-
 
 <div class="brand">
 
@@ -378,15 +350,11 @@ MOMENTS
 
 </div>
 
-
-
 <div class="access-box">
-
 
 <h1 class="access-title">
 Tu experiencia
 </h1>
-
 
 <p class="access-subtitle">
 
@@ -395,10 +363,7 @@ para acceder a tus fotos y videos.
 
 </p>
 
-
-
 <form id="accessForm">
-
 
 <div class="field">
 
@@ -407,16 +372,15 @@ Usuario
 </label>
 
 <input
-    type="text"
-    id="usuario"
-    autocomplete="username"
-    placeholder="Ingresá tu usuario"
-    required
+type="text"
+id="usuario"
+autocomplete="username"
+placeholder="Ingresá tu usuario"
+required
+
 >
 
 </div>
-
-
 
 <div class="field">
 
@@ -425,36 +389,32 @@ Contraseña
 </label>
 
 <input
-    type="password"
-    id="password"
-    autocomplete="current-password"
-    placeholder="Ingresá tu contraseña"
-    required
+type="password"
+id="password"
+autocomplete="current-password"
+placeholder="Ingresá tu contraseña"
+required
+
 >
 
 </div>
 
-
-
 <button
-    type="submit"
-    class="login-button"
+type="submit"
+class="login-button"
+
 >
 
 INGRESAR
 
 </button>
 
-
 <div
     id="error"
     class="error"
 ></div>
 
-
 </form>
-
-
 
 <div class="demo-info">
 
@@ -478,59 +438,36 @@ Contraseña: 4721
 
 </div>
 
-
 </div>
 
-
-
 <a
-    href="index.html"
-    class="back-link"
+href="index.html"
+class="back-link"
+
 >
 
 ← VOLVER A NOVA MOMENTS
 
 </a>
 
-
 </div>
 
-
-
-<!-- =========================================
-     CARGAR BASE DE DATOS
-========================================= -->
-
-<script src="js/clientes.js?v=3"></script>
-
-
-
 <script>
-
-/*
-====================================================
-SISTEMA DE ACCESO
-====================================================
-*/
-
 
 const formulario =
     document.getElementById(
         "accessForm"
     );
 
-
 const usuarioInput =
     document.getElementById(
         "usuario"
     );
 
-
 const passwordInput =
     document.getElementById(
         "password"
     );
-
 
 const error =
     document.getElementById(
@@ -538,156 +475,92 @@ const error =
     );
 
 
-
 formulario.addEventListener(
     "submit",
-    function(e) {
+    async function(e) {
 
         e.preventDefault();
-
 
         const usuario =
             usuarioInput.value
             .trim()
             .toLowerCase();
 
-
         const password =
             passwordInput.value
             .trim();
 
+        error.style.display =
+            "none";
 
 
-        /*
-        ============================================
-        VERIFICAR BASE DE DATOS
-        ============================================
-        */
+        try {
 
-        if (
-            typeof USUARIOS ===
-            "undefined"
-        ) {
+            const respuesta =
+                await fetch(
+                    "/api/login",
+                    {
+                        method: "POST",
 
-            mostrarError(
-                "No se pudo cargar clientes.js."
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                usuario:
+                                    usuario,
+
+                                password:
+                                    password
+                            })
+                    }
+                );
+
+
+            const datos =
+                await respuesta.json();
+
+
+            if (!datos.ok) {
+
+                mostrarError(
+                    datos.error ||
+                    "Usuario o contraseña incorrectos."
+                );
+
+                return;
+
+            }
+
+
+            sessionStorage.setItem(
+                "nova_usuario",
+                usuario
             );
 
-            return;
 
-        }
-
-
-
-        if (
-            typeof EVENTOS ===
-            "undefined"
-        ) {
-
-            mostrarError(
-                "No se pudo cargar la base de eventos."
+            sessionStorage.setItem(
+                "nova_evento",
+                datos.evento
             );
 
-            return;
 
-        }
-
-
-
-        /*
-        ============================================
-        BUSCAR USUARIO
-        ============================================
-        */
-
-        const datos =
-            USUARIOS[usuario];
+            window.location.href =
+                "experiencia.html";
 
 
-
-        if (!datos) {
+        } catch (error) {
 
             mostrarError(
-                "Usuario o contraseña incorrectos."
+                "No se pudo conectar con el servidor."
             );
 
-            return;
-
         }
-
-
-
-        /*
-        ============================================
-        COMPROBAR CONTRASEÑA
-        ============================================
-        */
-
-        if (
-            datos.password !== password
-        ) {
-
-            mostrarError(
-                "Usuario o contraseña incorrectos."
-            );
-
-            return;
-
-        }
-
-
-
-        /*
-        ============================================
-        COMPROBAR EVENTO
-        ============================================
-        */
-
-        if (
-            !EVENTOS[datos.evento]
-        ) {
-
-            mostrarError(
-                "La experiencia asociada a este usuario no existe."
-            );
-
-            return;
-
-        }
-
-
-
-        /*
-        ============================================
-        GUARDAR SESIÓN
-        ============================================
-        */
-
-        sessionStorage.setItem(
-            "nova_usuario",
-            usuario
-        );
-
-
-        sessionStorage.setItem(
-            "nova_evento",
-            datos.evento
-        );
-
-
-
-        /*
-        ============================================
-        ENTRAR
-        ============================================
-        */
-
-        window.location.href =
-            "experiencia.html";
 
     }
 );
-
 
 
 function mostrarError(mensaje) {
@@ -702,8 +575,6 @@ function mostrarError(mensaje) {
 
 </script>
 
-
 </body>
 
 </html>
-```
