@@ -1,123 +1,93 @@
 export async function onRequestGet(context) {
 
-    const cloudName =
-        context.env.CLOUDINARY_CLOUD_NAME;
-
-    const apiKey =
-        context.env.CLOUDINARY_API_KEY;
-
-    const apiSecret =
-        context.env.CLOUDINARY_API_SECRET;
+    const cloudName = context.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = context.env.CLOUDINARY_API_KEY;
+    const apiSecret = context.env.CLOUDINARY_API_SECRET;
 
     const url = new URL(context.request.url);
+    const evento = url.searchParams.get("evento");
 
-    const evento =
-        url.searchParams.get("evento");
-
-    if (!evento) {
+    if (!cloudName || !apiKey || !apiSecret) {
         return new Response(
             JSON.stringify({
                 ok: false,
-                error: "Falta el evento"
+                error: "Faltan variables de Cloudinary."
             }),
             {
-                status: 400,
+                status: 500,
                 headers: {
-                    "Content-Type":
-                        "application/json"
+                    "Content-Type": "application/json"
                 }
             }
         );
     }
 
-    const auth =
-        btoa(`${apiKey}:${apiSecret}`);
-
-    async function obtenerCarpeta(carpeta) {
-
-        const endpoint =
-            `https://api.cloudinary.com/v1_1/${cloudName}/resources/by_asset_folder`;
-
-        const params =
-            new URLSearchParams();
-
-        params.set(
-            "asset_folder",
-            carpeta
-        );
-
-        params.set(
-            "max_results",
-            "100"
-        );
-
-        const response =
-            await fetch(
-                `${endpoint}?${params.toString()}`,
-                {
-                    method: "GET",
-
-                    headers: {
-                        "Authorization":
-                            `Basic ${auth}`
-                    }
+    if (!evento) {
+        return new Response(
+            JSON.stringify({
+                ok: false,
+                error: "Falta indicar el evento."
+            }),
+            {
+                status: 400,
+                headers: {
+                    "Content-Type": "application/json"
                 }
-            );
-
-        if (!response.ok) {
-            throw new Error(
-                `Cloudinary error ${response.status}`
-            );
-        }
-
-        return await response.json();
+            }
+        );
     }
 
     try {
 
-        const base =
-            `HOME/MOMENTOS NOVA/${evento}`;
+        const auth = btoa(`${apiKey}:${apiSecret}`);
 
-        const portada =
-            await obtenerCarpeta(
-                `${base}/PORTADA`
-            );
+        const imagenes = await obtenerRecursos(
+            cloudName,
+            auth,
+            "image"
+        );
 
-        const fotos =
-            await obtenerCarpeta(
-                `${base}/FOTOS`
-            );
+        const videos = await obtenerRecursos(
+            cloudName,
+            auth,
+            "video"
+        );
 
-        const videos =
-            await obtenerCarpeta(
-                `${base}/VIDEOS`
-            );
+        const prefijo = `HOME/MOMENTOS NOVA/${evento}/`;
 
-        const resultado = {
+        const recursosImagen = imagenes.filter(recurso =>
+            (recurso.asset_folder || "").startsWith(prefijo)
+        );
 
-            ok: true,
+        const recursosVideo = videos.filter(recurso =>
+            (recurso.asset_folder || "").startsWith(prefijo)
+        );
 
-            evento: evento,
+        const portada = recursosImagen.filter(recurso =>
+            (recurso.asset_folder || "").endsWith("/PORTADA")
+        );
 
-            portada:
-                portada.resources || [],
+        const fotos = recursosImagen.filter(recurso =>
+            (recurso.asset_folder || "").endsWith("/FOTOS")
+        );
 
-            fotos:
-                fotos.resources || [],
-
-            videos:
-                videos.resources || []
-
-        };
+        const listaVideos = recursosVideo.filter(recurso =>
+            (recurso.asset_folder || "").endsWith("/VIDEOS")
+        );
 
         return new Response(
-            JSON.stringify(resultado),
+            JSON.stringify({
+                ok: true,
+                evento: evento,
+                portada: convertirRecursos(portada),
+                fotos: convertirRecursos(fotos),
+                videos: convertirRecursos(listaVideos)
+            }),
             {
                 status: 200,
-
                 headers: {
-                    "Content-Type":
-                        "application/json"
+                    "Content-Type": "application/json",
+                    "Cache-Control": "no-store"
                 }
             }
         );
@@ -131,12 +101,52 @@ export async function onRequestGet(context) {
             }),
             {
                 status: 500,
-
                 headers: {
-                    "Content-Type":
-                        "application/json"
+                    "Content-Type": "application/json"
                 }
             }
         );
     }
+}
+
+
+async function obtenerRecursos(cloudName, auth, tipo) {
+
+    const endpoint =
+        `https://api.cloudinary.com/v1_1/${cloudName}/resources/${tipo}/upload`;
+
+    const response = await fetch(
+        `${endpoint}?max_results=500`,
+        {
+            method: "GET",
+            headers: {
+                "Authorization": `Basic ${auth}`
+            }
+        }
+    );
+
+    const texto = await response.text();
+
+    if (!response.ok) {
+        throw new Error(
+            `Cloudinary rechazó la consulta de ${tipo}: ${texto}`
+        );
+    }
+
+    const datos = JSON.parse(texto);
+
+    return datos.resources || [];
+}
+
+
+function convertirRecursos(recursos) {
+
+    return recursos.map(recurso => ({
+        public_id: recurso.public_id,
+        asset_folder: recurso.asset_folder,
+        resource_type: recurso.resource_type,
+        format: recurso.format,
+        secure_url: recurso.secure_url
+    }));
+
 }
