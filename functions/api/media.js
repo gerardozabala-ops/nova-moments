@@ -9,41 +9,134 @@ export async function onRequestGet(context) {
     const apiSecret =
         context.env.CLOUDINARY_API_SECRET;
 
+    const url = new URL(context.request.url);
+
+    const evento =
+        url.searchParams.get("evento");
+
+    if (!evento) {
+        return new Response(
+            JSON.stringify({
+                ok: false,
+                error: "Falta el evento"
+            }),
+            {
+                status: 400,
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                }
+            }
+        );
+    }
+
     const auth =
         btoa(`${apiKey}:${apiSecret}`);
 
-    const endpoint =
-        `https://api.cloudinary.com/v1_1/${cloudName}/resources/image/upload`;
+    async function obtenerCarpeta(carpeta) {
 
-    const url =
-        `${endpoint}?max_results=100`;
+        const endpoint =
+            `https://api.cloudinary.com/v1_1/${cloudName}/resources/by_asset_folder`;
 
-    const response =
-        await fetch(
-            url,
+        const params =
+            new URLSearchParams();
+
+        params.set(
+            "asset_folder",
+            carpeta
+        );
+
+        params.set(
+            "max_results",
+            "100"
+        );
+
+        const response =
+            await fetch(
+                `${endpoint}?${params.toString()}`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            `Basic ${auth}`
+                    }
+                }
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                `Cloudinary error ${response.status}`
+            );
+        }
+
+        return await response.json();
+    }
+
+    try {
+
+        const base =
+            `HOME/MOMENTOS NOVA/${evento}`;
+
+        const portada =
+            await obtenerCarpeta(
+                `${base}/PORTADA`
+            );
+
+        const fotos =
+            await obtenerCarpeta(
+                `${base}/FOTOS`
+            );
+
+        const videos =
+            await obtenerCarpeta(
+                `${base}/VIDEOS`
+            );
+
+        const resultado = {
+
+            ok: true,
+
+            evento: evento,
+
+            portada:
+                portada.resources || [],
+
+            fotos:
+                fotos.resources || [],
+
+            videos:
+                videos.resources || []
+
+        };
+
+        return new Response(
+            JSON.stringify(resultado),
             {
-                method: "GET",
+                status: 200,
 
                 headers: {
-                    "Authorization":
-                        `Basic ${auth}`
+                    "Content-Type":
+                        "application/json"
                 }
             }
         );
 
-    const texto =
-        await response.text();
+    } catch (error) {
 
-    return new Response(
-        texto,
-        {
-            status: response.status,
+        return new Response(
+            JSON.stringify({
+                ok: false,
+                error: error.message
+            }),
+            {
+                status: 500,
 
-            headers: {
-                "Content-Type":
-                    "application/json"
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                }
             }
-        }
-    );
-
+        );
+    }
 }
