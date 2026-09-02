@@ -1,28 +1,22 @@
 export async function onRequestGet(context) {
 
-    const cloudName = context.env.CLOUDINARY_CLOUD_NAME;
-    const apiKey = context.env.CLOUDINARY_API_KEY;
-    const apiSecret = context.env.CLOUDINARY_API_SECRET;
+    const cloudName =
+        context.env.CLOUDINARY_CLOUD_NAME;
 
-    const url = new URL(context.request.url);
-    const evento = url.searchParams.get("evento");
+    const apiKey =
+        context.env.CLOUDINARY_API_KEY;
 
-    if (!cloudName || !apiKey || !apiSecret) {
-        return new Response(
-            JSON.stringify({
-                ok: false,
-                error: "Faltan variables de Cloudinary."
-            }),
-            {
-                status: 500,
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
-        );
-    }
+    const apiSecret =
+        context.env.CLOUDINARY_API_SECRET;
+
+    const url =
+        new URL(context.request.url);
+
+    const evento =
+        url.searchParams.get("evento");
 
     if (!evento) {
+
         return new Response(
             JSON.stringify({
                 ok: false,
@@ -31,7 +25,8 @@ export async function onRequestGet(context) {
             {
                 status: 400,
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type":
+                        "application/json"
                 }
             }
         );
@@ -39,55 +34,56 @@ export async function onRequestGet(context) {
 
     try {
 
-        const auth = btoa(`${apiKey}:${apiSecret}`);
+        const auth =
+            btoa(`${apiKey}:${apiSecret}`);
 
-        const imagenes = await obtenerRecursos(
-            cloudName,
-            auth,
-            "image"
-        );
+        const base =
+            `HOME/MOMENTOS NOVA/${evento}`;
 
-        const videos = await obtenerRecursos(
-            cloudName,
-            auth,
-            "video"
-        );
+        const portada =
+            await buscarRecursos(
+                cloudName,
+                auth,
+                `${base}/PORTADA`
+            );
 
-        const prefijo = `HOME/MOMENTOS NOVA/${evento}/`;
+        const fotos =
+            await buscarRecursos(
+                cloudName,
+                auth,
+                `${base}/FOTOS`
+            );
 
-        const recursosImagen = imagenes.filter(recurso =>
-            (recurso.asset_folder || "").startsWith(prefijo)
-        );
-
-        const recursosVideo = videos.filter(recurso =>
-            (recurso.asset_folder || "").startsWith(prefijo)
-        );
-
-        const portada = recursosImagen.filter(recurso =>
-            (recurso.asset_folder || "").endsWith("/PORTADA")
-        );
-
-        const fotos = recursosImagen.filter(recurso =>
-            (recurso.asset_folder || "").endsWith("/FOTOS")
-        );
-
-        const listaVideos = recursosVideo.filter(recurso =>
-            (recurso.asset_folder || "").endsWith("/VIDEOS")
-        );
+        const videos =
+            await buscarRecursos(
+                cloudName,
+                auth,
+                `${base}/VIDEOS`
+            );
 
         return new Response(
             JSON.stringify({
+
                 ok: true,
+
                 evento: evento,
-                portada: convertirRecursos(portada),
-                fotos: convertirRecursos(fotos),
-                videos: convertirRecursos(listaVideos)
+
+                portada: portada,
+
+                fotos: fotos,
+
+                videos: videos
+
             }),
             {
                 status: 200,
+
                 headers: {
-                    "Content-Type": "application/json",
-                    "Cache-Control": "no-store"
+                    "Content-Type":
+                        "application/json",
+
+                    "Cache-Control":
+                        "no-store"
                 }
             }
         );
@@ -96,13 +92,18 @@ export async function onRequestGet(context) {
 
         return new Response(
             JSON.stringify({
+
                 ok: false,
+
                 error: error.message
+
             }),
             {
                 status: 500,
+
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type":
+                        "application/json"
                 }
             }
         );
@@ -110,43 +111,56 @@ export async function onRequestGet(context) {
 }
 
 
-async function obtenerRecursos(cloudName, auth, tipo) {
+async function buscarRecursos(
+    cloudName,
+    auth,
+    carpeta
+) {
 
     const endpoint =
-        `https://api.cloudinary.com/v1_1/${cloudName}/resources/${tipo}/upload`;
+        `https://api.cloudinary.com/v1_1/${cloudName}/resources/search`;
 
-    const response = await fetch(
-        `${endpoint}?max_results=500`,
-        {
-            method: "GET",
-            headers: {
-                "Authorization": `Basic ${auth}`
+    const expression =
+        `asset_folder="${carpeta}"`;
+
+    const response =
+        await fetch(
+            endpoint,
+            {
+                method: "POST",
+
+                headers: {
+                    "Authorization":
+                        `Basic ${auth}`,
+
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    expression:
+                        expression,
+
+                    max_results:
+                        100
+
+                })
             }
-        }
-    );
+        );
 
-    const texto = await response.text();
+    const texto =
+        await response.text();
 
     if (!response.ok) {
+
         throw new Error(
-            `Cloudinary rechazó la consulta de ${tipo}: ${texto}`
+            `Cloudinary error ${response.status}: ${texto}`
         );
     }
 
-    const datos = JSON.parse(texto);
+    const datos =
+        JSON.parse(texto);
 
     return datos.resources || [];
-}
-
-
-function convertirRecursos(recursos) {
-
-    return recursos.map(recurso => ({
-        public_id: recurso.public_id,
-        asset_folder: recurso.asset_folder,
-        resource_type: recurso.resource_type,
-        format: recurso.format,
-        secure_url: recurso.secure_url
-    }));
-
 }
