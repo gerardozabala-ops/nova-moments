@@ -700,17 +700,6 @@ footer {
 </div>
 
 
-<!--
-====================================================
-CLIENTES.JS
-SE MANTIENE TEMPORALMENTE COMO RESPALDO
-PARA LAS FOTOS Y VIDEOS ACTUALES.
-====================================================
--->
-
-<script src="js/clientes.js?v=5"></script>
-
-
 <script>
 
 (async function () {
@@ -804,20 +793,39 @@ PARA LAS FOTOS Y VIDEOS ACTUALES.
 
 
     /* ==================================================
-       DATOS MULTIMEDIA TEMPORALES
-       DESDE CLIENTES.JS
+       CONSULTAR MULTIMEDIA
+       DESDE CLOUDINARY
     ================================================== */
 
-    const eventoLocal =
-        typeof EVENTOS !== "undefined"
-            ? EVENTOS[eventoId]
-            : null;
+    let datosMedia;
+
+    try {
+
+        const respuestaMedia =
+            await fetch(
+                "/api/media?evento=" +
+                encodeURIComponent(eventoId)
+            );
+
+        datosMedia =
+            await respuestaMedia.json();
 
 
-    if (!eventoLocal) {
+        if (!datosMedia.ok) {
+
+            mostrarError(
+                datosMedia.error ||
+                "No se pudo cargar el contenido multimedia."
+            );
+
+            return;
+
+        }
+
+    } catch (error) {
 
         mostrarError(
-            "No se encontró el contenido multimedia del evento."
+            "No se pudo conectar con el contenido multimedia."
         );
 
         return;
@@ -829,12 +837,22 @@ PARA LAS FOTOS Y VIDEOS ACTUALES.
        PORTADA
     ================================================== */
 
-    if (eventoLocal.portada) {
+    if (
+        Array.isArray(datosMedia.portada) &&
+        datosMedia.portada.length > 0
+    ) {
 
-        document.getElementById(
-            "hero"
-        ).style.backgroundImage =
-            `url("${eventoLocal.portada}")`;
+        const portada =
+            datosMedia.portada[0];
+
+        if (portada.secure_url) {
+
+            document.getElementById(
+                "hero"
+            ).style.backgroundImage =
+                `url("${portada.secure_url}")`;
+
+        }
 
     }
 
@@ -850,14 +868,14 @@ PARA LAS FOTOS Y VIDEOS ACTUALES.
 
 
     if (
-        Array.isArray(eventoLocal.fotos) &&
-        eventoLocal.fotos.length > 0
+        Array.isArray(datosMedia.fotos) &&
+        datosMedia.fotos.length > 0
     ) {
 
-        eventoLocal.fotos.forEach(
-            function (url) {
+        datosMedia.fotos.forEach(
+            function (foto) {
 
-                if (!url) {
+                if (!foto.secure_url) {
                     return;
                 }
 
@@ -879,7 +897,7 @@ PARA LAS FOTOS Y VIDEOS ACTUALES.
 
 
                 image.src =
-                    url;
+                    foto.secure_url;
 
                 image.alt =
                     "Fotografía del evento";
@@ -898,7 +916,7 @@ PARA LAS FOTOS Y VIDEOS ACTUALES.
                     function () {
 
                         abrirLightbox(
-                            url
+                            foto.secure_url
                         );
 
                     }
@@ -935,43 +953,14 @@ PARA LAS FOTOS Y VIDEOS ACTUALES.
 
 
     if (
-        Array.isArray(eventoLocal.videos) &&
-        eventoLocal.videos.length > 0
+        Array.isArray(datosMedia.videos) &&
+        datosMedia.videos.length > 0
     ) {
 
-        eventoLocal.videos.forEach(
+        datosMedia.videos.forEach(
             function (video) {
 
-                let videoUrl = "";
-                let thumbnail = "";
-
-
-                if (
-                    typeof video ===
-                    "string"
-                ) {
-
-                    videoUrl =
-                        video;
-
-                }
-
-
-                else if (
-                    typeof video ===
-                    "object"
-                ) {
-
-                    videoUrl =
-                        video.url || "";
-
-                    thumbnail =
-                        video.portada || "";
-
-                }
-
-
-                if (!videoUrl) {
+                if (!video.secure_url) {
                     return;
                 }
 
@@ -993,7 +982,7 @@ PARA LAS FOTOS Y VIDEOS ACTUALES.
 
 
                 player.src =
-                    videoUrl;
+                    video.secure_url;
 
                 player.preload =
                     "metadata";
@@ -1003,14 +992,6 @@ PARA LAS FOTOS Y VIDEOS ACTUALES.
 
                 player.playsInline =
                     true;
-
-
-                if (thumbnail) {
-
-                    player.poster =
-                        thumbnail;
-
-                }
 
 
                 card.appendChild(
