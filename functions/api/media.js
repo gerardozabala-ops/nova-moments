@@ -9,81 +9,95 @@ export async function onRequestGet(context) {
     const apiSecret =
         context.env.CLOUDINARY_API_SECRET;
 
-    const url =
-        new URL(context.request.url);
-
-    const evento =
-        url.searchParams.get("evento");
-
-    if (!evento) {
-
-        return new Response(
-            JSON.stringify({
-                ok: false,
-                error: "Falta indicar el evento."
-            }),
-            {
-                status: 400,
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                }
-            }
-        );
-    }
-
     try {
 
         const auth =
             btoa(`${apiKey}:${apiSecret}`);
 
-        const base =
-            `HOME/MOMENTOS NOVA/${evento}`;
+        const endpoint =
+            `https://api.cloudinary.com/v1_1/${cloudName}/resources/image/upload`;
 
-        const portada =
-            await buscarRecursos(
-                cloudName,
-                auth,
-                `${base}/PORTADA`
+        const response =
+            await fetch(
+                `${endpoint}?max_results=20`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            `Basic ${auth}`
+                    }
+                }
             );
 
-        const fotos =
-            await buscarRecursos(
-                cloudName,
-                auth,
-                `${base}/FOTOS`
-            );
+        const texto =
+            await response.text();
 
-        const videos =
-            await buscarRecursos(
-                cloudName,
-                auth,
-                `${base}/VIDEOS`
+        if (!response.ok) {
+
+            return new Response(
+                JSON.stringify({
+                    ok: false,
+                    error: texto
+                }),
+                {
+                    status: response.status,
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
             );
+        }
+
+        const datos =
+            JSON.parse(texto);
+
+        const recursos =
+            datos.resources || [];
+
+        const resultado =
+            recursos.map(recurso => ({
+
+                public_id:
+                    recurso.public_id,
+
+                asset_folder:
+                    recurso.asset_folder,
+
+                folder:
+                    recurso.folder,
+
+                resource_type:
+                    recurso.resource_type,
+
+                type:
+                    recurso.type,
+
+                format:
+                    recurso.format,
+
+                secure_url:
+                    recurso.secure_url
+
+            }));
 
         return new Response(
-            JSON.stringify({
-
-                ok: true,
-
-                evento: evento,
-
-                portada: portada,
-
-                fotos: fotos,
-
-                videos: videos
-
-            }),
+            JSON.stringify(
+                {
+                    ok: true,
+                    cantidad: resultado.length,
+                    recursos: resultado
+                },
+                null,
+                2
+            ),
             {
                 status: 200,
 
                 headers: {
                     "Content-Type":
-                        "application/json",
-
-                    "Cache-Control":
-                        "no-store"
+                        "application/json"
                 }
             }
         );
@@ -92,11 +106,8 @@ export async function onRequestGet(context) {
 
         return new Response(
             JSON.stringify({
-
                 ok: false,
-
                 error: error.message
-
             }),
             {
                 status: 500,
@@ -108,59 +119,4 @@ export async function onRequestGet(context) {
             }
         );
     }
-}
-
-
-async function buscarRecursos(
-    cloudName,
-    auth,
-    carpeta
-) {
-
-    const endpoint =
-        `https://api.cloudinary.com/v1_1/${cloudName}/resources/search`;
-
-    const expression =
-        `asset_folder="${carpeta}"`;
-
-    const response =
-        await fetch(
-            endpoint,
-            {
-                method: "POST",
-
-                headers: {
-                    "Authorization":
-                        `Basic ${auth}`,
-
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body: JSON.stringify({
-
-                    expression:
-                        expression,
-
-                    max_results:
-                        100
-
-                })
-            }
-        );
-
-    const texto =
-        await response.text();
-
-    if (!response.ok) {
-
-        throw new Error(
-            `Cloudinary error ${response.status}: ${texto}`
-        );
-    }
-
-    const datos =
-        JSON.parse(texto);
-
-    return datos.resources || [];
 }
