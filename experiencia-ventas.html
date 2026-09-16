@@ -1,510 +1,534 @@
 <!DOCTYPE html>
 
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
 <title>NOVA MOMENTS</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+rel="preconnect"
+href="https://fonts.googleapis.com"
+>
 
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<link
+rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin
+>
+
+<link
+href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap"
+rel="stylesheet"
+>
 
 <style>
 
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-    body {
-        background: #080808;
-        color: #ffffff;
-        font-family: "DM Sans", sans-serif;
-        overflow-x: hidden;
-    }
+body {
+    background: #080808;
+    color: #ffffff;
+    font-family: "DM Sans", sans-serif;
+    overflow-x: hidden;
+}
 
-    body.no-scroll {
-        overflow: hidden;
-    }
+body.no-scroll {
+    overflow: hidden;
+}
 
-    /* =========================
-       HEADER
-    ========================= */
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 35px;
+
+    background: rgba(8, 8, 8, 0.72);
+    backdrop-filter: blur(12px);
+
+    z-index: 100;
+}
+
+.nova-logo {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 4px;
+}
+
+.nova-logo span {
+    font-weight: 300;
+    opacity: 0.65;
+}
+
+.logout {
+    border: 1px solid rgba(255,255,255,0.25);
+    background: transparent;
+    color: white;
+
+    padding: 8px 15px;
+
+    border-radius: 20px;
+
+    font-family: inherit;
+    font-size: 11px;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    position: relative;
+
+    min-height: 82vh;
+
+    display: flex;
+    align-items: flex-end;
+
+    padding: 110px 7vw 70px;
+
+    background-size: cover;
+    background-position: center;
+
+    overflow: hidden;
+}
+
+.hero::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.12),
+            rgba(0,0,0,0.58) 55%,
+            #080808 100%
+        );
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+    max-width: 900px;
+}
+
+
+/* =========================
+   LOGOTIPO FOTÓGRAFO
+========================= */
+
+.logo-wrapper {
+    width: 230px;
+    height: 100px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    margin-bottom: 30px;
+}
+
+.photographer-logo {
+    display: block;
+
+    max-width: 220px;
+    max-height: 95px;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    -webkit-user-drag: none;
+}
+
+
+/* =========================
+   HERO TEXT
+========================= */
+
+.hero-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    opacity: 0.65;
+
+    margin-bottom: 15px;
+}
+
+.hero-title {
+    font-family: "Playfair Display", serif;
+
+    font-size: clamp(42px, 7vw, 82px);
+
+    font-weight: 400;
+
+    line-height: 1.05;
+
+    margin-bottom: 14px;
+}
+
+.hero-event {
+    font-size: 15px;
+    font-weight: 300;
+    opacity: 0.75;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+main {
+    padding: 35px 7vw 100px;
+}
+
+.gallery-section {
+    margin-bottom: 80px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    margin-bottom: 28px;
+}
+
+.section-heading h2 {
+    font-size: 12px;
+    font-weight: 500;
+
+    letter-spacing: 3px;
+    white-space: nowrap;
+}
+
+.section-line {
+    height: 1px;
+    width: 100%;
+
+    background: linear-gradient(
+        to right,
+        rgba(255,255,255,0.35),
+        transparent
+    );
+}
+
+
+/* =========================
+   GALLERY
+========================= */
+
+.gallery {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 8px;
+}
+
+.photo-card {
+    position: relative;
+
+    overflow: hidden;
+
+    background: #111;
+
+    cursor: pointer;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    border-radius: 2px;
+}
+
+.photo-card img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.5s ease,
+        opacity 0.3s ease;
+
+    pointer-events: none;
+
+    -webkit-user-drag: none;
+}
+
+.photo-card:hover img {
+    transform: scale(1.025);
+}
+
+.vertical-gallery .photo-card {
+    aspect-ratio: 3 / 4;
+}
+
+.horizontal-gallery .photo-card {
+    aspect-ratio: 4 / 3;
+}
+
+
+/* =========================
+   LIGHTBOX
+========================= */
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,0.97);
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    z-index: 500;
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox-image {
+    max-width: 88vw;
+    max-height: 86vh;
+
+    object-fit: contain;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    pointer-events: none;
+
+    -webkit-user-drag: none;
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+    position: absolute;
+
+    border: none;
+
+    background: rgba(255,255,255,0.08);
+
+    color: white;
+
+    width: 44px;
+    height: 44px;
+
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    font-size: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 510;
+}
+
+.lightbox-close {
+    top: 25px;
+    right: 25px;
+}
+
+.lightbox-prev {
+    left: 25px;
+}
+
+.lightbox-next {
+    right: 25px;
+}
+
+.lightbox-counter {
+    position: absolute;
+
+    bottom: 25px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    font-size: 11px;
+
+    letter-spacing: 2px;
+
+    opacity: 0.6;
+}
+
+
+/* =========================
+   LOADING / ERROR
+========================= */
+
+.loading {
+    min-height: 60vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 11px;
+
+    letter-spacing: 3px;
+
+    opacity: 0.5;
+}
+
+.error {
+    min-height: 60vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 30px;
+
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
 
     header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 68px;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        padding: 0 35px;
-
-        background: rgba(8, 8, 8, 0.72);
-        backdrop-filter: blur(12px);
-
-        z-index: 100;
+        height: 62px;
+        padding: 0 18px;
     }
 
     .nova-logo {
-        font-size: 15px;
-        font-weight: 600;
-        letter-spacing: 4px;
-    }
-
-    .nova-logo span {
-        font-weight: 300;
-        opacity: 0.65;
+        font-size: 13px;
+        letter-spacing: 3px;
     }
 
     .logout {
-        border: 1px solid rgba(255,255,255,0.25);
-        background: transparent;
-        color: white;
-
-        padding: 8px 15px;
-
-        border-radius: 20px;
-
-        font-family: inherit;
-        font-size: 11px;
-
-        letter-spacing: 1px;
-
-        cursor: pointer;
+        padding: 7px 12px;
+        font-size: 9px;
     }
-
-    /* =========================
-       HERO
-    ========================= */
 
     .hero {
-        position: relative;
+        min-height: 78vh;
 
-        min-height: 82vh;
+        padding:
+            90px 22px 48px;
 
-        display: flex;
-        align-items: flex-end;
-
-        padding: 110px 7vw 70px;
-
-        background-size: cover;
         background-position: center;
-
-        overflow: hidden;
     }
-
-    .hero::before {
-        content: "";
-
-        position: absolute;
-        inset: 0;
-
-        background:
-            linear-gradient(
-                to bottom,
-                rgba(0,0,0,0.12),
-                rgba(0,0,0,0.58) 55%,
-                #080808 100%
-            );
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 2;
-
-        width: 100%;
-        max-width: 900px;
-    }
-
-    /* =========================
-       LOGOTIPO FOTÓGRAFO
-    ========================= */
 
     .logo-wrapper {
-        width: 230px;
-        height: 100px;
+        width: 180px;
+        height: 75px;
 
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
 
     .photographer-logo {
-        display: block;
-
-        max-width: 220px;
-        max-height: 95px;
-
-        width: auto;
-        height: auto;
-
-        object-fit: contain;
-
-        user-select: none;
-        -webkit-user-select: none;
-
-        -webkit-user-drag: none;
-    }
-
-    /* =========================
-       HERO TEXT
-    ========================= */
-
-    .hero-label {
-        font-size: 10px;
-        letter-spacing: 4px;
-        opacity: 0.65;
-
-        margin-bottom: 15px;
+        max-width: 175px;
+        max-height: 70px;
     }
 
     .hero-title {
-        font-family: "Playfair Display", serif;
-
-        font-size: clamp(42px, 7vw, 82px);
-
-        font-weight: 400;
-
-        line-height: 1.05;
-
-        margin-bottom: 14px;
+        font-size: 45px;
     }
 
     .hero-event {
-        font-size: 15px;
-        font-weight: 300;
-        opacity: 0.75;
+        font-size: 13px;
     }
 
-    /* =========================
-       MAIN
-    ========================= */
-
     main {
-        padding: 35px 7vw 100px;
+        padding:
+            30px 14px 70px;
     }
 
     .gallery-section {
-        margin-bottom: 80px;
+        margin-bottom: 60px;
     }
 
     .section-heading {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-
-        margin-bottom: 28px;
+        margin-bottom: 18px;
     }
 
     .section-heading h2 {
-        font-size: 12px;
-        font-weight: 500;
-
-        letter-spacing: 3px;
-        white-space: nowrap;
+        font-size: 10px;
+        letter-spacing: 2px;
     }
-
-    .section-line {
-        height: 1px;
-        width: 100%;
-
-        background: linear-gradient(
-            to right,
-            rgba(255,255,255,0.35),
-            transparent
-        );
-    }
-
-    /* =========================
-       GALLERY
-    ========================= */
 
     .gallery {
-        display: grid;
-
         grid-template-columns:
-            repeat(4, 1fr);
+            repeat(2, 1fr);
 
-        gap: 8px;
-    }
-
-    .photo-card {
-        position: relative;
-
-        overflow: hidden;
-
-        background: #111;
-
-        cursor: pointer;
-
-        user-select: none;
-        -webkit-user-select: none;
-
-        border-radius: 2px;
-    }
-
-    .photo-card img {
-        display: block;
-
-        width: 100%;
-        height: 100%;
-
-        object-fit: cover;
-
-        transition:
-            transform 0.5s ease,
-            opacity 0.3s ease;
-
-        pointer-events: none;
-
-        -webkit-user-drag: none;
-    }
-
-    .photo-card:hover img {
-        transform: scale(1.025);
-    }
-
-    .vertical-gallery .photo-card {
-        aspect-ratio: 3 / 4;
-    }
-
-    .horizontal-gallery .photo-card {
-        aspect-ratio: 4 / 3;
-    }
-
-    /* =========================
-       LIGHTBOX
-    ========================= */
-
-    .lightbox {
-        position: fixed;
-        inset: 0;
-
-        background: rgba(0,0,0,0.97);
-
-        display: none;
-
-        align-items: center;
-        justify-content: center;
-
-        z-index: 500;
-    }
-
-    .lightbox.active {
-        display: flex;
+        gap: 5px;
     }
 
     .lightbox-image {
-        max-width: 88vw;
-        max-height: 86vh;
-
-        object-fit: contain;
-
-        user-select: none;
-        -webkit-user-select: none;
-
-        pointer-events: none;
-
-        -webkit-user-drag: none;
-    }
-
-    .lightbox-close,
-    .lightbox-prev,
-    .lightbox-next {
-        position: absolute;
-
-        border: none;
-
-        background: rgba(255,255,255,0.08);
-
-        color: white;
-
-        width: 44px;
-        height: 44px;
-
-        border-radius: 50%;
-
-        cursor: pointer;
-
-        font-size: 20px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        z-index: 510;
+        max-width: 94vw;
+        max-height: 78vh;
     }
 
     .lightbox-close {
-        top: 25px;
-        right: 25px;
+        top: 15px;
+        right: 15px;
     }
 
     .lightbox-prev {
-        left: 25px;
+        left: 12px;
     }
 
     .lightbox-next {
-        right: 25px;
+        right: 12px;
     }
 
-    .lightbox-counter {
-        position: absolute;
-
-        bottom: 25px;
-        left: 50%;
-
-        transform: translateX(-50%);
-
-        font-size: 11px;
-
-        letter-spacing: 2px;
-
-        opacity: 0.6;
-    }
-
-    /* =========================
-       LOADING / ERROR
-    ========================= */
-
-    .loading {
-        min-height: 60vh;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        font-size: 11px;
-
-        letter-spacing: 3px;
-
-        opacity: 0.5;
-    }
-
-    .error {
-        min-height: 60vh;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        text-align: center;
-
-        padding: 30px;
-
-        font-size: 14px;
-        opacity: 0.7;
-    }
-
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 700px) {
-
-        header {
-            height: 62px;
-            padding: 0 18px;
-        }
-
-        .nova-logo {
-            font-size: 13px;
-            letter-spacing: 3px;
-        }
-
-        .logout {
-            padding: 7px 12px;
-            font-size: 9px;
-        }
-
-        .hero {
-            min-height: 78vh;
-
-            padding:
-                90px 22px 48px;
-
-            background-position: center;
-        }
-
-        .logo-wrapper {
-            width: 180px;
-            height: 75px;
-
-            margin-bottom: 25px;
-        }
-
-        .photographer-logo {
-            max-width: 175px;
-            max-height: 70px;
-        }
-
-        .hero-title {
-            font-size: 45px;
-        }
-
-        .hero-event {
-            font-size: 13px;
-        }
-
-        main {
-            padding:
-                30px 14px 70px;
-        }
-
-        .gallery-section {
-            margin-bottom: 60px;
-        }
-
-        .section-heading {
-            margin-bottom: 18px;
-        }
-
-        .section-heading h2 {
-            font-size: 10px;
-            letter-spacing: 2px;
-        }
-
-        .gallery {
-            grid-template-columns:
-                repeat(2, 1fr);
-
-            gap: 5px;
-        }
-
-        .lightbox-image {
-            max-width: 94vw;
-            max-height: 78vh;
-        }
-
-        .lightbox-close {
-            top: 15px;
-            right: 15px;
-        }
-
-        .lightbox-prev {
-            left: 12px;
-        }
-
-        .lightbox-next {
-            right: 12px;
-        }
-
-    }
+}
 
 </style>
-```
 
 </head>
 
@@ -512,7 +536,6 @@
 
 <header>
 
-```
 <div class="nova-logo">
     NOVA <span>MOMENTS</span>
 </div>
@@ -520,19 +543,18 @@
 <button class="logout" id="logout">
     CERRAR SESIÓN
 </button>
-```
 
 </header>
 
+
 <div id="app">
 
-```
 <div class="loading">
     CARGANDO EXPERIENCIA
 </div>
-```
 
 </div>
+
 
 <!-- =========================
      LIGHTBOX
@@ -540,7 +562,6 @@
 
 <div class="lightbox" id="lightbox">
 
-```
 <button
     class="lightbox-close"
     id="lightboxClose">
@@ -557,7 +578,8 @@
     class="lightbox-image"
     id="lightboxImage"
     alt=""
-    draggable="false">
+    draggable="false"
+>
 
 <button
     class="lightbox-next"
@@ -569,711 +591,759 @@
     class="lightbox-counter"
     id="lightboxCounter">
 </div>
-```
 
 </div>
 
+
 <script>
 
-    /* ==========================================
-       SESIÓN
-    ========================================== */
 
-    const usuario =
-        sessionStorage.getItem("nova_usuario");
+/* ==========================================
+   SESIÓN
+========================================== */
 
-    const evento =
-        sessionStorage.getItem("nova_evento");
+const usuario =
+    sessionStorage.getItem("nova_usuario") ||
+    localStorage.getItem("nova_usuario");
+
+const evento =
+    sessionStorage.getItem("nova_evento") ||
+    localStorage.getItem("nova_evento");
 
 
-    if (!usuario || !evento) {
+if (!usuario || !evento) {
 
-        window.location.href =
-            "acceso.html";
+    window.location.href =
+        "acceso.html";
+
+}
+
+
+/* ==========================================
+   VARIABLES
+========================================== */
+
+let fotosVerticales = [];
+let fotosHorizontales = [];
+
+let listaActual = [];
+let indiceActual = 0;
+
+
+/* ==========================================
+   ELEMENTOS
+========================================== */
+
+const app =
+    document.getElementById("app");
+
+const lightbox =
+    document.getElementById("lightbox");
+
+const lightboxImage =
+    document.getElementById("lightboxImage");
+
+const lightboxCounter =
+    document.getElementById("lightboxCounter");
+
+
+/* ==========================================
+   CARGAR EXPERIENCIA
+========================================== */
+
+async function cargarExperiencia() {
+
+    try {
+
+        const respuestaEvento =
+            await fetch(
+                `/api/evento?evento=${encodeURIComponent(evento)}`
+            );
+
+
+        const datosEvento =
+            await respuestaEvento.json();
+
+
+        if (!datosEvento.ok) {
+
+            throw new Error(
+                "No se pudo cargar el evento."
+            );
+
+        }
+
+
+        const respuestaMedia =
+            await fetch(
+                `/api/media?evento=${encodeURIComponent(evento)}`
+            );
+
+
+        const datosMedia =
+            await respuestaMedia.json();
+
+
+        if (!datosMedia.ok) {
+
+            throw new Error(
+                "No se pudo cargar el contenido."
+            );
+
+        }
+
+
+        console.log(
+            "NOVA VENTA - Logo:",
+            datosMedia.logo
+        );
+
+
+        await clasificarFotos(
+            datosMedia.fotos || []
+        );
+
+
+        construirExperiencia(
+            datosEvento,
+            datosMedia
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        app.innerHTML = `
+            <div class="error">
+                No pudimos cargar esta experiencia.
+            </div>
+        `;
 
     }
 
-
-    /* ==========================================
-       VARIABLES
-    ========================================== */
-
-    let fotosVerticales = [];
-    let fotosHorizontales = [];
-
-    let listaActual = [];
-    let indiceActual = 0;
+}
 
 
-    /* ==========================================
-       ELEMENTOS
-    ========================================== */
+/* ==========================================
+   CLASIFICAR FOTOS
+========================================== */
 
-    const app =
-        document.getElementById("app");
+async function clasificarFotos(fotos) {
 
-    const lightbox =
-        document.getElementById("lightbox");
-
-    const lightboxImage =
-        document.getElementById("lightboxImage");
-
-    const lightboxCounter =
-        document.getElementById("lightboxCounter");
+    fotosVerticales = [];
+    fotosHorizontales = [];
 
 
-    /* ==========================================
-       CARGAR EXPERIENCIA
-    ========================================== */
-
-    async function cargarExperiencia() {
+    for (const foto of fotos) {
 
         try {
 
-            const respuestaEvento =
-                await fetch(
-                    `/api/evento?evento=${encodeURIComponent(evento)}`
-                );
-
-            const datosEvento =
-                await respuestaEvento.json();
-
-
-            if (!datosEvento.ok) {
-
-                throw new Error(
-                    "No se pudo cargar el evento."
-                );
-
-            }
-
-
-            const respuestaMedia =
-                await fetch(
-                    `/api/media?evento=${encodeURIComponent(evento)}`
-                );
-
-            const datosMedia =
-                await respuestaMedia.json();
-
-
-            if (!datosMedia.ok) {
-
-                throw new Error(
-                    "No se pudo cargar el contenido."
-                );
-
-            }
-
-
-            console.log(
-                "NOVA VENTA - Logo:",
-                datosMedia.logo
-            );
-
-
-            await clasificarFotos(
-                datosMedia.fotos || []
-            );
-
-
-            construirExperiencia(
-                datosEvento,
-                datosMedia
-            );
-
-
-        } catch (error) {
-
-            console.error(error);
-
-            app.innerHTML = `
-                <div class="error">
-                    No pudimos cargar esta experiencia.
-                </div>
-            `;
-
-        }
-
-    }
-
-
-    /* ==========================================
-       CLASIFICAR FOTOS
-    ========================================== */
-
-    async function clasificarFotos(fotos) {
-
-        fotosVerticales = [];
-        fotosHorizontales = [];
-
-
-        for (const foto of fotos) {
-
-            try {
-
-                const dimensiones =
-                    await obtenerDimensiones(
-                        foto.secure_url
-                    );
-
-
-                if (
-                    dimensiones.height >
-                    dimensiones.width
-                ) {
-
-                    fotosVerticales.push(foto);
-
-                } else {
-
-                    fotosHorizontales.push(foto);
-
-                }
-
-            } catch (error) {
-
-                console.warn(
-                    "No se pudieron obtener dimensiones:",
+            const dimensiones =
+                await obtenerDimensiones(
                     foto.secure_url
                 );
 
+
+            if (
+                dimensiones.height >
+                dimensiones.width
+            ) {
+
+                fotosVerticales.push(foto);
+
+            } else {
+
+                fotosHorizontales.push(foto);
+
             }
+
+        } catch (error) {
+
+            console.warn(
+                "No se pudieron obtener dimensiones:",
+                foto.secure_url
+            );
 
         }
 
     }
 
-
-    function obtenerDimensiones(url) {
-
-        return new Promise(
-            (resolve, reject) => {
-
-                const imagen =
-                    new Image();
-
-                imagen.onload = () => {
-
-                    resolve({
-                        width: imagen.naturalWidth,
-                        height: imagen.naturalHeight
-                    });
-
-                };
-
-                imagen.onerror =
-                    reject;
-
-                imagen.src = url;
-
-            }
-        );
-
-    }
+}
 
 
-    /* ==========================================
-       CONSTRUIR EXPERIENCIA
-    ========================================== */
+function obtenerDimensiones(url) {
 
-    function construirExperiencia(
-        datosEvento,
-        datosMedia
-    ) {
+    return new Promise(
+        (resolve, reject) => {
 
-        const portada =
-            datosMedia.portada &&
-            datosMedia.portada.length
-                ? datosMedia.portada[0].secure_url
-                : "";
+            const imagen =
+                new Image();
 
 
-        const logo =
-            datosMedia.logo &&
-            datosMedia.logo.length
-                ? datosMedia.logo[0].secure_url
-                : "";
+            imagen.onload = () => {
+
+                resolve({
+
+                    width:
+                        imagen.naturalWidth,
+
+                    height:
+                        imagen.naturalHeight
+
+                });
+
+            };
 
 
-        const nombre =
-            datosEvento.nombre ||
-            "NOVA MOMENTS";
+            imagen.onerror =
+                reject;
 
 
-        const nombreEvento =
-            datosEvento.evento ||
-            "";
+            imagen.src =
+                url;
+
+        }
+    );
+
+}
 
 
-        const fecha =
-            datosEvento.fecha ||
-            "";
+/* ==========================================
+   CONSTRUIR EXPERIENCIA
+========================================== */
+
+function construirExperiencia(
+    datosEvento,
+    datosMedia
+) {
+
+    const portada =
+        datosMedia.portada &&
+        datosMedia.portada.length
+            ? datosMedia.portada[0].secure_url
+            : "";
 
 
-        app.innerHTML = `
+    const logo =
+        datosMedia.logo &&
+        datosMedia.logo.length
+            ? datosMedia.logo[0].secure_url
+            : "";
 
-            <section
-                class="hero"
-                style="
-                    background-image:
-                    url('${portada}');
-                "
-            >
 
-                <div class="hero-content">
+    const nombre =
+        datosEvento.nombre ||
+        "NOVA MOMENTS";
 
-                    ${
-                        logo
-                            ? `
-                                <div class="logo-wrapper">
 
-                                    <img
-                                        class="photographer-logo"
-                                        src="${logo}"
-                                        alt="Logotipo del fotógrafo"
-                                        draggable="false"
-                                    >
+    const nombreEvento =
+        datosEvento.evento ||
+        "";
 
-                                </div>
-                            `
-                            : ""
-                    }
 
-                    <div class="hero-label">
-                        NOVA MOMENTS
-                    </div>
+    const fecha =
+        datosEvento.fecha ||
+        "";
 
-                    <h1 class="hero-title">
-                        ${nombre}
-                    </h1>
 
-                    <div class="hero-event">
-                        ${nombreEvento}
-                        ${fecha ? " · " + fecha : ""}
-                    </div>
+    app.innerHTML = `
+
+        <section
+            class="hero"
+            style="
+                background-image:
+                url('${portada}');
+            "
+        >
+
+            <div class="hero-content">
+
+                ${
+                    logo
+                        ? `
+                            <div class="logo-wrapper">
+
+                                <img
+                                    class="photographer-logo"
+                                    src="${logo}"
+                                    alt="Logotipo del fotógrafo"
+                                    draggable="false"
+                                >
+
+                            </div>
+                        `
+                        : ""
+                }
+
+
+                <div class="hero-label">
+                    NOVA MOMENTS
+                </div>
+
+
+                <h1 class="hero-title">
+                    ${nombre}
+                </h1>
+
+
+                <div class="hero-event">
+
+                    ${nombreEvento}
+
+                    ${fecha ? " · " + fecha : ""}
 
                 </div>
 
-            </section>
+            </div>
+
+        </section>
 
 
-            <main>
+        <main>
 
-                ${
-                    fotosVerticales.length
-                        ? `
-                            <section
-                                class="gallery-section"
+
+            ${
+                fotosVerticales.length
+                    ? `
+
+                        <section
+                            class="gallery-section"
+                        >
+
+                            <div
+                                class="section-heading"
                             >
 
-                                <div
-                                    class="section-heading"
-                                >
-
-                                    <h2>
-                                        FOTOGRAFÍAS VERTICALES
-                                    </h2>
-
-                                    <div
-                                        class="section-line"
-                                    ></div>
-
-                                </div>
+                                <h2>
+                                    FOTOGRAFÍAS VERTICALES
+                                </h2>
 
                                 <div
-                                    class="gallery vertical-gallery"
-                                    id="verticalGallery"
+                                    class="section-line"
                                 ></div>
 
-                            </section>
-                        `
-                        : ""
-                }
+                            </div>
 
 
-                ${
-                    fotosHorizontales.length
-                        ? `
-                            <section
-                                class="gallery-section"
-                            >
+                            <div
+                                class="gallery vertical-gallery"
+                                id="verticalGallery"
+                            ></div>
 
-                                <div
-                                    class="section-heading"
-                                >
+                        </section>
 
-                                    <h2>
-                                        FOTOGRAFÍAS HORIZONTALES
-                                    </h2>
-
-                                    <div
-                                        class="section-line"
-                                    ></div>
-
-                                </div>
-
-                                <div
-                                    class="gallery horizontal-gallery"
-                                    id="horizontalGallery"
-                                ></div>
-
-                            </section>
-                        `
-                        : ""
-                }
-
-            </main>
-        `;
-
-
-        construirGaleria(
-            document.getElementById(
-                "verticalGallery"
-            ),
-            fotosVerticales
-        );
-
-
-        construirGaleria(
-            document.getElementById(
-                "horizontalGallery"
-            ),
-            fotosHorizontales
-        );
-
-    }
-
-
-    /* ==========================================
-       CONSTRUIR GALERÍA
-    ========================================== */
-
-    function construirGaleria(
-        contenedor,
-        fotos
-    ) {
-
-        if (!contenedor) {
-            return;
-        }
-
-
-        fotos.forEach(
-            (foto, indice) => {
-
-                const card =
-                    document.createElement(
-                        "div"
-                    );
-
-                card.className =
-                    "photo-card";
-
-
-                const imagen =
-                    document.createElement(
-                        "img"
-                    );
-
-                imagen.src =
-                    foto.secure_url;
-
-                imagen.alt =
-                    "";
-
-                imagen.draggable =
-                    false;
-
-
-                card.appendChild(
-                    imagen
-                );
-
-
-                card.addEventListener(
-                    "click",
-                    () => {
-
-                        abrirLightbox(
-                            fotos,
-                            indice
-                        );
-
-                    }
-                );
-
-
-                contenedor.appendChild(
-                    card
-                );
-
+                    `
+                    : ""
             }
-        );
 
+
+            ${
+                fotosHorizontales.length
+                    ? `
+
+                        <section
+                            class="gallery-section"
+                        >
+
+                            <div
+                                class="section-heading"
+                            >
+
+                                <h2>
+                                    FOTOGRAFÍAS HORIZONTALES
+                                </h2>
+
+                                <div
+                                    class="section-line"
+                                ></div>
+
+                            </div>
+
+
+                            <div
+                                class="gallery horizontal-gallery"
+                                id="horizontalGallery"
+                            ></div>
+
+                        </section>
+
+                    `
+                    : ""
+            }
+
+
+        </main>
+
+    `;
+
+
+    construirGaleria(
+        document.getElementById(
+            "verticalGallery"
+        ),
+        fotosVerticales
+    );
+
+
+    construirGaleria(
+        document.getElementById(
+            "horizontalGallery"
+        ),
+        fotosHorizontales
+    );
+
+}
+
+
+/* ==========================================
+   CONSTRUIR GALERÍA
+========================================== */
+
+function construirGaleria(
+    contenedor,
+    fotos
+) {
+
+    if (!contenedor) {
+        return;
     }
 
 
-    /* ==========================================
-       LIGHTBOX
-    ========================================== */
+    fotos.forEach(
+        (foto, indice) => {
 
-    function abrirLightbox(
-        fotos,
-        indice
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "photo-card";
+
+
+            const imagen =
+                document.createElement(
+                    "img"
+                );
+
+
+            imagen.src =
+                foto.secure_url;
+
+
+            imagen.alt =
+                "";
+
+
+            imagen.draggable =
+                false;
+
+
+            card.appendChild(
+                imagen
+            );
+
+
+            card.addEventListener(
+                "click",
+                () => {
+
+                    abrirLightbox(
+                        fotos,
+                        indice
+                    );
+
+                }
+            );
+
+
+            contenedor.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   LIGHTBOX
+========================================== */
+
+function abrirLightbox(
+    fotos,
+    indice
+) {
+
+    listaActual =
+        fotos;
+
+    indiceActual =
+        indice;
+
+
+    mostrarFoto();
+
+
+    lightbox.classList.add(
+        "active"
+    );
+
+
+    document.body.classList.add(
+        "no-scroll"
+    );
+
+}
+
+
+function mostrarFoto() {
+
+    if (
+        !listaActual.length
     ) {
-
-        listaActual =
-            fotos;
-
-        indiceActual =
-            indice;
-
-
-        mostrarFoto();
-
-
-        lightbox.classList.add(
-            "active"
-        );
-
-        document.body.classList.add(
-            "no-scroll"
-        );
-
+        return;
     }
 
 
-    function mostrarFoto() {
+    const foto =
+        listaActual[indiceActual];
+
+
+    lightboxImage.src =
+        foto.secure_url;
+
+
+    lightboxCounter.textContent =
+        `${indiceActual + 1} / ${listaActual.length}`;
+
+}
+
+
+function fotoAnterior() {
+
+    if (!listaActual.length) {
+        return;
+    }
+
+
+    indiceActual =
+        (
+            indiceActual -
+            1 +
+            listaActual.length
+        ) %
+        listaActual.length;
+
+
+    mostrarFoto();
+
+}
+
+
+function fotoSiguiente() {
+
+    if (!listaActual.length) {
+        return;
+    }
+
+
+    indiceActual =
+        (
+            indiceActual +
+            1
+        ) %
+        listaActual.length;
+
+
+    mostrarFoto();
+
+}
+
+
+function cerrarLightbox() {
+
+    lightbox.classList.remove(
+        "active"
+    );
+
+
+    document.body.classList.remove(
+        "no-scroll"
+    );
+
+
+    lightboxImage.src = "";
+
+}
+
+
+/* ==========================================
+   BOTONES LIGHTBOX
+========================================== */
+
+document
+    .getElementById(
+        "lightboxClose"
+    )
+    .addEventListener(
+        "click",
+        cerrarLightbox
+    );
+
+
+document
+    .getElementById(
+        "lightboxPrev"
+    )
+    .addEventListener(
+        "click",
+        fotoAnterior
+    );
+
+
+document
+    .getElementById(
+        "lightboxNext"
+    )
+    .addEventListener(
+        "click",
+        fotoSiguiente
+    );
+
+
+/* ==========================================
+   TECLADO
+========================================== */
+
+document.addEventListener(
+    "keydown",
+    event => {
 
         if (
-            !listaActual.length
+            !lightbox.classList.contains(
+                "active"
+            )
         ) {
             return;
         }
 
 
-        const foto =
-            listaActual[indiceActual];
+        if (
+            event.key ===
+            "ArrowLeft"
+        ) {
 
+            fotoAnterior();
 
-        lightboxImage.src =
-            foto.secure_url;
-
-
-        lightboxCounter.textContent =
-            `${indiceActual + 1} / ${listaActual.length}`;
-
-    }
-
-
-    function fotoAnterior() {
-
-        if (!listaActual.length) {
-            return;
         }
 
 
-        indiceActual =
-            (
-                indiceActual -
-                1 +
-                listaActual.length
-            ) %
-            listaActual.length;
+        if (
+            event.key ===
+            "ArrowRight"
+        ) {
 
+            fotoSiguiente();
 
-        mostrarFoto();
-
-    }
-
-
-    function fotoSiguiente() {
-
-        if (!listaActual.length) {
-            return;
         }
 
 
-        indiceActual =
-            (
-                indiceActual +
-                1
-            ) %
-            listaActual.length;
+        if (
+            event.key ===
+            "Escape"
+        ) {
 
+            cerrarLightbox();
 
-        mostrarFoto();
-
-    }
-
-
-    function cerrarLightbox() {
-
-        lightbox.classList.remove(
-            "active"
-        );
-
-        document.body.classList.remove(
-            "no-scroll"
-        );
-
-
-        lightboxImage.src = "";
+        }
 
     }
+);
 
 
-    document
-        .getElementById(
-            "lightboxClose"
-        )
-        .addEventListener(
-            "click",
-            cerrarLightbox
-        );
+/* ==========================================
+   PROTECCIÓN BÁSICA
+========================================== */
+
+document.addEventListener(
+    "contextmenu",
+    event => {
+
+        if (
+            event.target.tagName ===
+            "IMG"
+        ) {
+
+            event.preventDefault();
+
+        }
+
+    }
+);
 
 
-    document
-        .getElementById(
-            "lightboxPrev"
-        )
-        .addEventListener(
-            "click",
-            fotoAnterior
-        );
+document.addEventListener(
+    "dragstart",
+    event => {
+
+        if (
+            event.target.tagName ===
+            "IMG"
+        ) {
+
+            event.preventDefault();
+
+        }
+
+    }
+);
 
 
-    document
-        .getElementById(
-            "lightboxNext"
-        )
-        .addEventListener(
-            "click",
-            fotoSiguiente
-        );
+/* ==========================================
+   CERRAR SESIÓN
+========================================== */
 
+document
+    .getElementById("logout")
+    .addEventListener(
+        "click",
+        () => {
 
-    /* ==========================================
-       TECLADO
-    ========================================== */
+            sessionStorage.removeItem(
+                "nova_usuario"
+            );
 
-    document.addEventListener(
-        "keydown",
-        event => {
+            sessionStorage.removeItem(
+                "nova_evento"
+            );
 
-            if (
-                !lightbox.classList.contains(
-                    "active"
-                )
-            ) {
-                return;
-            }
+            localStorage.removeItem(
+                "nova_usuario"
+            );
 
+            localStorage.removeItem(
+                "nova_evento"
+            );
 
-            if (
-                event.key ===
-                "ArrowLeft"
-            ) {
-
-                fotoAnterior();
-
-            }
-
-
-            if (
-                event.key ===
-                "ArrowRight"
-            ) {
-
-                fotoSiguiente();
-
-            }
-
-
-            if (
-                event.key ===
-                "Escape"
-            ) {
-
-                cerrarLightbox();
-
-            }
+            window.location.href =
+                "acceso.html";
 
         }
     );
 
 
-    /* ==========================================
-       PROTECCIÓN BÁSICA
-    ========================================== */
+/* ==========================================
+   INICIAR
+========================================== */
 
-    document.addEventListener(
-        "contextmenu",
-        event => {
-
-            if (
-                event.target.tagName ===
-                "IMG"
-            ) {
-
-                event.preventDefault();
-
-            }
-
-        }
-    );
-
-
-    document.addEventListener(
-        "dragstart",
-        event => {
-
-            if (
-                event.target.tagName ===
-                "IMG"
-            ) {
-
-                event.preventDefault();
-
-            }
-
-        }
-    );
-
-
-    /* ==========================================
-       CERRAR SESIÓN
-    ========================================== */
-
-    document
-        .getElementById("logout")
-        .addEventListener(
-            "click",
-            () => {
-
-                sessionStorage.removeItem(
-                    "nova_usuario"
-                );
-
-                sessionStorage.removeItem(
-                    "nova_evento"
-                );
-
-                window.location.href =
-                    "acceso.html";
-
-            }
-        );
-
-
-    /* ==========================================
-       INICIAR
-    ========================================== */
-
-    cargarExperiencia();
+cargarExperiencia();
 
 </script>
 
 </body>
+
 </html>
