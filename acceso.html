@@ -9,7 +9,6 @@
 <meta
 name="viewport"
 content="width=device-width, initial-scale=1.0"
-
 >
 
 <title>Acceso | NOVA MOMENTS</title>
@@ -266,7 +265,7 @@ body {
 
 }
 
-.demo-info {
+.future-info {
 
     margin-top: 25px;
 
@@ -282,12 +281,6 @@ body {
     font-size: 11px;
 
     line-height: 1.7;
-
-}
-
-.demo-info strong {
-
-    color: #aaaaaa;
 
 }
 
@@ -377,7 +370,6 @@ id="usuario"
 autocomplete="username"
 placeholder="Ingresá tu usuario"
 required
-
 >
 
 </div>
@@ -394,7 +386,6 @@ id="password"
 autocomplete="current-password"
 placeholder="Ingresá tu contraseña"
 required
-
 >
 
 </div>
@@ -402,7 +393,6 @@ required
 <button
 type="submit"
 class="login-button"
-
 >
 
 INGRESAR
@@ -416,25 +406,7 @@ INGRESAR
 
 </form>
 
-<div class="demo-info">
-
-<strong>Acceso de prueba</strong>
-
-<br>
-
-Usuario: mariajuan
-
-<br>
-
-Contraseña: 8392
-
-<br><br>
-
-Usuario: roberto50
-
-<br>
-
-Contraseña: 4721
+<div class="future-info">
 
 </div>
 
@@ -443,7 +415,6 @@ Contraseña: 4721
 <a
 href="index.html"
 class="back-link"
-
 >
 
 ← VOLVER A NOVA MOMENTS
@@ -540,8 +511,18 @@ formulario.addEventListener(
                 usuario
             );
 
-
             sessionStorage.setItem(
+                "nova_evento",
+                datos.evento
+            );
+
+
+            localStorage.setItem(
+                "nova_usuario",
+                usuario
+            );
+
+            localStorage.setItem(
                 "nova_evento",
                 datos.evento
             );
