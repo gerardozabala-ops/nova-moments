@@ -146,7 +146,7 @@ header {
 
 
 /* =========================
-   LOGOTIPO FOTÓGRAFO
+   LOGOTIPO
 ========================= */
 
 .logo-wrapper {
@@ -173,7 +173,6 @@ header {
 
     user-select: none;
     -webkit-user-select: none;
-
     -webkit-user-drag: none;
 }
 
@@ -400,7 +399,7 @@ main {
 
 
 /* =========================
-   LOADING / ERROR
+   LOADING
 ========================= */
 
 .loading {
@@ -417,10 +416,17 @@ main {
     opacity: 0.5;
 }
 
+
+/* =========================
+   ERROR
+========================= */
+
 .error {
     min-height: 60vh;
 
     display: flex;
+    flex-direction: column;
+
     align-items: center;
     justify-content: center;
 
@@ -429,7 +435,28 @@ main {
     padding: 30px;
 
     font-size: 14px;
-    opacity: 0.7;
+
+    opacity: 0.75;
+}
+
+.error-title {
+    margin-bottom: 12px;
+
+    font-size: 13px;
+
+    letter-spacing: 2px;
+}
+
+.error-detail {
+    max-width: 700px;
+
+    font-size: 11px;
+
+    line-height: 1.6;
+
+    opacity: 0.55;
+
+    word-break: break-word;
 }
 
 
@@ -532,16 +559,26 @@ main {
 
 </head>
 
+
 <body>
+
 
 <header>
 
 <div class="nova-logo">
+
     NOVA <span>MOMENTS</span>
+
 </div>
 
-<button class="logout" id="logout">
+
+<button
+    class="logout"
+    id="logout"
+>
+
     CERRAR SESIÓN
+
 </button>
 
 </header>
@@ -550,7 +587,9 @@ main {
 <div id="app">
 
 <div class="loading">
+
     CARGANDO EXPERIENCIA
+
 </div>
 
 </div>
@@ -560,19 +599,26 @@ main {
      LIGHTBOX
 ========================= -->
 
-<div class="lightbox" id="lightbox">
+<div
+    class="lightbox"
+    id="lightbox"
+>
 
 <button
     class="lightbox-close"
-    id="lightboxClose">
+    id="lightboxClose"
+>
     ×
 </button>
 
+
 <button
     class="lightbox-prev"
-    id="lightboxPrev">
+    id="lightboxPrev"
+>
     ‹
 </button>
+
 
 <img
     class="lightbox-image"
@@ -581,16 +627,19 @@ main {
     draggable="false"
 >
 
+
 <button
     class="lightbox-next"
-    id="lightboxNext">
+    id="lightboxNext"
+>
     ›
 </button>
 
+
 <div
     class="lightbox-counter"
-    id="lightboxCounter">
-</div>
+    id="lightboxCounter"
+></div>
 
 </div>
 
@@ -606,15 +655,30 @@ const usuario =
     sessionStorage.getItem("nova_usuario") ||
     localStorage.getItem("nova_usuario");
 
+
 const evento =
     sessionStorage.getItem("nova_evento") ||
     localStorage.getItem("nova_evento");
 
 
+console.log(
+    "NOVA VENTA - Usuario:",
+    usuario
+);
+
+
+console.log(
+    "NOVA VENTA - Evento:",
+    evento
+);
+
+
 if (!usuario || !evento) {
 
-    window.location.href =
-        "acceso.html";
+    mostrarError(
+        "SESIÓN NO ENCONTRADA",
+        "No encontramos los datos de acceso. Volvé a iniciar sesión."
+    );
 
 }
 
@@ -624,9 +688,11 @@ if (!usuario || !evento) {
 ========================================== */
 
 let fotosVerticales = [];
+
 let fotosHorizontales = [];
 
 let listaActual = [];
+
 let indiceActual = 0;
 
 
@@ -637,14 +703,45 @@ let indiceActual = 0;
 const app =
     document.getElementById("app");
 
+
 const lightbox =
     document.getElementById("lightbox");
+
 
 const lightboxImage =
     document.getElementById("lightboxImage");
 
+
 const lightboxCounter =
     document.getElementById("lightboxCounter");
+
+
+/* ==========================================
+   MOSTRAR ERROR
+========================================== */
+
+function mostrarError(
+    titulo,
+    detalle
+) {
+
+    app.innerHTML = `
+
+        <div class="error">
+
+            <div class="error-title">
+                ${titulo}
+            </div>
+
+            <div class="error-detail">
+                ${detalle}
+            </div>
+
+        </div>
+
+    `;
+
+}
 
 
 /* ==========================================
@@ -653,56 +750,129 @@ const lightboxCounter =
 
 async function cargarExperiencia() {
 
+    if (!usuario || !evento) {
+
+        return;
+
+    }
+
+
     try {
+
+        console.log(
+            "NOVA VENTA - Cargando evento:",
+            evento
+        );
+
+
+        /* =========================
+           EVENTO
+        ========================= */
 
         const respuestaEvento =
             await fetch(
-                `/api/evento?evento=${encodeURIComponent(evento)}`
+                `/api/evento?evento=${encodeURIComponent(evento)}`,
+                {
+                    cache: "no-store"
+                }
             );
+
+
+        console.log(
+            "NOVA VENTA - Estado API evento:",
+            respuestaEvento.status
+        );
+
+
+        if (!respuestaEvento.ok) {
+
+            throw new Error(
+                `API evento respondió ${respuestaEvento.status}`
+            );
+
+        }
 
 
         const datosEvento =
             await respuestaEvento.json();
 
 
+        console.log(
+            "NOVA VENTA - Datos evento:",
+            datosEvento
+        );
+
+
         if (!datosEvento.ok) {
 
             throw new Error(
+                datosEvento.error ||
                 "No se pudo cargar el evento."
             );
 
         }
 
 
+        /* =========================
+           MEDIA
+        ========================= */
+
         const respuestaMedia =
             await fetch(
-                `/api/media?evento=${encodeURIComponent(evento)}`
+                `/api/media?evento=${encodeURIComponent(evento)}`,
+                {
+                    cache: "no-store"
+                }
             );
+
+
+        console.log(
+            "NOVA VENTA - Estado API media:",
+            respuestaMedia.status
+        );
+
+
+        if (!respuestaMedia.ok) {
+
+            throw new Error(
+                `API media respondió ${respuestaMedia.status}`
+            );
+
+        }
 
 
         const datosMedia =
             await respuestaMedia.json();
 
 
+        console.log(
+            "NOVA VENTA - Datos media:",
+            datosMedia
+        );
+
+
         if (!datosMedia.ok) {
 
             throw new Error(
+                datosMedia.error ||
                 "No se pudo cargar el contenido."
             );
 
         }
 
 
-        console.log(
-            "NOVA VENTA - Logo:",
-            datosMedia.logo
-        );
-
+        /* =========================
+           CLASIFICAR FOTOS
+        ========================= */
 
         await clasificarFotos(
             datosMedia.fotos || []
         );
 
+
+        /* =========================
+           CONSTRUIR
+        ========================= */
 
         construirExperiencia(
             datosEvento,
@@ -712,13 +882,16 @@ async function cargarExperiencia() {
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "NOVA VENTA - ERROR:",
+            error
+        );
 
-        app.innerHTML = `
-            <div class="error">
-                No pudimos cargar esta experiencia.
-            </div>
-        `;
+
+        mostrarError(
+            "NO PUDIMOS CARGAR ESTA EXPERIENCIA",
+            error.message
+        );
 
     }
 
@@ -729,13 +902,18 @@ async function cargarExperiencia() {
    CLASIFICAR FOTOS
 ========================================== */
 
-async function clasificarFotos(fotos) {
+async function clasificarFotos(
+    fotos
+) {
 
     fotosVerticales = [];
+
     fotosHorizontales = [];
 
 
-    for (const foto of fotos) {
+    for (
+        const foto of fotos
+    ) {
 
         try {
 
@@ -750,11 +928,15 @@ async function clasificarFotos(fotos) {
                 dimensiones.width
             ) {
 
-                fotosVerticales.push(foto);
+                fotosVerticales.push(
+                    foto
+                );
 
             } else {
 
-                fotosHorizontales.push(foto);
+                fotosHorizontales.push(
+                    foto
+                );
 
             }
 
@@ -772,10 +954,19 @@ async function clasificarFotos(fotos) {
 }
 
 
-function obtenerDimensiones(url) {
+/* ==========================================
+   OBTENER DIMENSIONES
+========================================== */
+
+function obtenerDimensiones(
+    url
+) {
 
     return new Promise(
-        (resolve, reject) => {
+        (
+            resolve,
+            reject
+        ) => {
 
             const imagen =
                 new Image();
@@ -797,7 +988,15 @@ function obtenerDimensiones(url) {
 
 
             imagen.onerror =
-                reject;
+                () => {
+
+                    reject(
+                        new Error(
+                            "No se pudo cargar la imagen."
+                        )
+                    );
+
+                };
 
 
             imagen.src =
@@ -859,10 +1058,14 @@ function construirExperiencia(
 
             <div class="hero-content">
 
+
                 ${
                     logo
                         ? `
-                            <div class="logo-wrapper">
+
+                            <div
+                                class="logo-wrapper"
+                            >
 
                                 <img
                                     class="photographer-logo"
@@ -872,18 +1075,23 @@ function construirExperiencia(
                                 >
 
                             </div>
+
                         `
                         : ""
                 }
 
 
                 <div class="hero-label">
+
                     NOVA MOMENTS
+
                 </div>
 
 
                 <h1 class="hero-title">
+
                     ${nombre}
+
                 </h1>
 
 
@@ -891,9 +1099,14 @@ function construirExperiencia(
 
                     ${nombreEvento}
 
-                    ${fecha ? " · " + fecha : ""}
+                    ${
+                        fecha
+                            ? " · " + fecha
+                            : ""
+                    }
 
                 </div>
+
 
             </div>
 
@@ -916,8 +1129,12 @@ function construirExperiencia(
                             >
 
                                 <h2>
-                                    FOTOGRAFÍAS VERTICALES
+
+                                    FOTOGRAFÍAS
+                                    VERTICALES
+
                                 </h2>
+
 
                                 <div
                                     class="section-line"
@@ -927,9 +1144,13 @@ function construirExperiencia(
 
 
                             <div
-                                class="gallery vertical-gallery"
+                                class="
+                                    gallery
+                                    vertical-gallery
+                                "
                                 id="verticalGallery"
                             ></div>
+
 
                         </section>
 
@@ -951,8 +1172,12 @@ function construirExperiencia(
                             >
 
                                 <h2>
-                                    FOTOGRAFÍAS HORIZONTALES
+
+                                    FOTOGRAFÍAS
+                                    HORIZONTALES
+
                                 </h2>
+
 
                                 <div
                                     class="section-line"
@@ -962,11 +1187,43 @@ function construirExperiencia(
 
 
                             <div
-                                class="gallery horizontal-gallery"
+                                class="
+                                    gallery
+                                    horizontal-gallery
+                                "
                                 id="horizontalGallery"
                             ></div>
 
+
                         </section>
+
+                    `
+                    : ""
+            }
+
+
+            ${
+                !fotosVerticales.length &&
+                !fotosHorizontales.length
+                    ? `
+
+                        <div class="error">
+
+                            <div class="error-title">
+
+                                NO HAY FOTOGRAFÍAS
+
+                            </div>
+
+                            <div class="error-detail">
+
+                                El evento está disponible,
+                                pero no encontramos fotografías
+                                en la carpeta FOTOS.
+
+                            </div>
+
+                        </div>
 
                     `
                     : ""
@@ -1006,12 +1263,17 @@ function construirGaleria(
 ) {
 
     if (!contenedor) {
+
         return;
+
     }
 
 
     fotos.forEach(
-        (foto, indice) => {
+        (
+            foto,
+            indice
+        ) => {
 
             const card =
                 document.createElement(
@@ -1039,6 +1301,10 @@ function construirGaleria(
 
             imagen.draggable =
                 false;
+
+
+            imagen.loading =
+                "lazy";
 
 
             card.appendChild(
@@ -1105,12 +1371,16 @@ function mostrarFoto() {
     if (
         !listaActual.length
     ) {
+
         return;
+
     }
 
 
     const foto =
-        listaActual[indiceActual];
+        listaActual[
+            indiceActual
+        ];
 
 
     lightboxImage.src =
@@ -1125,8 +1395,12 @@ function mostrarFoto() {
 
 function fotoAnterior() {
 
-    if (!listaActual.length) {
+    if (
+        !listaActual.length
+    ) {
+
         return;
+
     }
 
 
@@ -1146,8 +1420,12 @@ function fotoAnterior() {
 
 function fotoSiguiente() {
 
-    if (!listaActual.length) {
+    if (
+        !listaActual.length
+    ) {
+
         return;
+
     }
 
 
@@ -1228,7 +1506,9 @@ document.addEventListener(
                 "active"
             )
         ) {
+
             return;
+
         }
 
 
@@ -1308,7 +1588,9 @@ document.addEventListener(
 ========================================== */
 
 document
-    .getElementById("logout")
+    .getElementById(
+        "logout"
+    )
     .addEventListener(
         "click",
         () => {
@@ -1329,6 +1611,7 @@ document
                 "nova_evento"
             );
 
+
             window.location.href =
                 "acceso.html";
 
@@ -1343,6 +1626,7 @@ document
 cargarExperiencia();
 
 </script>
+
 
 </body>
 
