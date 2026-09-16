@@ -72,6 +72,12 @@ export async function onRequestGet(context) {
                     .endsWith("/PORTADA")
             );
 
+        const logo =
+            recursosImagen.filter(recurso =>
+                (recurso.asset_folder || "")
+                    .endsWith("/LOGOTIPO")
+            );
+
         const fotos =
             recursosImagen.filter(recurso =>
                 (recurso.asset_folder || "")
@@ -93,6 +99,9 @@ export async function onRequestGet(context) {
 
                 portada:
                     convertirRecursos(portada),
+
+                logo:
+                    convertirRecursos(logo),
 
                 fotos:
                     convertirRecursos(fotos),
