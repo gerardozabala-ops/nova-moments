@@ -64,7 +64,8 @@ export async function onRequestPost(context) {
                     SELECT
                         evento_id,
                         evento,
-                        estado
+                        estado,
+                        precio_foto
                     FROM eventos
                     WHERE evento_id = ?
                     LIMIT 1
@@ -89,6 +90,28 @@ export async function onRequestPost(context) {
                 ok: false,
                 error: "El evento no está activo."
             }, { status: 403 });
+
+        }
+
+
+        // =========================
+        // PRECIO OFICIAL DE D1
+        // =========================
+
+        const precioOficial =
+            Number(evento.precio_foto);
+
+
+        if (
+            !Number.isFinite(precioOficial) ||
+            precioOficial < 1
+        ) {
+
+            return Response.json({
+                ok: false,
+                error:
+                    "El evento no tiene un precio válido configurado."
+            }, { status: 500 });
 
         }
 
@@ -128,13 +151,6 @@ export async function onRequestPost(context) {
             const cantidad =
                 Number(item.cantidad);
 
-            const precioUnitario =
-                Number(item.precio_unitario);
-
-            const subtotal =
-                cantidad * precioUnitario;
-
-
             // =========================
             // VALIDAR FOTO
             // =========================
@@ -155,14 +171,12 @@ export async function onRequestPost(context) {
 
 
             // =========================
-            // VALIDAR CANTIDAD Y PRECIO
+            // VALIDAR CANTIDAD
             // =========================
 
             if (
                 !Number.isInteger(cantidad) ||
-                cantidad < 1 ||
-                !Number.isFinite(precioUnitario) ||
-                precioUnitario < 1
+                cantidad < 1
             ) {
 
                 return Response.json({
@@ -172,6 +186,31 @@ export async function onRequestPost(context) {
                 }, { status: 400 });
 
             }
+
+
+            // =========================
+            // USAR PRECIO OFICIAL DE D1
+            // =========================
+            //
+            // IMPORTANTE:
+            //
+            // No usamos:
+            //
+            // item.precio_unitario
+            //
+            // porque ese valor podría ser
+            // manipulado desde el navegador.
+            //
+            // El precio real siempre sale
+            // de D1 mediante precioOficial.
+            // =========================
+
+            const precioUnitario =
+                precioOficial;
+
+
+            const subtotal =
+                cantidad * precioUnitario;
 
 
             totalCalculado += subtotal;
