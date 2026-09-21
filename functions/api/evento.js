@@ -2,107 +2,122 @@ export async function onRequestGet(context) {
 
     try {
 
-        const url = new URL(context.request.url);
+        const url =
+            new URL(context.request.url);
 
         const eventoId =
             url.searchParams.get("evento");
 
+
+        // =========================
+        // VALIDAR EVENTO
+        // =========================
+
         if (!eventoId) {
 
-            return new Response(
-                JSON.stringify({
-                    ok: false,
-                    error: "No se indicó el evento."
-                }),
-                {
-                    status: 400,
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
+            return Response.json({
+                ok: false,
+                error: "Falta indicar el evento."
+            }, { status: 400 });
 
         }
 
+
+        // =========================
+        // BUSCAR EVENTO EN D1
+        // =========================
+
         const resultado =
-            await context.env.DB.prepare(`
-                SELECT
-                    evento_id,
-                    nombre,
-                    evento,
-                    fecha,
-                    estado
-                FROM eventos
-                WHERE evento_id = ?
-                LIMIT 1
-            `)
-            .bind(eventoId)
-            .first();
+            await context.env.DB
+                .prepare(`
+                    SELECT
+                        evento_id,
+                        nombre,
+                        evento,
+                        fecha,
+                        estado,
+                        precio_foto,
+                        tamano_producto
+                    FROM eventos
+                    WHERE evento_id = ?
+                    LIMIT 1
+                `)
+                .bind(eventoId)
+                .first();
+
+
+        // =========================
+        // EVENTO NO EXISTE
+        // =========================
 
         if (!resultado) {
 
-            return new Response(
-                JSON.stringify({
-                    ok: false,
-                    error: "El evento no existe."
-                }),
-                {
-                    status: 404,
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
+            return Response.json({
+                ok: false,
+                error: "El evento no existe."
+            }, { status: 404 });
 
         }
+
+
+        // =========================
+        // EVENTO INACTIVO
+        // =========================
 
         if (resultado.estado !== "activo") {
 
-            return new Response(
-                JSON.stringify({
-                    ok: false,
-                    error: "El evento no está activo."
-                }),
-                {
-                    status: 403,
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
+            return Response.json({
+                ok: false,
+                error: "El evento no está activo."
+            }, { status: 403 });
 
         }
 
-        return new Response(
-            JSON.stringify({
-                ok: true,
-                evento: resultado.evento_id,
-                nombre: resultado.nombre,
-                evento_nombre: resultado.evento,
-                fecha: resultado.fecha
-            }),
-            {
-                status: 200,
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
-        );
+
+        // =========================
+        // RESPUESTA
+        // =========================
+
+        return Response.json({
+
+            ok: true,
+
+            evento:
+                resultado.evento_id,
+
+            nombre:
+                resultado.nombre,
+
+            evento_nombre:
+                resultado.evento,
+
+            fecha:
+                resultado.fecha,
+
+            precio_foto:
+                resultado.precio_foto,
+
+            tamano_producto:
+                resultado.tamano_producto
+
+        });
+
 
     } catch (error) {
 
-        return new Response(
-            JSON.stringify({
-                ok: false,
-                error: "Error interno del servidor."
-            }),
-            {
-                status: 500,
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
+        console.error(
+            "Error al obtener evento:",
+            error
         );
+
+        return Response.json({
+
+            ok: false,
+
+            error:
+                "Error interno al obtener el evento."
+
+        }, { status: 500 });
 
     }
 
