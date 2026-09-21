@@ -308,7 +308,14 @@
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 16px;
             padding: 20px;
-            z-index: 450;
+
+            /*
+                Debe estar por encima del lightbox
+                para que COMPRAR abra el panel
+                en primer plano.
+            */
+            z-index: 650;
+
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             display: none;
         }
@@ -1574,7 +1581,14 @@
                 datos.fotos || [];
 
 
-            clasificarFotos();
+            /*
+                Esperamos a que el navegador
+                obtenga las dimensiones reales
+                de cada fotografía.
+            */
+
+            await clasificarFotos();
+
 
             construirGalerias();
 
@@ -1605,44 +1619,83 @@
        CLASIFICAR ORIENTACIÓN
     ========================================================= */
 
-    function clasificarFotos() {
+    async function clasificarFotos() {
 
         fotosVerticales = [];
 
         fotosHorizontales = [];
 
 
-        fotos.forEach(
-            foto => {
+        const resultados =
+            await Promise.all(
+
+                fotos.map(
+                    foto => {
+
+                        return new Promise(
+                            resolve => {
+
+                                const imagen =
+                                    new Image();
+
+
+                                imagen.onload =
+                                    () => {
+
+                                        resolve({
+                                            foto: foto,
+                                            ancho: imagen.naturalWidth,
+                                            alto: imagen.naturalHeight
+                                        });
+
+                                    };
+
+
+                                imagen.onerror =
+                                    () => {
+
+                                        resolve({
+                                            foto: foto,
+                                            ancho: 0,
+                                            alto: 0
+                                        });
+
+                                    };
+
+
+                                imagen.src =
+                                    foto.secure_url;
+
+                            }
+                        );
+
+                    }
+                )
+
+            );
+
+
+        resultados.forEach(
+            resultado => {
+
+                const foto =
+                    resultado.foto;
 
                 const ancho =
-                    Number(
-                        foto.width ||
-                        foto.original_width ||
-                        0
-                    );
+                    resultado.ancho;
 
                 const alto =
-                    Number(
-                        foto.height ||
-                        foto.original_height ||
-                        0
-                    );
+                    resultado.alto;
 
-
-                /*
-                    Si Cloudinary no devuelve
-                    dimensiones directamente,
-                    usamos una clasificación
-                    alternativa consultando la imagen.
-                */
 
                 if (
                     ancho &&
                     alto
                 ) {
 
-                    if (alto > ancho) {
+                    if (
+                        alto > ancho
+                    ) {
 
                         fotosVerticales.push(
                             foto
@@ -1655,17 +1708,6 @@
                         );
 
                     }
-
-                } else {
-
-                    /*
-                        Por defecto se agrega
-                        temporalmente a verticales.
-                    */
-
-                    fotosVerticales.push(
-                        foto
-                    );
 
                 }
 
@@ -1711,7 +1753,10 @@
         } else {
 
             fotosVerticales.forEach(
-                (foto, indice) => {
+                (
+                    foto,
+                    indice
+                ) => {
 
                     vertical.appendChild(
                         crearTarjeta(
@@ -1739,7 +1784,10 @@
         } else {
 
             fotosHorizontales.forEach(
-                (foto, indice) => {
+                (
+                    foto,
+                    indice
+                ) => {
 
                     horizontal.appendChild(
                         crearTarjeta(
@@ -1942,6 +1990,7 @@
 
         fotoActual--;
 
+
         if (
             fotoActual < 0
         ) {
@@ -1967,6 +2016,7 @@
 
 
         fotoActual++;
+
 
         if (
             fotoActual >=
