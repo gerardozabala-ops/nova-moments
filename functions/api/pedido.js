@@ -9,7 +9,6 @@ export async function onRequestPost(context) {
             nombre,
             whatsapp,
             email,
-            total,
             items
         } = datos;
 
@@ -146,7 +145,8 @@ export async function onRequestPost(context) {
 
                 return Response.json({
                     ok: false,
-                    error: "Uno de los artículos del pedido no es válido."
+                    error:
+                        "Uno de los artículos del pedido no es válido."
                 }, { status: 400 });
 
             }
@@ -160,8 +160,13 @@ export async function onRequestPost(context) {
                 foto_id:
                     item.foto_id,
 
+                // =====================================
+                // POR AHORA NO CONFIAMOS EN EL NOMBRE
+                // ENVIADO DESDE EL NAVEGADOR
+                // =====================================
+
                 nombre_archivo:
-                    item.nombre_archivo || "",
+                    "PENDIENTE",
 
                 cantidad:
                     cantidad,
