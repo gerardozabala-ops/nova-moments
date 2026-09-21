@@ -16,7 +16,12 @@ export async function onRequestPost(context) {
 
         const resultado = await context.env.DB
             .prepare(`
-                SELECT evento_id, nombre, evento, fecha
+                SELECT
+                    evento_id,
+                    nombre,
+                    evento,
+                    fecha,
+                    tipo_experiencia
                 FROM eventos
                 WHERE usuario = ?
                 AND password = ?
@@ -38,7 +43,8 @@ export async function onRequestPost(context) {
             evento: resultado.evento_id,
             nombre: resultado.nombre,
             evento_nombre: resultado.evento,
-            fecha: resultado.fecha
+            fecha: resultado.fecha,
+            tipo_experiencia: resultado.tipo_experiencia
         });
 
     } catch (error) {
