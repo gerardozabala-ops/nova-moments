@@ -47,7 +47,8 @@
             overflow-x: hidden;
         }
 
-        button {
+        button,
+        input {
             font-family: inherit;
         }
 
@@ -69,11 +70,11 @@
 
             padding: 0 28px;
 
-            background: rgba(8, 8, 8, 0.88);
+            background: rgba(8,8,8,.88);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
 
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,.08);
         }
 
         .brand {
@@ -92,8 +93,8 @@
         .selection-button {
             position: relative;
 
-            border: 1px solid rgba(255,255,255,0.18);
-            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,.18);
+            background: rgba(255,255,255,.05);
             color: #fff;
 
             padding: 9px 13px;
@@ -104,11 +105,6 @@
             letter-spacing: .5px;
 
             cursor: pointer;
-            transition: .2s;
-        }
-
-        .selection-button:hover {
-            background: rgba(255,255,255,0.1);
         }
 
         .selection-count {
@@ -299,7 +295,7 @@
             grid-template-columns:
                 repeat(
                     auto-fill,
-                    minmax(150px, 1fr)
+                    minmax(150px,1fr)
                 );
 
             gap: 8px;
@@ -466,10 +462,6 @@
             letter-spacing: 1px;
         }
 
-        /* =====================================================
-           COMPRAR
-        ===================================================== */
-
         .lightbox-buy {
             position: absolute;
 
@@ -494,10 +486,6 @@
             letter-spacing: 1px;
 
             cursor: pointer;
-
-            backdrop-filter: blur(10px);
-
-            transition: .2s;
         }
 
         .lightbox-buy:hover {
@@ -506,7 +494,7 @@
         }
 
         /* =====================================================
-           PURCHASE PANEL
+           OVERLAY
         ===================================================== */
 
         .purchase-overlay {
@@ -523,6 +511,10 @@
         .purchase-overlay.active {
             display: block;
         }
+
+        /* =====================================================
+           PURCHASE PANEL
+        ===================================================== */
 
         .purchase-panel {
             position: fixed;
@@ -542,34 +534,40 @@
 
             background: #101010;
 
-            border-left: 1px solid rgba(255,255,255,.08);
+            border-left:
+                1px solid rgba(255,255,255,.08);
 
             transform: translateX(100%);
 
-            transition: transform .3s ease;
+            transition:
+                transform .3s ease;
         }
 
         .purchase-panel.active {
             transform: translateX(0);
         }
 
-        .purchase-header {
+        .purchase-header,
+        .selection-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
 
             padding: 20px 22px;
 
-            border-bottom: 1px solid rgba(255,255,255,.08);
+            border-bottom:
+                1px solid rgba(255,255,255,.08);
         }
 
-        .purchase-title {
+        .purchase-title,
+        .selection-header-title {
             font-size: 14px;
             font-weight: 600;
             letter-spacing: 1px;
         }
 
-        .purchase-close {
+        .purchase-close,
+        .selection-close {
             border: 0;
             background: transparent;
 
@@ -623,7 +621,8 @@
 
             padding: 13px 0;
 
-            border-bottom: 1px solid rgba(255,255,255,.07);
+            border-bottom:
+                1px solid rgba(255,255,255,.07);
         }
 
         .product-label {
@@ -641,7 +640,8 @@
             display: flex;
             align-items: center;
 
-            border: 1px solid rgba(255,255,255,.15);
+            border:
+                1px solid rgba(255,255,255,.15);
 
             border-radius: 20px;
 
@@ -660,10 +660,6 @@
             font-size: 17px;
 
             cursor: pointer;
-        }
-
-        .quantity-button:hover {
-            background: rgba(255,255,255,.08);
         }
 
         .quantity-number {
@@ -695,7 +691,8 @@
 
             background: rgba(255,255,255,.04);
 
-            border: 1px solid rgba(255,255,255,.07);
+            border:
+                1px solid rgba(255,255,255,.07);
 
             border-radius: 5px;
 
@@ -729,12 +726,6 @@
             letter-spacing: 1px;
 
             cursor: pointer;
-
-            transition: .2s;
-        }
-
-        .add-selection:hover {
-            background: #ddd;
         }
 
         /* =====================================================
@@ -759,42 +750,17 @@
 
             background: #0e0e0e;
 
-            border-left: 1px solid rgba(255,255,255,.08);
+            border-left:
+                1px solid rgba(255,255,255,.08);
 
             transform: translateX(100%);
 
-            transition: transform .3s ease;
+            transition:
+                transform .3s ease;
         }
 
         .selection-panel.active {
             transform: translateX(0);
-        }
-
-        .selection-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            padding: 20px 22px;
-
-            border-bottom: 1px solid rgba(255,255,255,.08);
-        }
-
-        .selection-header-title {
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        .selection-close {
-            border: 0;
-            background: transparent;
-
-            color: rgba(255,255,255,.6);
-
-            font-size: 26px;
-
-            cursor: pointer;
         }
 
         .selection-items {
@@ -819,7 +785,8 @@
         .selection-item {
             display: grid;
 
-            grid-template-columns: 72px 1fr auto;
+            grid-template-columns:
+                72px 1fr auto;
 
             gap: 12px;
 
@@ -827,7 +794,8 @@
 
             padding: 13px 0;
 
-            border-bottom: 1px solid rgba(255,255,255,.07);
+            border-bottom:
+                1px solid rgba(255,255,255,.07);
         }
 
         .selection-item-image {
@@ -884,7 +852,8 @@
             width: 23px;
             height: 23px;
 
-            border: 1px solid rgba(255,255,255,.12);
+            border:
+                1px solid rgba(255,255,255,.12);
 
             background: transparent;
             color: #fff;
@@ -916,7 +885,8 @@
         .selection-footer {
             padding: 20px 22px;
 
-            border-top: 1px solid rgba(255,255,255,.08);
+            border-top:
+                1px solid rgba(255,255,255,.08);
         }
 
         .selection-total {
@@ -957,10 +927,6 @@
             cursor: pointer;
         }
 
-        .selection-next:hover {
-            background: #ddd;
-        }
-
         .selection-note {
             margin-top: 12px;
 
@@ -970,6 +936,338 @@
 
             font-size: 10px;
             line-height: 1.5;
+        }
+
+        /* =====================================================
+           ORDER PANEL
+        ===================================================== */
+
+        .order-panel {
+            position: fixed;
+
+            z-index: 3100;
+
+            right: 0;
+            top: 0;
+
+            width: 500px;
+            max-width: 100%;
+
+            height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+
+            background: #0d0d0d;
+
+            border-left:
+                1px solid rgba(255,255,255,.08);
+
+            transform: translateX(100%);
+
+            transition:
+                transform .3s ease;
+        }
+
+        .order-panel.active {
+            transform: translateX(0);
+        }
+
+        .order-body {
+            flex: 1;
+
+            overflow-y: auto;
+
+            padding: 24px;
+        }
+
+        .order-intro {
+            color: rgba(255,255,255,.5);
+
+            font-size: 12px;
+            line-height: 1.6;
+
+            margin-bottom: 25px;
+        }
+
+        .form-title {
+            font-size: 12px;
+            font-weight: 600;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: rgba(255,255,255,.5);
+
+            font-size: 11px;
+        }
+
+        .form-input {
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border:
+                1px solid rgba(255,255,255,.12);
+
+            border-radius: 4px;
+
+            outline: none;
+
+            background: rgba(255,255,255,.04);
+
+            color: #fff;
+
+            font-size: 13px;
+        }
+
+        .form-input:focus {
+            border-color:
+                rgba(255,255,255,.35);
+        }
+
+        .form-input::placeholder {
+            color:
+                rgba(255,255,255,.25);
+        }
+
+        .order-summary {
+            margin-top: 28px;
+
+            padding-top: 22px;
+
+            border-top:
+                1px solid rgba(255,255,255,.08);
+        }
+
+        .order-summary-title {
+            font-size: 12px;
+            font-weight: 600;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 15px;
+        }
+
+        .order-summary-item {
+            display: grid;
+
+            grid-template-columns:
+                55px 1fr auto;
+
+            gap: 11px;
+
+            align-items: center;
+
+            padding: 10px 0;
+
+            border-bottom:
+                1px solid rgba(255,255,255,.06);
+        }
+
+        .order-summary-image {
+            width: 55px;
+            height: 55px;
+
+            border-radius: 3px;
+
+            overflow: hidden;
+
+            background: #181818;
+        }
+
+        .order-summary-image img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+        }
+
+        .order-summary-info {
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .order-summary-info span {
+            display: block;
+
+            color: rgba(255,255,255,.42);
+
+            font-size: 10px;
+        }
+
+        .order-summary-price {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .order-total {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-top: 20px;
+        }
+
+        .order-total span {
+            color: rgba(255,255,255,.5);
+
+            font-size: 12px;
+        }
+
+        .order-total strong {
+            font-size: 22px;
+        }
+
+        .order-footer {
+            padding: 20px 24px;
+
+            border-top:
+                1px solid rgba(255,255,255,.08);
+        }
+
+        .confirm-order {
+            width: 100%;
+
+            border: 0;
+
+            padding: 15px;
+
+            background: #fff;
+            color: #000;
+
+            border-radius: 4px;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            cursor: pointer;
+        }
+
+        .confirm-order:hover {
+            background: #ddd;
+        }
+
+        .back-selection {
+            width: 100%;
+
+            margin-top: 10px;
+
+            border: 0;
+
+            background: transparent;
+            color: rgba(255,255,255,.45);
+
+            padding: 10px;
+
+            font-size: 11px;
+
+            cursor: pointer;
+        }
+
+        /* =====================================================
+           CONFIRMATION
+        ===================================================== */
+
+        .confirmation {
+            position: fixed;
+            inset: 0;
+
+            z-index: 4000;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            padding: 25px;
+
+            background: rgba(0,0,0,.88);
+        }
+
+        .confirmation.active {
+            display: flex;
+        }
+
+        .confirmation-card {
+            width: 100%;
+            max-width: 440px;
+
+            padding: 35px 28px;
+
+            text-align: center;
+
+            background: #111;
+
+            border:
+                1px solid rgba(255,255,255,.1);
+
+            border-radius: 8px;
+        }
+
+        .confirmation-icon {
+            width: 50px;
+            height: 50px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin: 0 auto 20px;
+
+            border-radius: 50%;
+
+            background: #fff;
+            color: #000;
+
+            font-size: 22px;
+        }
+
+        .confirmation-title {
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size: 28px;
+
+            margin-bottom: 12px;
+        }
+
+        .confirmation-text {
+            color: rgba(255,255,255,.5);
+
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .confirmation-button {
+            margin-top: 25px;
+
+            border: 1px solid rgba(255,255,255,.2);
+
+            background: transparent;
+            color: #fff;
+
+            padding: 12px 22px;
+
+            border-radius: 4px;
+
+            font-size: 11px;
+            letter-spacing: .8px;
+
+            cursor: pointer;
         }
 
         /* =====================================================
@@ -985,7 +1283,7 @@
             bottom: 25px;
 
             transform:
-                translate(-50%, 20px);
+                translate(-50%,20px);
 
             opacity: 0;
 
@@ -1008,14 +1306,14 @@
             opacity: 1;
 
             transform:
-                translate(-50%, 0);
+                translate(-50%,0);
         }
 
         /* =====================================================
            MOBILE
         ===================================================== */
 
-        @media (max-width: 700px) {
+        @media (max-width:700px) {
 
             header {
                 padding: 0 15px;
@@ -1058,7 +1356,7 @@
 
             .photo-grid {
                 grid-template-columns:
-                    repeat(2, 1fr);
+                    repeat(2,1fr);
 
                 gap: 5px;
             }
@@ -1094,16 +1392,19 @@
             }
 
             .purchase-panel,
-            .selection-panel {
+            .selection-panel,
+            .order-panel {
+
                 top: auto;
                 bottom: 0;
 
                 width: 100%;
                 height: auto;
 
-                max-height: 88vh;
+                max-height: 90vh;
 
                 border-left: 0;
+
                 border-top:
                     1px solid rgba(255,255,255,.1);
 
@@ -1115,20 +1416,25 @@
             }
 
             .purchase-panel.active,
-            .selection-panel.active {
+            .selection-panel.active,
+            .order-panel.active {
+
                 transform:
                     translateY(0);
             }
 
-            .purchase-body {
-                max-height: calc(88vh - 70px);
+            .purchase-body,
+            .order-body {
+
+                max-height:
+                    calc(90vh - 70px);
 
                 padding-bottom: 30px;
             }
 
             .selection-items {
                 max-height:
-                    calc(88vh - 145px);
+                    calc(90vh - 145px);
             }
 
             .selected-photo-preview {
@@ -1157,12 +1463,14 @@
             type="button"
         >
             MI SELECCIÓN
+
             <span
                 class="selection-count"
                 id="selectionCount"
             >
                 0
             </span>
+
         </button>
 
         <button
@@ -1200,7 +1508,6 @@
         class="lightbox-close"
         id="lightboxClose"
         type="button"
-        aria-label="Cerrar"
     >
         ×
     </button>
@@ -1209,7 +1516,6 @@
         class="lightbox-prev"
         id="lightboxPrev"
         type="button"
-        aria-label="Anterior"
     >
         ‹
     </button>
@@ -1225,7 +1531,6 @@
         class="lightbox-next"
         id="lightboxNext"
         type="button"
-        aria-label="Siguiente"
     >
         ›
     </button>
@@ -1247,7 +1552,7 @@
 
 
 <!-- =========================================================
-     PURCHASE OVERLAY
+     OVERLAY
 ========================================================= -->
 
 <div
@@ -1257,7 +1562,7 @@
 
 
 <!-- =========================================================
-     PURCHASE PANEL
+     PANEL DE COMPRA
 ========================================================= -->
 
 <aside
@@ -1298,9 +1603,7 @@
         </div>
 
 
-        <div
-            class="product-name"
-        >
+        <div class="product-name">
             Impresión fotográfica
         </div>
 
@@ -1313,7 +1616,6 @@
 
             <span
                 class="product-value"
-                id="purchaseSize"
             >
                 15 × 21 cm
             </span>
@@ -1329,7 +1631,6 @@
 
             <span
                 class="product-value"
-                id="purchaseUnitPrice"
             >
                 $5.000
             </span>
@@ -1394,12 +1695,12 @@
                 Importante:
             </strong>
 
-            el precio indicado corresponde a una
-            impresión de <strong>15 × 21 cm</strong>.
+            el precio corresponde a una
+            impresión de
+            <strong>15 × 21 cm</strong>.
 
-            Si necesitás otro tamaño, podés
-            consultarlo con el fotógrafo antes
-            de realizar el pedido.
+            Para otros tamaños, consultá
+            con el fotógrafo.
 
         </div>
 
@@ -1418,7 +1719,7 @@
 
 
 <!-- =========================================================
-     SELECTION PANEL
+     MI SELECCIÓN
 ========================================================= -->
 
 <aside
@@ -1476,15 +1777,216 @@
 
 
         <div class="selection-note">
-
-            El pedido se completará en el
-            siguiente paso.
-
+            Revisaremos tus datos y el pedido
+            antes de realizar el pago.
         </div>
 
     </div>
 
 </aside>
+
+
+<!-- =========================================================
+     DATOS DEL COMPRADOR + RESUMEN
+========================================================= -->
+
+<aside
+    class="order-panel"
+    id="orderPanel"
+>
+
+    <div class="selection-header">
+
+        <div class="selection-header-title">
+            DATOS Y PEDIDO
+        </div>
+
+        <button
+            class="selection-close"
+            id="orderClose"
+            type="button"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <div class="order-body">
+
+        <div class="order-intro">
+
+            Completá tus datos para preparar
+            el pedido. Antes de realizar el
+            pago podrás revisar nuevamente
+            toda la información.
+
+        </div>
+
+
+        <div class="form-title">
+            DATOS DEL COMPRADOR
+        </div>
+
+
+        <div class="form-group">
+
+            <label
+                class="form-label"
+                for="buyerName"
+            >
+                Nombre y apellido
+            </label>
+
+            <input
+                class="form-input"
+                id="buyerName"
+                type="text"
+                autocomplete="name"
+                placeholder="Nombre y apellido"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label
+                class="form-label"
+                for="buyerWhatsapp"
+            >
+                WhatsApp
+            </label>
+
+            <input
+                class="form-input"
+                id="buyerWhatsapp"
+                type="tel"
+                autocomplete="tel"
+                placeholder="Ej. 358 123 4567"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label
+                class="form-label"
+                for="buyerEmail"
+            >
+                Email
+                <span
+                    style="opacity:.5;"
+                >
+                    (opcional)
+                </span>
+            </label>
+
+            <input
+                class="form-input"
+                id="buyerEmail"
+                type="email"
+                autocomplete="email"
+                placeholder="tu@email.com"
+            >
+
+        </div>
+
+
+        <div class="order-summary">
+
+            <div class="order-summary-title">
+                RESUMEN DEL PEDIDO
+            </div>
+
+
+            <div
+                id="orderSummaryItems"
+            ></div>
+
+
+            <div class="order-total">
+
+                <span>
+                    TOTAL DEL PEDIDO
+                </span>
+
+                <strong
+                    id="orderTotal"
+                >
+                    $0
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="order-footer">
+
+        <button
+            class="confirm-order"
+            id="confirmOrder"
+            type="button"
+        >
+            CONFIRMAR PEDIDO
+        </button>
+
+
+        <button
+            class="back-selection"
+            id="backSelection"
+            type="button"
+        >
+            ← VOLVER A MI SELECCIÓN
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================================
+     CONFIRMACIÓN DE PRUEBA
+========================================================= -->
+
+<div
+    class="confirmation"
+    id="confirmation"
+>
+
+    <div class="confirmation-card">
+
+        <div class="confirmation-icon">
+            ✓
+        </div>
+
+        <div class="confirmation-title">
+            Pedido preparado
+        </div>
+
+        <div
+            class="confirmation-text"
+            id="confirmationText"
+        >
+            Tus datos y selección fueron
+            preparados correctamente.
+        </div>
+
+        <button
+            class="confirmation-button"
+            id="confirmationClose"
+            type="button"
+        >
+            VOLVER A LA GALERÍA
+        </button>
+
+    </div>
+
+</div>
 
 
 <!-- =========================================================
@@ -1500,7 +2002,7 @@
 <script>
 
     /* =========================================================
-       CONFIGURACIÓN DEL PRODUCTO
+       CONFIGURACIÓN TEMPORAL
     ========================================================= */
 
     const PRECIO_UNITARIO = 5000;
@@ -1530,7 +2032,7 @@
 
 
     /* =========================================================
-       VARIABLES DE EXPERIENCIA
+       VARIABLES
     ========================================================= */
 
     let datosEvento = null;
@@ -1543,10 +2045,7 @@
 
     let indiceActual = 0;
 
-
-    /* =========================================================
-       SELECCIÓN
-    ========================================================= */
+    let cantidadCompra = 1;
 
     let seleccion = [];
 
@@ -1554,6 +2053,10 @@
     const storageKey =
         `nova_venta_seleccion_${evento}`;
 
+
+    /* =========================================================
+       CARGAR SELECCIÓN
+    ========================================================= */
 
     function cargarSeleccion() {
 
@@ -1600,6 +2103,10 @@
     }
 
 
+    /* =========================================================
+       CÁLCULOS
+    ========================================================= */
+
     function cantidadTotalSeleccion() {
 
         return seleccion.reduce(
@@ -1616,12 +2123,19 @@
         return seleccion.reduce(
             (total, item) =>
                 total +
-                (
-                    item.cantidad *
-                    PRECIO_UNITARIO
-                ),
+                item.cantidad *
+                PRECIO_UNITARIO,
             0
         );
+
+    }
+
+
+    function formatoPrecio(valor) {
+
+        return "$" +
+            Number(valor)
+                .toLocaleString("es-AR");
 
     }
 
@@ -1632,21 +2146,6 @@
             "selectionCount"
         ).textContent =
             cantidadTotalSeleccion();
-
-    }
-
-
-    /* =========================================================
-       FORMATO DE DINERO
-    ========================================================= */
-
-    function formatoPrecio(valor) {
-
-        return "$" +
-            Number(valor)
-                .toLocaleString(
-                    "es-AR"
-                );
 
     }
 
@@ -1721,10 +2220,8 @@
             ).innerHTML = `
 
                 <div class="loading">
-
                     NO SE PUDO CARGAR
                     LA EXPERIENCIA
-
                 </div>
 
             `;
@@ -1738,9 +2235,7 @@
        CLASIFICAR FOTOS
     ========================================================= */
 
-    async function clasificarFotos(
-        fotos
-    ) {
+    async function clasificarFotos(fotos) {
 
         fotosVerticales = [];
 
@@ -1766,13 +2261,15 @@
                                         imagen.naturalWidth
                                     ) {
 
-                                        fotosVerticales
-                                            .push(foto);
+                                        fotosVerticales.push(
+                                            foto
+                                        );
 
                                     } else {
 
-                                        fotosHorizontales
-                                            .push(foto);
+                                        fotosHorizontales.push(
+                                            foto
+                                        );
 
                                     }
 
@@ -1808,9 +2305,7 @@
        CONSTRUIR EXPERIENCIA
     ========================================================= */
 
-    function construirExperiencia(
-        media
-    ) {
+    function construirExperiencia(media) {
 
         const portada =
             media.portada &&
@@ -2000,9 +2495,7 @@
         );
 
 
-        if (
-            fotosVerticales.length === 0
-        ) {
+        if (!fotosVerticales.length) {
 
             document.getElementById(
                 "verticalGallery"
@@ -2017,9 +2510,7 @@
         }
 
 
-        if (
-            fotosHorizontales.length === 0
-        ) {
+        if (!fotosHorizontales.length) {
 
             document.getElementById(
                 "horizontalGallery"
@@ -2040,7 +2531,7 @@
 
 
     /* =========================================================
-       CONSTRUIR GALERÍA
+       GALERÍA
     ========================================================= */
 
     function construirGaleria(
@@ -2094,11 +2585,9 @@
                     "click",
                     function () {
 
-                        listaActual =
-                            fotos;
+                        listaActual = fotos;
 
-                        indiceActual =
-                            indice;
+                        indiceActual = indice;
 
                         abrirLightbox();
 
@@ -2122,23 +2611,14 @@
 
     function abrirLightbox() {
 
-        if (
-            !listaActual ||
-            !listaActual.length
-        ) {
+        if (!listaActual.length) {
             return;
         }
 
 
-        const lightbox =
-            document.getElementById(
-                "lightbox"
-            );
-
-
-        lightbox.classList.add(
-            "active"
-        );
+        document.getElementById(
+            "lightbox"
+        ).classList.add("active");
 
 
         document.body.style.overflow =
@@ -2161,24 +2641,15 @@
         }
 
 
-        const imagen =
-            document.getElementById(
-                "lightboxImage"
-            );
-
-
-        imagen.src =
+        document.getElementById(
+            "lightboxImage"
+        ).src =
             foto.secure_url;
-
-
-        imagen.alt =
-            "";
 
 
         document.getElementById(
             "lightboxCounter"
         ).textContent =
-
             `${indiceActual + 1} / ${listaActual.length}`;
 
     }
@@ -2193,9 +2664,8 @@
 
         indiceActual--;
 
-        if (
-            indiceActual < 0
-        ) {
+
+        if (indiceActual < 0) {
 
             indiceActual =
                 listaActual.length - 1;
@@ -2216,6 +2686,7 @@
 
 
         indiceActual++;
+
 
         if (
             indiceActual >=
@@ -2247,31 +2718,17 @@
     }
 
 
-    /* =========================================================
-       FOTO ACTUAL
-    ========================================================= */
-
     function obtenerFotoActual() {
-
-        if (
-            !listaActual ||
-            !listaActual.length
-        ) {
-
-            return null;
-
-        }
-
 
         return listaActual[
             indiceActual
-        ];
+        ] || null;
 
     }
 
 
     /* =========================================================
-       ABRIR PANEL DE COMPRA
+       PANEL DE COMPRA
     ========================================================= */
 
     function abrirPanelCompra() {
@@ -2291,20 +2748,6 @@
             foto.secure_url;
 
 
-        document.getElementById(
-            "purchaseSize"
-        ).textContent =
-            TAMANO_PRODUCTO;
-
-
-        document.getElementById(
-            "purchaseUnitPrice"
-        ).textContent =
-            formatoPrecio(
-                PRECIO_UNITARIO
-            );
-
-
         const existente =
             seleccion.find(
                 item =>
@@ -2313,15 +2756,13 @@
             );
 
 
-        const cantidad =
+        cantidadCompra =
             existente
                 ? existente.cantidad
                 : 1;
 
 
-        actualizarPanelCompra(
-            cantidad
-        );
+        actualizarPanelCompra();
 
 
         document.getElementById(
@@ -2358,23 +2799,7 @@
     }
 
 
-    /* =========================================================
-       CANTIDAD DE COMPRA
-    ========================================================= */
-
-    let cantidadCompra = 1;
-
-
-    function actualizarPanelCompra(
-        cantidad
-    ) {
-
-        cantidadCompra =
-            Math.max(
-                1,
-                cantidad
-            );
-
+    function actualizarPanelCompra() {
 
         document.getElementById(
             "quantityNumber"
@@ -2394,7 +2819,7 @@
 
 
     /* =========================================================
-       AGREGAR A SELECCIÓN
+       AGREGAR SELECCIÓN
     ========================================================= */
 
     function agregarSeleccion() {
@@ -2441,15 +2866,11 @@
 
         guardarSeleccion();
 
-
         actualizarEstadosGaleria();
-
 
         cerrarPanelCompra();
 
-
         cerrarLightbox();
-
 
         mostrarToast(
             "Fotografía agregada a tu selección"
@@ -2459,27 +2880,21 @@
 
 
     /* =========================================================
-       ESTADO VISUAL DE GALERÍAS
+       ESTADOS GALERÍA
     ========================================================= */
 
     function actualizarEstadosGaleria() {
 
         document
-            .querySelectorAll(
-                ".photo-card"
-            )
+            .querySelectorAll(".photo-card")
             .forEach(
                 card => {
-
-                    const publicId =
-                        card.dataset.publicId;
-
 
                     const existe =
                         seleccion.some(
                             item =>
                                 item.public_id ===
-                                publicId
+                                card.dataset.publicId
                         );
 
 
@@ -2542,9 +2957,7 @@
         contenedor.innerHTML = "";
 
 
-        if (
-            seleccion.length === 0
-        ) {
+        if (!seleccion.length) {
 
             contenedor.innerHTML = `
 
@@ -2557,8 +2970,8 @@
 
                     <br><br>
 
-                    Podés recorrer la galería
-                    y agregar las fotografías
+                    Recorré la galería y
+                    agregá las fotografías
                     que quieras comprar.
 
                 </div>
@@ -2632,7 +3045,7 @@
 
                             <button
                                 type="button"
-                                onclick="cambiarCantidadSeleccion(${indice}, -1)"
+                                onclick="cambiarCantidadSeleccion(${indice},-1)"
                             >
                                 −
                             </button>
@@ -2643,7 +3056,7 @@
 
                             <button
                                 type="button"
-                                onclick="cambiarCantidadSeleccion(${indice}, 1)"
+                                onclick="cambiarCantidadSeleccion(${indice},1)"
                             >
                                 +
                             </button>
@@ -2693,7 +3106,7 @@
 
 
     /* =========================================================
-       CAMBIAR CANTIDAD
+       CANTIDAD SELECCIÓN
     ========================================================= */
 
     function cambiarCantidadSeleccion(
@@ -2701,9 +3114,7 @@
         cambio
     ) {
 
-        if (
-            !seleccion[indice]
-        ) {
+        if (!seleccion[indice]) {
             return;
         }
 
@@ -2727,26 +3138,16 @@
 
         guardarSeleccion();
 
-
         renderizarSeleccion();
-
 
         actualizarEstadosGaleria();
 
     }
 
 
-    /* =========================================================
-       ELIMINAR
-    ========================================================= */
+    function eliminarSeleccion(indice) {
 
-    function eliminarSeleccion(
-        indice
-    ) {
-
-        if (
-            !seleccion[indice]
-        ) {
+        if (!seleccion[indice]) {
             return;
         }
 
@@ -2759,11 +3160,311 @@
 
         guardarSeleccion();
 
-
         renderizarSeleccion();
 
-
         actualizarEstadosGaleria();
+
+    }
+
+
+    /* =========================================================
+       DATOS DEL COMPRADOR
+    ========================================================= */
+
+    function abrirPanelPedido() {
+
+        if (!seleccion.length) {
+
+            mostrarToast(
+                "Primero seleccioná alguna fotografía."
+            );
+
+            return;
+
+        }
+
+
+        renderizarResumenPedido();
+
+
+        document.getElementById(
+            "selectionPanel"
+        ).classList.remove(
+            "active"
+        );
+
+
+        document.getElementById(
+            "orderPanel"
+        ).classList.add(
+            "active"
+        );
+
+
+        document.body.style.overflow =
+            "hidden";
+
+    }
+
+
+    function cerrarPanelPedido() {
+
+        document.getElementById(
+            "orderPanel"
+        ).classList.remove(
+            "active"
+        );
+
+
+        document.body.style.overflow =
+            "";
+
+    }
+
+
+    /* =========================================================
+       RESUMEN PEDIDO
+    ========================================================= */
+
+    function renderizarResumenPedido() {
+
+        const contenedor =
+            document.getElementById(
+                "orderSummaryItems"
+            );
+
+
+        contenedor.innerHTML = "";
+
+
+        seleccion.forEach(
+            item => {
+
+                const elemento =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                elemento.className =
+                    "order-summary-item";
+
+
+                elemento.innerHTML = `
+
+                    <div
+                        class="order-summary-image"
+                    >
+
+                        <img
+                            src="${item.secure_url}"
+                            alt=""
+                            draggable="false"
+                        >
+
+                    </div>
+
+
+                    <div
+                        class="order-summary-info"
+                    >
+
+                        Fotografía
+
+                        <span>
+                            ${item.cantidad}
+                            ×
+                            ${TAMANO_PRODUCTO}
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="order-summary-price"
+                    >
+                        ${formatoPrecio(
+                            item.cantidad *
+                            PRECIO_UNITARIO
+                        )}
+                    </div>
+
+                `;
+
+
+                contenedor.appendChild(
+                    elemento
+                );
+
+            }
+        );
+
+
+        document.getElementById(
+            "orderTotal"
+        ).textContent =
+            formatoPrecio(
+                totalSeleccion()
+            );
+
+    }
+
+
+    /* =========================================================
+       VALIDAR DATOS
+    ========================================================= */
+
+    function validarDatosComprador() {
+
+        const nombre =
+            document.getElementById(
+                "buyerName"
+            ).value.trim();
+
+
+        const whatsapp =
+            document.getElementById(
+                "buyerWhatsapp"
+            ).value.trim();
+
+
+        if (!nombre) {
+
+            mostrarToast(
+                "Ingresá tu nombre y apellido."
+            );
+
+            document.getElementById(
+                "buyerName"
+            ).focus();
+
+            return false;
+
+        }
+
+
+        if (!whatsapp) {
+
+            mostrarToast(
+                "Ingresá tu número de WhatsApp."
+            );
+
+            document.getElementById(
+                "buyerWhatsapp"
+            ).focus();
+
+            return false;
+
+        }
+
+
+        return true;
+
+    }
+
+
+    /* =========================================================
+       CONFIRMAR PEDIDO
+    ========================================================= */
+
+    function confirmarPedido() {
+
+        if (
+            !validarDatosComprador()
+        ) {
+
+            return;
+
+        }
+
+
+        const nombre =
+            document.getElementById(
+                "buyerName"
+            ).value.trim();
+
+
+        const whatsapp =
+            document.getElementById(
+                "buyerWhatsapp"
+            ).value.trim();
+
+
+        const email =
+            document.getElementById(
+                "buyerEmail"
+            ).value.trim();
+
+
+        const total =
+            totalSeleccion();
+
+
+        document.getElementById(
+            "confirmationText"
+        ).innerHTML = `
+
+            <strong>
+                ${escaparHTML(nombre)}
+            </strong>
+
+            <br><br>
+
+            Tu selección contiene
+            <strong>
+                ${cantidadTotalSeleccion()}
+            </strong>
+            impresión(es).
+
+            <br><br>
+
+            Total preparado:
+            <strong>
+                ${formatoPrecio(total)}
+            </strong>
+
+            <br><br>
+
+            WhatsApp:
+            ${escaparHTML(whatsapp)}
+
+            ${
+                email
+                ?
+                `
+                <br>
+                Email:
+                ${escaparHTML(email)}
+                `
+                :
+                ""
+            }
+
+            <br><br>
+
+            Esta es todavía una etapa de prueba.
+            El pago online se incorporará
+            en el siguiente paso.
+
+        `;
+
+
+        document.getElementById(
+            "orderPanel"
+        ).classList.remove(
+            "active"
+        );
+
+
+        document.getElementById(
+            "confirmation"
+        ).classList.add(
+            "active"
+        );
+
+
+        document.body.style.overflow =
+            "hidden";
 
     }
 
@@ -2775,9 +3476,7 @@
     let toastTimer = null;
 
 
-    function mostrarToast(
-        mensaje
-    ) {
+    function mostrarToast(mensaje) {
 
         const toast =
             document.getElementById(
@@ -2810,6 +3509,29 @@
                 },
                 2500
             );
+
+    }
+
+
+    /* =========================================================
+       ESCAPAR HTML
+    ========================================================= */
+
+    function escaparHTML(texto) {
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.textContent =
+            texto == null
+                ? ""
+                : texto;
+
+
+        return div.innerHTML;
 
     }
 
@@ -2850,8 +3572,26 @@
     );
 
 
+    document.getElementById(
+        "lightbox"
+    ).addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target === this
+            ) {
+
+                cerrarLightbox();
+
+            }
+
+        }
+    );
+
+
     /* =========================================================
-       EVENTOS PANEL COMPRA
+       PANEL COMPRA
     ========================================================= */
 
     document.getElementById(
@@ -2874,11 +3614,15 @@
         "quantityMinus"
     ).addEventListener(
         "click",
-        () => {
+        function() {
 
-            actualizarPanelCompra(
-                cantidadCompra - 1
-            );
+            cantidadCompra =
+                Math.max(
+                    1,
+                    cantidadCompra - 1
+                );
+
+            actualizarPanelCompra();
 
         }
     );
@@ -2888,11 +3632,11 @@
         "quantityPlus"
     ).addEventListener(
         "click",
-        () => {
+        function() {
 
-            actualizarPanelCompra(
-                cantidadCompra + 1
-            );
+            cantidadCompra++;
+
+            actualizarPanelCompra();
 
         }
     );
@@ -2907,7 +3651,7 @@
 
 
     /* =========================================================
-       EVENTOS MI SELECCIÓN
+       MI SELECCIÓN
     ========================================================= */
 
     document.getElementById(
@@ -2926,34 +3670,67 @@
     );
 
 
-    /* =========================================================
-       CONTINUAR
-       POR AHORA SOLO MENSAJE.
-       MERCADO PAGO SE AGREGA EN EL PRÓXIMO PASO.
-    ========================================================= */
-
     document.getElementById(
         "selectionNext"
     ).addEventListener(
         "click",
-        function () {
-
-            if (
-                seleccion.length === 0
-            ) {
-
-                mostrarToast(
-                    "Primero seleccioná alguna fotografía."
-                );
-
-                return;
-
-            }
+        abrirPanelPedido
+    );
 
 
-            mostrarToast(
-                "La confirmación del pedido se agregará en el próximo paso."
+    /* =========================================================
+       PEDIDO
+    ========================================================= */
+
+    document.getElementById(
+        "orderClose"
+    ).addEventListener(
+        "click",
+        cerrarPanelPedido
+    );
+
+
+    document.getElementById(
+        "backSelection"
+    ).addEventListener(
+        "click",
+        function() {
+
+            cerrarPanelPedido();
+
+            abrirSeleccion();
+
+        }
+    );
+
+
+    document.getElementById(
+        "confirmOrder"
+    ).addEventListener(
+        "click",
+        confirmarPedido
+    );
+
+
+    /* =========================================================
+       CONFIRMACIÓN
+    ========================================================= */
+
+    document.getElementById(
+        "confirmationClose"
+    ).addEventListener(
+        "click",
+        function() {
+
+            document.getElementById(
+                "confirmation"
+            ).classList.remove(
+                "active"
             );
+
+
+            document.body.style.overflow =
+                "";
 
         }
     );
@@ -2965,7 +3742,7 @@
 
     document.addEventListener(
         "keydown",
-        function (event) {
+        function(event) {
 
             const lightbox =
                 document.getElementById(
@@ -3010,34 +3787,12 @@
 
 
     /* =========================================================
-       CERRAR LIGHTBOX AL TOCAR FONDO
-    ========================================================= */
-
-    document.getElementById(
-        "lightbox"
-    ).addEventListener(
-        "click",
-        function (event) {
-
-            if (
-                event.target === this
-            ) {
-
-                cerrarLightbox();
-
-            }
-
-        }
-    );
-
-
-    /* =========================================================
-       PROTECCIÓN BÁSICA DE IMÁGENES
+       PROTECCIÓN BÁSICA
     ========================================================= */
 
     document.addEventListener(
         "contextmenu",
-        function (event) {
+        function(event) {
 
             if (
                 event.target.tagName ===
@@ -3054,7 +3809,7 @@
 
     document.addEventListener(
         "dragstart",
-        function (event) {
+        function(event) {
 
             if (
                 event.target.tagName ===
@@ -3077,7 +3832,7 @@
         "logoutButton"
     ).addEventListener(
         "click",
-        function () {
+        function() {
 
             sessionStorage.removeItem(
                 "nova_usuario"
@@ -3101,31 +3856,6 @@
 
         }
     );
-
-
-    /* =========================================================
-       ESCAPAR HTML
-    ========================================================= */
-
-    function escaparHTML(
-        texto
-    ) {
-
-        const div =
-            document.createElement(
-                "div"
-            );
-
-
-        div.textContent =
-            texto == null
-                ? ""
-                : texto;
-
-
-        return div.innerHTML;
-
-    }
 
 
     /* =========================================================
