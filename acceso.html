@@ -528,10 +528,25 @@ formulario.addEventListener(
             );
 
 
-            alert(
-                "tipo_experiencia = " +
-                datos.tipo_experiencia
-            );
+            /*
+             * REDIRECCIÓN SEGÚN EL TIPO
+             * DE EXPERIENCIA DEL EVENTO
+             */
+
+            if (
+                datos.tipo_experiencia ===
+                "VENTA"
+            ) {
+
+                window.location.href =
+                    "experiencia-venta.html";
+
+            } else {
+
+                window.location.href =
+                    "experiencia.html";
+
+            }
 
 
         } catch (error) {
