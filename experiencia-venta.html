@@ -1161,6 +1161,11 @@
             background: #ddd;
         }
 
+        .confirm-order:disabled {
+            opacity: .5;
+            cursor: wait;
+        }
+
         .back-selection {
             width: 100%;
 
@@ -1950,7 +1955,7 @@
 
 
 <!-- =========================================================
-     CONFIRMACIÓN DE PRUEBA
+     CONFIRMACIÓN
 ========================================================= -->
 
 <div
@@ -3365,13 +3370,25 @@
 
     /* =========================================================
        CONFIRMAR PEDIDO
+       AHORA CONECTADO A D1
     ========================================================= */
 
-    function confirmarPedido() {
+    async function confirmarPedido() {
 
         if (
             !validarDatosComprador()
         ) {
+
+            return;
+
+        }
+
+
+        if (!seleccion.length) {
+
+            mostrarToast(
+                "No hay fotografías seleccionadas."
+            );
 
             return;
 
@@ -3396,75 +3413,230 @@
             ).value.trim();
 
 
-        const total =
-            totalSeleccion();
+        const boton =
+            document.getElementById(
+                "confirmOrder"
+            );
 
 
-        document.getElementById(
-            "confirmationText"
-        ).innerHTML = `
+        /*
+         * Deshabilitamos el botón para evitar
+         * que el usuario genere dos pedidos
+         * por doble clic.
+         */
 
-            <strong>
-                ${escaparHTML(nombre)}
-            </strong>
+        boton.disabled = true;
 
-            <br><br>
+        boton.textContent =
+            "GUARDANDO PEDIDO...";
 
-            Tu selección contiene
-            <strong>
-                ${cantidadTotalSeleccion()}
-            </strong>
-            impresión(es).
 
-            <br><br>
+        try {
 
-            Total preparado:
-            <strong>
-                ${formatoPrecio(total)}
-            </strong>
+            /*
+             * El total NO se envía como dato
+             * confiable para guardar.
+             *
+             * pedido.js vuelve a calcularlo
+             * en el servidor.
+             */
 
-            <br><br>
+            const respuesta =
+                await fetch(
+                    "/api/pedido",
+                    {
+                        method: "POST",
 
-            WhatsApp:
-            ${escaparHTML(whatsapp)}
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
 
-            ${
-                email
-                ?
-                `
-                <br>
-                Email:
-                ${escaparHTML(email)}
-                `
-                :
-                ""
+                        body:
+                            JSON.stringify({
+
+                                evento_id:
+                                    evento,
+
+                                nombre:
+                                    nombre,
+
+                                whatsapp:
+                                    whatsapp,
+
+                                email:
+                                    email,
+
+                                total:
+                                    totalSeleccion(),
+
+                                items:
+                                    seleccion.map(
+                                        item => ({
+
+                                            /*
+                                             * Por ahora utilizamos
+                                             * public_id como
+                                             * identificador interno.
+                                             *
+                                             * El nombre exacto del
+                                             * archivo para Luciano
+                                             * lo resolveremos después.
+                                             */
+
+                                            foto_id:
+                                                item.public_id,
+
+                                            cantidad:
+                                                item.cantidad,
+
+                                            precio_unitario:
+                                                PRECIO_UNITARIO
+
+                                        })
+                                    )
+
+                            })
+                    }
+                );
+
+
+            const datos =
+                await respuesta.json();
+
+
+            if (!respuesta.ok || !datos.ok) {
+
+                throw new Error(
+                    datos.error ||
+                    "No se pudo guardar el pedido."
+                );
+
             }
 
-            <br><br>
 
-            Esta es todavía una etapa de prueba.
-            El pago online se incorporará
-            en el siguiente paso.
+            /*
+             * Pedido guardado correctamente
+             * en D1.
+             */
 
-        `;
-
-
-        document.getElementById(
-            "orderPanel"
-        ).classList.remove(
-            "active"
-        );
+            const pedidoId =
+                datos.pedido_id ||
+                "PEDIDO";
 
 
-        document.getElementById(
-            "confirmation"
-        ).classList.add(
-            "active"
-        );
+            const totalGuardado =
+                Number(
+                    datos.total ||
+                    totalSeleccion()
+                );
 
 
-        document.body.style.overflow =
-            "hidden";
+            document.getElementById(
+                "confirmationText"
+            ).innerHTML = `
+
+                <strong>
+                    ${escaparHTML(nombre)}
+                </strong>
+
+                <br><br>
+
+                Tu pedido fue registrado
+                correctamente.
+
+                <br><br>
+
+                Número de pedido:
+
+                <br>
+
+                <strong>
+                    ${escaparHTML(pedidoId)}
+                </strong>
+
+                <br><br>
+
+                Tu selección contiene
+                <strong>
+                    ${cantidadTotalSeleccion()}
+                </strong>
+                impresión(es).
+
+                <br><br>
+
+                Total del pedido:
+
+                <strong>
+                    ${formatoPrecio(totalGuardado)}
+                </strong>
+
+                <br><br>
+
+                WhatsApp:
+                ${escaparHTML(whatsapp)}
+
+                ${
+                    email
+                    ?
+                    `
+                    <br>
+                    Email:
+                    ${escaparHTML(email)}
+                    `
+                    :
+                    ""
+                }
+
+                <br><br>
+
+                Esta es todavía una etapa de prueba.
+                El pago online se incorporará
+                en el siguiente paso.
+
+            `;
+
+
+            document.getElementById(
+                "orderPanel"
+            ).classList.remove(
+                "active"
+            );
+
+
+            document.getElementById(
+                "confirmation"
+            ).classList.add(
+                "active"
+            );
+
+
+            document.body.style.overflow =
+                "hidden";
+
+
+        } catch (error) {
+
+            console.error(
+                "Error al confirmar pedido:",
+                error
+            );
+
+
+            mostrarToast(
+                error.message ||
+                "No se pudo guardar el pedido."
+            );
+
+
+        } finally {
+
+            boton.disabled = false;
+
+            boton.textContent =
+                "CONFIRMAR PEDIDO";
+
+        }
 
     }
 
