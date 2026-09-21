@@ -1,1599 +1,3083 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>NOVA MOMENTS</title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #080808;
+            color: #f5f5f5;
+            font-family: "DM Sans", sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 68px;
+            z-index: 1000;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 28px;
+
+            background: rgba(8, 8, 8, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .brand {
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #fff;
+        }
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
->
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-<title>NOVA MOMENTS</title>
+        .selection-button {
+            position: relative;
 
-<link
-rel="preconnect"
-href="https://fonts.googleapis.com"
->
+            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
 
-<link
-rel="preconnect"
-href="https://fonts.gstatic.com"
-crossorigin
->
+            padding: 9px 13px;
+            border-radius: 20px;
 
-<link
-href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap"
-rel="stylesheet"
->
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .5px;
 
-<style>
+            cursor: pointer;
+            transition: .2s;
+        }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+        .selection-button:hover {
+            background: rgba(255,255,255,0.1);
+        }
 
-body {
-    background: #080808;
-    color: #ffffff;
-    font-family: "DM Sans", sans-serif;
-    overflow-x: hidden;
-}
+        .selection-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
 
-body.no-scroll {
-    overflow: hidden;
-}
+            min-width: 18px;
+            height: 18px;
 
+            margin-left: 5px;
 
-/* =========================
-   HEADER
-========================= */
+            border-radius: 50%;
 
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 68px;
+            background: #fff;
+            color: #000;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+            font-size: 10px;
+            font-weight: 700;
+        }
 
-    padding: 0 35px;
+        .logout-button {
+            border: 0;
+            background: transparent;
+            color: rgba(255,255,255,.6);
 
-    background: rgba(8, 8, 8, 0.72);
-    backdrop-filter: blur(12px);
+            font-size: 11px;
+            letter-spacing: .8px;
 
-    z-index: 100;
-}
+            cursor: pointer;
+        }
 
-.nova-logo {
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 4px;
-}
+        .logout-button:hover {
+            color: #fff;
+        }
 
-.nova-logo span {
-    font-weight: 300;
-    opacity: 0.65;
-}
+        /* =====================================================
+           APP
+        ===================================================== */
 
-.logout {
-    border: 1px solid rgba(255,255,255,0.25);
-    background: transparent;
-    color: white;
+        #app {
+            padding-top: 68px;
+            min-height: 100vh;
+        }
 
-    padding: 8px 15px;
+        .loading {
+            min-height: calc(100vh - 68px);
 
-    border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-    font-family: inherit;
-    font-size: 11px;
+            color: rgba(255,255,255,.5);
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
 
-    letter-spacing: 1px;
+        /* =====================================================
+           HERO
+        ===================================================== */
 
-    cursor: pointer;
-}
+        .hero {
+            position: relative;
 
+            min-height: 72vh;
 
-/* =========================
-   HERO
-========================= */
+            display: flex;
+            align-items: flex-end;
 
-.hero {
-    position: relative;
+            overflow: hidden;
 
-    min-height: 82vh;
+            background: #111;
+        }
 
-    display: flex;
-    align-items: flex-end;
+        .hero-image {
+            position: absolute;
+            inset: 0;
 
-    padding: 110px 7vw 70px;
+            width: 100%;
+            height: 100%;
 
-    background-size: cover;
-    background-position: center;
+            object-fit: cover;
 
-    overflow: hidden;
-}
+            opacity: .68;
+        }
 
-.hero::before {
-    content: "";
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
 
-    position: absolute;
-    inset: 0;
+            background:
+                linear-gradient(
+                    to top,
+                    #080808 3%,
+                    rgba(8,8,8,.45) 45%,
+                    rgba(8,8,8,.12) 100%
+                );
+        }
 
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(0,0,0,0.12),
-            rgba(0,0,0,0.58) 55%,
-            #080808 100%
-        );
-}
+        .hero-content {
+            position: relative;
+            z-index: 2;
 
-.hero-content {
-    position: relative;
-    z-index: 2;
+            width: 100%;
+            max-width: 1200px;
 
-    width: 100%;
-    max-width: 900px;
-}
+            margin: 0 auto;
 
+            padding: 70px 28px 55px;
+        }
 
-/* =========================
-   LOGOTIPO
-========================= */
+        .photographer-logo {
+            max-width: 170px;
+            max-height: 90px;
 
-.logo-wrapper {
-    width: 230px;
-    height: 100px;
+            object-fit: contain;
 
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+            margin-bottom: 25px;
+        }
 
-    margin-bottom: 30px;
-}
+        .hero-event {
+            font-family: "Playfair Display", serif;
 
-.photographer-logo {
-    display: block;
+            font-size: clamp(36px, 7vw, 72px);
+            line-height: 1.05;
 
-    max-width: 220px;
-    max-height: 95px;
+            font-weight: 500;
 
-    width: auto;
-    height: auto;
+            max-width: 900px;
+        }
 
-    object-fit: contain;
+        .hero-name {
+            margin-top: 12px;
 
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-user-drag: none;
-}
+            font-size: 16px;
+            color: rgba(255,255,255,.72);
+        }
 
+        .hero-date {
+            margin-top: 8px;
 
-/* =========================
-   HERO TEXT
-========================= */
+            font-size: 13px;
+            color: rgba(255,255,255,.48);
 
-.hero-label {
-    font-size: 10px;
-    letter-spacing: 4px;
-    opacity: 0.65;
+            letter-spacing: .5px;
+        }
 
-    margin-bottom: 15px;
-}
+        /* =====================================================
+           GALLERIES
+        ===================================================== */
 
-.hero-title {
-    font-family: "Playfair Display", serif;
+        .content {
+            width: 100%;
+            max-width: 1400px;
 
-    font-size: clamp(42px, 7vw, 82px);
+            margin: 0 auto;
 
-    font-weight: 400;
+            padding: 50px 24px 100px;
+        }
 
-    line-height: 1.05;
+        .gallery-section {
+            margin-bottom: 70px;
+        }
 
-    margin-bottom: 14px;
-}
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
 
-.hero-event {
-    font-size: 15px;
-    font-weight: 300;
-    opacity: 0.75;
-}
+            margin-bottom: 22px;
+        }
 
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
 
-/* =========================
-   MAIN
-========================= */
+            letter-spacing: 1.5px;
+        }
 
-main {
-    padding: 35px 7vw 100px;
-}
+        .section-subtitle {
+            font-size: 11px;
+            color: rgba(255,255,255,.4);
+        }
 
-.gallery-section {
-    margin-bottom: 80px;
-}
+        .photo-grid {
+            display: grid;
 
-.section-heading {
-    display: flex;
-    align-items: center;
-    gap: 18px;
+            grid-template-columns:
+                repeat(
+                    auto-fill,
+                    minmax(150px, 1fr)
+                );
 
-    margin-bottom: 28px;
-}
+            gap: 8px;
+        }
 
-.section-heading h2 {
-    font-size: 12px;
-    font-weight: 500;
+        .photo-card {
+            position: relative;
 
-    letter-spacing: 3px;
-    white-space: nowrap;
-}
+            overflow: hidden;
 
-.section-line {
-    height: 1px;
-    width: 100%;
+            background: #121212;
 
-    background: linear-gradient(
-        to right,
-        rgba(255,255,255,0.35),
-        transparent
-    );
-}
+            cursor: pointer;
 
+            border-radius: 3px;
+        }
 
-/* =========================
-   GALLERY
-========================= */
+        .photo-card.vertical {
+            aspect-ratio: 2 / 3;
+        }
 
-.gallery {
-    display: grid;
+        .photo-card.horizontal {
+            aspect-ratio: 3 / 2;
+        }
 
-    grid-template-columns:
-        repeat(4, 1fr);
+        .photo-card img {
+            display: block;
 
-    gap: 8px;
-}
+            width: 100%;
+            height: 100%;
 
-.photo-card {
-    position: relative;
+            object-fit: cover;
 
-    overflow: hidden;
+            transition:
+                transform .45s ease,
+                opacity .3s ease;
+        }
 
-    background: #111;
+        .photo-card:hover img {
+            transform: scale(1.025);
+        }
 
-    cursor: pointer;
+        .photo-selected {
+            position: absolute;
+            top: 9px;
+            right: 9px;
 
-    user-select: none;
-    -webkit-user-select: none;
+            width: 26px;
+            height: 26px;
 
-    border-radius: 2px;
-}
+            display: none;
+            align-items: center;
+            justify-content: center;
 
-.photo-card img {
-    display: block;
+            border-radius: 50%;
 
-    width: 100%;
-    height: 100%;
+            background: rgba(255,255,255,.95);
+            color: #000;
 
-    object-fit: cover;
+            font-size: 13px;
+            font-weight: 700;
+        }
 
-    transition:
-        transform 0.5s ease,
-        opacity 0.3s ease;
+        .photo-card.is-selected .photo-selected {
+            display: flex;
+        }
 
-    pointer-events: none;
+        .empty-gallery {
+            padding: 30px 0;
 
-    -webkit-user-drag: none;
-}
+            color: rgba(255,255,255,.3);
+            font-size: 13px;
+        }
 
-.photo-card:hover img {
-    transform: scale(1.025);
-}
+        /* =====================================================
+           LIGHTBOX
+        ===================================================== */
 
-.vertical-gallery .photo-card {
-    aspect-ratio: 3 / 4;
-}
+        .lightbox {
+            position: fixed;
+            inset: 0;
 
-.horizontal-gallery .photo-card {
-    aspect-ratio: 4 / 3;
-}
+            z-index: 2000;
 
+            display: none;
+            align-items: center;
+            justify-content: center;
 
-/* =========================
-   LIGHTBOX
-========================= */
+            background: rgba(0,0,0,.94);
 
-.lightbox {
-    position: fixed;
-    inset: 0;
+            padding: 55px 20px 95px;
+        }
 
-    background: rgba(0,0,0,0.97);
+        .lightbox.active {
+            display: flex;
+        }
 
-    display: none;
+        .lightbox-image {
+            max-width: 90vw;
+            max-height: 78vh;
 
-    align-items: center;
-    justify-content: center;
+            object-fit: contain;
 
-    z-index: 500;
-}
+            user-select: none;
+            -webkit-user-select: none;
+        }
 
-.lightbox.active {
-    display: flex;
-}
+        .lightbox-close,
+        .lightbox-prev,
+        .lightbox-next {
+            position: absolute;
 
-.lightbox-image {
-    max-width: 88vw;
-    max-height: 86vh;
+            border: 0;
+            background: transparent;
 
-    object-fit: contain;
+            color: #fff;
 
-    user-select: none;
-    -webkit-user-select: none;
+            cursor: pointer;
 
-    pointer-events: none;
+            z-index: 5;
+        }
 
-    -webkit-user-drag: none;
-}
+        .lightbox-close {
+            top: 18px;
+            right: 24px;
 
-.lightbox-close,
-.lightbox-prev,
-.lightbox-next {
-    position: absolute;
+            font-size: 36px;
+            font-weight: 300;
+        }
 
-    border: none;
+        .lightbox-prev,
+        .lightbox-next {
+            top: 50%;
+            transform: translateY(-50%);
 
-    background: rgba(255,255,255,0.08);
+            width: 55px;
+            height: 80px;
 
-    color: white;
+            font-size: 48px;
+            font-weight: 200;
 
-    width: 44px;
-    height: 44px;
+            color: rgba(255,255,255,.75);
+        }
 
-    border-radius: 50%;
+        .lightbox-prev {
+            left: 10px;
+        }
 
-    cursor: pointer;
+        .lightbox-next {
+            right: 10px;
+        }
 
-    font-size: 20px;
+        .lightbox-counter {
+            position: absolute;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+            bottom: 78px;
+            left: 50%;
 
-    z-index: 510;
-}
+            transform: translateX(-50%);
 
-.lightbox-close {
-    top: 25px;
-    right: 25px;
-}
+            color: rgba(255,255,255,.55);
 
-.lightbox-prev {
-    left: 25px;
-}
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
 
-.lightbox-next {
-    right: 25px;
-}
+        /* =====================================================
+           COMPRAR
+        ===================================================== */
 
-.lightbox-counter {
-    position: absolute;
+        .lightbox-buy {
+            position: absolute;
 
-    bottom: 25px;
-    left: 50%;
+            bottom: 22px;
+            left: 50%;
 
-    transform: translateX(-50%);
+            transform: translateX(-50%);
 
-    font-size: 11px;
+            border: 1px solid rgba(255,255,255,.35);
 
-    letter-spacing: 2px;
+            background: rgba(255,255,255,.09);
 
-    opacity: 0.6;
-}
+            color: #fff;
 
+            padding: 11px 24px;
 
-/* =========================
-   LOADING
-========================= */
+            border-radius: 30px;
 
-.loading {
-    min-height: 60vh;
+            font-size: 12px;
+            font-weight: 600;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+            letter-spacing: 1px;
 
-    font-size: 11px;
+            cursor: pointer;
 
-    letter-spacing: 3px;
+            backdrop-filter: blur(10px);
 
-    opacity: 0.5;
-}
+            transition: .2s;
+        }
 
+        .lightbox-buy:hover {
+            background: #fff;
+            color: #000;
+        }
 
-/* =========================
-   ERROR
-========================= */
+        /* =====================================================
+           PURCHASE PANEL
+        ===================================================== */
 
-.error {
-    min-height: 60vh;
+        .purchase-overlay {
+            position: fixed;
+            inset: 0;
 
-    display: flex;
-    flex-direction: column;
+            z-index: 3000;
 
-    align-items: center;
-    justify-content: center;
+            display: none;
 
-    text-align: center;
+            background: rgba(0,0,0,.55);
+        }
 
-    padding: 30px;
+        .purchase-overlay.active {
+            display: block;
+        }
 
-    font-size: 14px;
+        .purchase-panel {
+            position: fixed;
 
-    opacity: 0.75;
-}
+            z-index: 3001;
 
-.error-title {
-    margin-bottom: 12px;
+            right: 0;
+            top: 0;
 
-    font-size: 13px;
+            width: 390px;
+            max-width: 100%;
 
-    letter-spacing: 2px;
-}
+            height: 100vh;
 
-.error-detail {
-    max-width: 700px;
+            display: flex;
+            flex-direction: column;
 
-    font-size: 11px;
+            background: #101010;
 
-    line-height: 1.6;
+            border-left: 1px solid rgba(255,255,255,.08);
 
-    opacity: 0.55;
+            transform: translateX(100%);
 
-    word-break: break-word;
-}
+            transition: transform .3s ease;
+        }
 
+        .purchase-panel.active {
+            transform: translateX(0);
+        }
 
-/* =========================
-   MOBILE
-========================= */
+        .purchase-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-@media (max-width: 700px) {
+            padding: 20px 22px;
 
-    header {
-        height: 62px;
-        padding: 0 18px;
-    }
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
 
-    .nova-logo {
-        font-size: 13px;
-        letter-spacing: 3px;
-    }
+        .purchase-title {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
 
-    .logout {
-        padding: 7px 12px;
-        font-size: 9px;
-    }
+        .purchase-close {
+            border: 0;
+            background: transparent;
 
-    .hero {
-        min-height: 78vh;
+            color: rgba(255,255,255,.6);
 
-        padding:
-            90px 22px 48px;
+            font-size: 26px;
 
-        background-position: center;
-    }
+            cursor: pointer;
+        }
 
-    .logo-wrapper {
-        width: 180px;
-        height: 75px;
+        .purchase-body {
+            flex: 1;
 
-        margin-bottom: 25px;
-    }
+            overflow-y: auto;
 
-    .photographer-logo {
-        max-width: 175px;
-        max-height: 70px;
-    }
+            padding: 22px;
+        }
 
-    .hero-title {
-        font-size: 45px;
-    }
+        .selected-photo-preview {
+            width: 100%;
 
-    .hero-event {
-        font-size: 13px;
-    }
+            aspect-ratio: 3 / 2;
 
-    main {
-        padding:
-            30px 14px 70px;
-    }
+            background: #181818;
 
-    .gallery-section {
-        margin-bottom: 60px;
-    }
+            border-radius: 4px;
 
-    .section-heading {
-        margin-bottom: 18px;
-    }
+            overflow: hidden;
 
-    .section-heading h2 {
-        font-size: 10px;
-        letter-spacing: 2px;
-    }
+            margin-bottom: 22px;
+        }
 
-    .gallery {
-        grid-template-columns:
-            repeat(2, 1fr);
+        .selected-photo-preview img {
+            width: 100%;
+            height: 100%;
 
-        gap: 5px;
-    }
+            object-fit: contain;
+        }
 
-    .lightbox-image {
-        max-width: 94vw;
-        max-height: 78vh;
-    }
+        .product-name {
+            font-size: 14px;
+            font-weight: 600;
 
-    .lightbox-close {
-        top: 15px;
-        right: 15px;
-    }
+            margin-bottom: 18px;
+        }
 
-    .lightbox-prev {
-        left: 12px;
-    }
+        .product-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-    .lightbox-next {
-        right: 12px;
-    }
+            padding: 13px 0;
 
-}
+            border-bottom: 1px solid rgba(255,255,255,.07);
+        }
 
-</style>
+        .product-label {
+            color: rgba(255,255,255,.48);
+
+            font-size: 12px;
+        }
+
+        .product-value {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+
+            border: 1px solid rgba(255,255,255,.15);
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+        .quantity-button {
+            width: 34px;
+            height: 32px;
+
+            border: 0;
+            background: transparent;
+
+            color: #fff;
+
+            font-size: 17px;
+
+            cursor: pointer;
+        }
+
+        .quantity-button:hover {
+            background: rgba(255,255,255,.08);
+        }
+
+        .quantity-number {
+            min-width: 30px;
+
+            text-align: center;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .subtotal {
+            display: flex;
+            justify-content: space-between;
+
+            margin-top: 25px;
+
+            font-size: 14px;
+        }
+
+        .subtotal strong {
+            font-size: 18px;
+        }
+
+        .purchase-disclaimer {
+            margin-top: 22px;
+
+            padding: 14px;
+
+            background: rgba(255,255,255,.04);
+
+            border: 1px solid rgba(255,255,255,.07);
+
+            border-radius: 5px;
+
+            color: rgba(255,255,255,.48);
+
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .purchase-disclaimer strong {
+            color: rgba(255,255,255,.72);
+        }
+
+        .add-selection {
+            width: 100%;
+
+            margin-top: 25px;
+
+            border: 0;
+
+            background: #fff;
+            color: #000;
+
+            padding: 15px;
+
+            border-radius: 4px;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+        .add-selection:hover {
+            background: #ddd;
+        }
+
+        /* =====================================================
+           SELECTION PANEL
+        ===================================================== */
+
+        .selection-panel {
+            position: fixed;
+
+            z-index: 3002;
+
+            right: 0;
+            top: 0;
+
+            width: 420px;
+            max-width: 100%;
+
+            height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+
+            background: #0e0e0e;
+
+            border-left: 1px solid rgba(255,255,255,.08);
+
+            transform: translateX(100%);
+
+            transition: transform .3s ease;
+        }
+
+        .selection-panel.active {
+            transform: translateX(0);
+        }
+
+        .selection-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 20px 22px;
+
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+
+        .selection-header-title {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .selection-close {
+            border: 0;
+            background: transparent;
+
+            color: rgba(255,255,255,.6);
+
+            font-size: 26px;
+
+            cursor: pointer;
+        }
+
+        .selection-items {
+            flex: 1;
+
+            overflow-y: auto;
+
+            padding: 15px 18px;
+        }
+
+        .selection-empty {
+            padding: 60px 20px;
+
+            text-align: center;
+
+            color: rgba(255,255,255,.38);
+
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .selection-item {
+            display: grid;
+
+            grid-template-columns: 72px 1fr auto;
+
+            gap: 12px;
+
+            align-items: center;
+
+            padding: 13px 0;
+
+            border-bottom: 1px solid rgba(255,255,255,.07);
+        }
+
+        .selection-item-image {
+            width: 72px;
+            height: 72px;
+
+            border-radius: 3px;
+
+            overflow: hidden;
+
+            background: #181818;
+        }
+
+        .selection-item-image img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+        }
+
+        .selection-item-info {
+            min-width: 0;
+        }
+
+        .selection-item-title {
+            font-size: 12px;
+            font-weight: 600;
+
+            margin-bottom: 6px;
+        }
+
+        .selection-item-detail {
+            color: rgba(255,255,255,.42);
+
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .selection-item-price {
+            font-size: 12px;
+            font-weight: 600;
+
+            white-space: nowrap;
+        }
+
+        .selection-quantity {
+            display: flex;
+            align-items: center;
+
+            margin-top: 7px;
+        }
+
+        .selection-quantity button {
+            width: 23px;
+            height: 23px;
+
+            border: 1px solid rgba(255,255,255,.12);
+
+            background: transparent;
+            color: #fff;
+
+            cursor: pointer;
+        }
+
+        .selection-quantity span {
+            min-width: 28px;
+
+            text-align: center;
+
+            font-size: 10px;
+        }
+
+        .selection-remove {
+            margin-top: 6px;
+
+            border: 0;
+            background: transparent;
+
+            color: rgba(255,255,255,.35);
+
+            font-size: 10px;
+
+            cursor: pointer;
+        }
+
+        .selection-footer {
+            padding: 20px 22px;
+
+            border-top: 1px solid rgba(255,255,255,.08);
+        }
+
+        .selection-total {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .selection-total span {
+            color: rgba(255,255,255,.5);
+
+            font-size: 12px;
+        }
+
+        .selection-total strong {
+            font-size: 21px;
+        }
+
+        .selection-next {
+            width: 100%;
+
+            padding: 14px;
+
+            border: 0;
+
+            background: #fff;
+            color: #000;
+
+            border-radius: 4px;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            cursor: pointer;
+        }
+
+        .selection-next:hover {
+            background: #ddd;
+        }
+
+        .selection-note {
+            margin-top: 12px;
+
+            text-align: center;
+
+            color: rgba(255,255,255,.32);
+
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        /* =====================================================
+           TOAST
+        ===================================================== */
+
+        .toast {
+            position: fixed;
+
+            z-index: 5000;
+
+            left: 50%;
+            bottom: 25px;
+
+            transform:
+                translate(-50%, 20px);
+
+            opacity: 0;
+
+            padding: 12px 18px;
+
+            border-radius: 25px;
+
+            background: rgba(255,255,255,.95);
+            color: #000;
+
+            font-size: 11px;
+            font-weight: 600;
+
+            pointer-events: none;
+
+            transition: .25s;
+        }
+
+        .toast.show {
+            opacity: 1;
+
+            transform:
+                translate(-50%, 0);
+        }
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            header {
+                padding: 0 15px;
+            }
+
+            .brand {
+                font-size: 15px;
+            }
+
+            .logout-button {
+                display: none;
+            }
+
+            .selection-button {
+                padding: 8px 11px;
+            }
+
+            .hero {
+                min-height: 65vh;
+            }
+
+            .hero-content {
+                padding:
+                    50px 20px 38px;
+            }
+
+            .photographer-logo {
+                max-width: 140px;
+                max-height: 70px;
+            }
+
+            .content {
+                padding:
+                    38px 12px 80px;
+            }
+
+            .gallery-section {
+                margin-bottom: 55px;
+            }
+
+            .photo-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 5px;
+            }
+
+            .lightbox {
+                padding:
+                    50px 10px 105px;
+            }
+
+            .lightbox-image {
+                max-width: 96vw;
+                max-height: 72vh;
+            }
+
+            .lightbox-prev,
+            .lightbox-next {
+                width: 40px;
+                height: 60px;
+
+                font-size: 38px;
+            }
+
+            .lightbox-prev {
+                left: 0;
+            }
+
+            .lightbox-next {
+                right: 0;
+            }
+
+            .lightbox-buy {
+                bottom: 25px;
+            }
+
+            .purchase-panel,
+            .selection-panel {
+                top: auto;
+                bottom: 0;
+
+                width: 100%;
+                height: auto;
+
+                max-height: 88vh;
+
+                border-left: 0;
+                border-top:
+                    1px solid rgba(255,255,255,.1);
+
+                border-radius:
+                    18px 18px 0 0;
+
+                transform:
+                    translateY(100%);
+            }
+
+            .purchase-panel.active,
+            .selection-panel.active {
+                transform:
+                    translateY(0);
+            }
+
+            .purchase-body {
+                max-height: calc(88vh - 70px);
+
+                padding-bottom: 30px;
+            }
+
+            .selection-items {
+                max-height:
+                    calc(88vh - 145px);
+            }
+
+            .selected-photo-preview {
+                max-height: 250px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
-
 <body>
-
 
 <header>
 
-<div class="nova-logo">
+    <div class="brand">
+        NOVA MOMENTS
+    </div>
 
-    NOVA <span>MOMENTS</span>
+    <div class="header-actions">
 
-</div>
+        <button
+            class="selection-button"
+            id="openSelection"
+            type="button"
+        >
+            MI SELECCIÓN
+            <span
+                class="selection-count"
+                id="selectionCount"
+            >
+                0
+            </span>
+        </button>
 
+        <button
+            class="logout-button"
+            id="logoutButton"
+            type="button"
+        >
+            CERRAR SESIÓN
+        </button>
 
-<button
-    class="logout"
-    id="logout"
->
-
-    CERRAR SESIÓN
-
-</button>
+    </div>
 
 </header>
 
 
-<div id="app">
+<main id="app">
 
-<div class="loading">
+    <div class="loading">
+        CARGANDO EXPERIENCIA
+    </div>
 
-    CARGANDO EXPERIENCIA
-
-</div>
-
-</div>
+</main>
 
 
-<!-- =========================
+<!-- =========================================================
      LIGHTBOX
-========================= -->
+========================================================= -->
 
 <div
     class="lightbox"
     id="lightbox"
 >
 
-<button
-    class="lightbox-close"
-    id="lightboxClose"
->
-    ×
-</button>
+    <button
+        class="lightbox-close"
+        id="lightboxClose"
+        type="button"
+        aria-label="Cerrar"
+    >
+        ×
+    </button>
 
+    <button
+        class="lightbox-prev"
+        id="lightboxPrev"
+        type="button"
+        aria-label="Anterior"
+    >
+        ‹
+    </button>
 
-<button
-    class="lightbox-prev"
-    id="lightboxPrev"
->
-    ‹
-</button>
+    <img
+        class="lightbox-image"
+        id="lightboxImage"
+        alt=""
+        draggable="false"
+    >
 
+    <button
+        class="lightbox-next"
+        id="lightboxNext"
+        type="button"
+        aria-label="Siguiente"
+    >
+        ›
+    </button>
 
-<img
-    class="lightbox-image"
-    id="lightboxImage"
-    alt=""
-    draggable="false"
->
+    <div
+        class="lightbox-counter"
+        id="lightboxCounter"
+    ></div>
 
-
-<button
-    class="lightbox-next"
-    id="lightboxNext"
->
-    ›
-</button>
-
-
-<div
-    class="lightbox-counter"
-    id="lightboxCounter"
-></div>
+    <button
+        class="lightbox-buy"
+        id="lightboxBuy"
+        type="button"
+    >
+        COMPRAR
+    </button>
 
 </div>
 
 
-<script>
+<!-- =========================================================
+     PURCHASE OVERLAY
+========================================================= -->
+
+<div
+    class="purchase-overlay"
+    id="purchaseOverlay"
+></div>
 
 
-/* ==========================================
-   SESIÓN
-========================================== */
+<!-- =========================================================
+     PURCHASE PANEL
+========================================================= -->
 
-const usuario =
-    sessionStorage.getItem("nova_usuario") ||
-    localStorage.getItem("nova_usuario");
+<aside
+    class="purchase-panel"
+    id="purchasePanel"
+>
 
+    <div class="purchase-header">
 
-const evento =
-    sessionStorage.getItem("nova_evento") ||
-    localStorage.getItem("nova_evento");
+        <div class="purchase-title">
+            SELECCIONAR FOTOGRAFÍA
+        </div>
 
+        <button
+            class="purchase-close"
+            id="purchaseClose"
+            type="button"
+        >
+            ×
+        </button>
 
-console.log(
-    "NOVA VENTA - Usuario:",
-    usuario
-);
-
-
-console.log(
-    "NOVA VENTA - Evento:",
-    evento
-);
-
-
-if (!usuario || !evento) {
-
-    mostrarError(
-        "SESIÓN NO ENCONTRADA",
-        "No encontramos los datos de acceso. Volvé a iniciar sesión."
-    );
-
-}
+    </div>
 
 
-/* ==========================================
-   VARIABLES
-========================================== */
+    <div class="purchase-body">
 
-let fotosVerticales = [];
+        <div
+            class="selected-photo-preview"
+        >
 
-let fotosHorizontales = [];
+            <img
+                id="purchasePhoto"
+                src=""
+                alt=""
+                draggable="false"
+            >
 
-let listaActual = [];
-
-let indiceActual = 0;
-
-
-/* ==========================================
-   ELEMENTOS
-========================================== */
-
-const app =
-    document.getElementById("app");
+        </div>
 
 
-const lightbox =
-    document.getElementById("lightbox");
+        <div
+            class="product-name"
+        >
+            Impresión fotográfica
+        </div>
 
 
-const lightboxImage =
-    document.getElementById("lightboxImage");
+        <div class="product-row">
+
+            <span class="product-label">
+                Tamaño
+            </span>
+
+            <span
+                class="product-value"
+                id="purchaseSize"
+            >
+                15 × 21 cm
+            </span>
+
+        </div>
 
 
-const lightboxCounter =
-    document.getElementById("lightboxCounter");
+        <div class="product-row">
+
+            <span class="product-label">
+                Precio por unidad
+            </span>
+
+            <span
+                class="product-value"
+                id="purchaseUnitPrice"
+            >
+                $5.000
+            </span>
+
+        </div>
 
 
-/* ==========================================
-   MOSTRAR ERROR
-========================================== */
+        <div class="product-row">
 
-function mostrarError(
-    titulo,
-    detalle
-) {
+            <span class="product-label">
+                Cantidad
+            </span>
 
-    app.innerHTML = `
+            <div class="quantity-control">
 
-        <div class="error">
+                <button
+                    class="quantity-button"
+                    id="quantityMinus"
+                    type="button"
+                >
+                    −
+                </button>
 
-            <div class="error-title">
-                ${titulo}
-            </div>
+                <span
+                    class="quantity-number"
+                    id="quantityNumber"
+                >
+                    1
+                </span>
 
-            <div class="error-detail">
-                ${detalle}
+                <button
+                    class="quantity-button"
+                    id="quantityPlus"
+                    type="button"
+                >
+                    +
+                </button>
+
             </div>
 
         </div>
 
-    `;
 
-}
+        <div class="subtotal">
+
+            <span>
+                Subtotal
+            </span>
+
+            <strong
+                id="purchaseSubtotal"
+            >
+                $5.000
+            </strong>
+
+        </div>
 
 
-/* ==========================================
-   CARGAR EXPERIENCIA
-========================================== */
+        <div class="purchase-disclaimer">
 
-async function cargarExperiencia() {
+            <strong>
+                Importante:
+            </strong>
+
+            el precio indicado corresponde a una
+            impresión de <strong>15 × 21 cm</strong>.
+
+            Si necesitás otro tamaño, podés
+            consultarlo con el fotógrafo antes
+            de realizar el pedido.
+
+        </div>
+
+
+        <button
+            class="add-selection"
+            id="addSelection"
+            type="button"
+        >
+            AGREGAR A MI SELECCIÓN
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================================
+     SELECTION PANEL
+========================================================= -->
+
+<aside
+    class="selection-panel"
+    id="selectionPanel"
+>
+
+    <div class="selection-header">
+
+        <div class="selection-header-title">
+            MI SELECCIÓN
+        </div>
+
+        <button
+            class="selection-close"
+            id="selectionClose"
+            type="button"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <div
+        class="selection-items"
+        id="selectionItems"
+    ></div>
+
+
+    <div class="selection-footer">
+
+        <div class="selection-total">
+
+            <span>
+                TOTAL
+            </span>
+
+            <strong
+                id="selectionTotal"
+            >
+                $0
+            </strong>
+
+        </div>
+
+
+        <button
+            class="selection-next"
+            id="selectionNext"
+            type="button"
+        >
+            CONTINUAR
+        </button>
+
+
+        <div class="selection-note">
+
+            El pedido se completará en el
+            siguiente paso.
+
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================================
+     TOAST
+========================================================= -->
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+
+    /* =========================================================
+       CONFIGURACIÓN DEL PRODUCTO
+    ========================================================= */
+
+    const PRECIO_UNITARIO = 5000;
+
+    const TAMANO_PRODUCTO = "15 × 21 cm";
+
+
+    /* =========================================================
+       SESIÓN
+    ========================================================= */
+
+    const usuario =
+        sessionStorage.getItem("nova_usuario") ||
+        localStorage.getItem("nova_usuario");
+
+    const evento =
+        sessionStorage.getItem("nova_evento") ||
+        localStorage.getItem("nova_evento");
+
 
     if (!usuario || !evento) {
 
-        return;
+        window.location.href =
+            "acceso.html";
 
     }
 
 
-    try {
+    /* =========================================================
+       VARIABLES DE EXPERIENCIA
+    ========================================================= */
 
-        console.log(
-            "NOVA VENTA - Cargando evento:",
-            evento
-        );
+    let datosEvento = null;
 
+    let fotosVerticales = [];
 
-        /* =========================
-           EVENTO
-        ========================= */
+    let fotosHorizontales = [];
 
-        const respuestaEvento =
-            await fetch(
-                `/api/evento?evento=${encodeURIComponent(evento)}`,
-                {
-                    cache: "no-store"
-                }
-            );
+    let listaActual = [];
+
+    let indiceActual = 0;
 
 
-        console.log(
-            "NOVA VENTA - Estado API evento:",
-            respuestaEvento.status
-        );
+    /* =========================================================
+       SELECCIÓN
+    ========================================================= */
+
+    let seleccion = [];
 
 
-        if (!respuestaEvento.ok) {
-
-            throw new Error(
-                `API evento respondió ${respuestaEvento.status}`
-            );
-
-        }
+    const storageKey =
+        `nova_venta_seleccion_${evento}`;
 
 
-        const datosEvento =
-            await respuestaEvento.json();
-
-
-        console.log(
-            "NOVA VENTA - Datos evento:",
-            datosEvento
-        );
-
-
-        if (!datosEvento.ok) {
-
-            throw new Error(
-                datosEvento.error ||
-                "No se pudo cargar el evento."
-            );
-
-        }
-
-
-        /* =========================
-           MEDIA
-        ========================= */
-
-        const respuestaMedia =
-            await fetch(
-                `/api/media?evento=${encodeURIComponent(evento)}`,
-                {
-                    cache: "no-store"
-                }
-            );
-
-
-        console.log(
-            "NOVA VENTA - Estado API media:",
-            respuestaMedia.status
-        );
-
-
-        if (!respuestaMedia.ok) {
-
-            throw new Error(
-                `API media respondió ${respuestaMedia.status}`
-            );
-
-        }
-
-
-        const datosMedia =
-            await respuestaMedia.json();
-
-
-        console.log(
-            "NOVA VENTA - Datos media:",
-            datosMedia
-        );
-
-
-        if (!datosMedia.ok) {
-
-            throw new Error(
-                datosMedia.error ||
-                "No se pudo cargar el contenido."
-            );
-
-        }
-
-
-        /* =========================
-           CLASIFICAR FOTOS
-        ========================= */
-
-        await clasificarFotos(
-            datosMedia.fotos || []
-        );
-
-
-        /* =========================
-           CONSTRUIR
-        ========================= */
-
-        construirExperiencia(
-            datosEvento,
-            datosMedia
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "NOVA VENTA - ERROR:",
-            error
-        );
-
-
-        mostrarError(
-            "NO PUDIMOS CARGAR ESTA EXPERIENCIA",
-            error.message
-        );
-
-    }
-
-}
-
-
-/* ==========================================
-   CLASIFICAR FOTOS
-========================================== */
-
-async function clasificarFotos(
-    fotos
-) {
-
-    fotosVerticales = [];
-
-    fotosHorizontales = [];
-
-
-    for (
-        const foto of fotos
-    ) {
+    function cargarSeleccion() {
 
         try {
 
-            const dimensiones =
-                await obtenerDimensiones(
-                    foto.secure_url
+            const guardado =
+                localStorage.getItem(
+                    storageKey
                 );
 
+            if (guardado) {
 
-            if (
-                dimensiones.height >
-                dimensiones.width
-            ) {
+                const datos =
+                    JSON.parse(guardado);
 
-                fotosVerticales.push(
-                    foto
-                );
+                if (Array.isArray(datos)) {
 
-            } else {
+                    seleccion = datos;
 
-                fotosHorizontales.push(
-                    foto
-                );
+                }
 
             }
 
         } catch (error) {
 
-            console.warn(
-                "No se pudieron obtener dimensiones:",
-                foto.secure_url
+            seleccion = [];
+
+        }
+
+        actualizarContadorSeleccion();
+
+    }
+
+
+    function guardarSeleccion() {
+
+        localStorage.setItem(
+            storageKey,
+            JSON.stringify(seleccion)
+        );
+
+        actualizarContadorSeleccion();
+
+    }
+
+
+    function cantidadTotalSeleccion() {
+
+        return seleccion.reduce(
+            (total, item) =>
+                total + item.cantidad,
+            0
+        );
+
+    }
+
+
+    function totalSeleccion() {
+
+        return seleccion.reduce(
+            (total, item) =>
+                total +
+                (
+                    item.cantidad *
+                    PRECIO_UNITARIO
+                ),
+            0
+        );
+
+    }
+
+
+    function actualizarContadorSeleccion() {
+
+        document.getElementById(
+            "selectionCount"
+        ).textContent =
+            cantidadTotalSeleccion();
+
+    }
+
+
+    /* =========================================================
+       FORMATO DE DINERO
+    ========================================================= */
+
+    function formatoPrecio(valor) {
+
+        return "$" +
+            Number(valor)
+                .toLocaleString(
+                    "es-AR"
+                );
+
+    }
+
+
+    /* =========================================================
+       CARGAR EXPERIENCIA
+    ========================================================= */
+
+    async function cargarExperiencia() {
+
+        try {
+
+            const respuestaEvento =
+                await fetch(
+                    `/api/evento?evento=${encodeURIComponent(evento)}`
+                );
+
+            const datosEventoApi =
+                await respuestaEvento.json();
+
+
+            if (!datosEventoApi.ok) {
+
+                throw new Error(
+                    datosEventoApi.error ||
+                    "No se pudo cargar el evento."
+                );
+
+            }
+
+
+            datosEvento =
+                datosEventoApi;
+
+
+            const respuestaMedia =
+                await fetch(
+                    `/api/media?evento=${encodeURIComponent(evento)}`
+                );
+
+
+            const datosMedia =
+                await respuestaMedia.json();
+
+
+            if (!datosMedia.ok) {
+
+                throw new Error(
+                    datosMedia.error ||
+                    "No se pudo cargar el contenido."
+                );
+
+            }
+
+
+            await clasificarFotos(
+                datosMedia.fotos || []
             );
+
+
+            construirExperiencia(
+                datosMedia
+            );
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            document.getElementById(
+                "app"
+            ).innerHTML = `
+
+                <div class="loading">
+
+                    NO SE PUDO CARGAR
+                    LA EXPERIENCIA
+
+                </div>
+
+            `;
 
         }
 
     }
 
-}
+
+    /* =========================================================
+       CLASIFICAR FOTOS
+    ========================================================= */
+
+    async function clasificarFotos(
+        fotos
+    ) {
+
+        fotosVerticales = [];
+
+        fotosHorizontales = [];
 
 
-/* ==========================================
-   OBTENER DIMENSIONES
-========================================== */
+        const tareas =
+            fotos.map(
+                foto => {
 
-function obtenerDimensiones(
-    url
-) {
+                    return new Promise(
+                        resolve => {
 
-    return new Promise(
-        (
-            resolve,
-            reject
-        ) => {
-
-            const imagen =
-                new Image();
+                            const imagen =
+                                new Image();
 
 
-            imagen.onload = () => {
+                            imagen.onload =
+                                function () {
 
-                resolve({
+                                    if (
+                                        imagen.naturalHeight >
+                                        imagen.naturalWidth
+                                    ) {
 
-                    width:
-                        imagen.naturalWidth,
+                                        fotosVerticales
+                                            .push(foto);
 
-                    height:
-                        imagen.naturalHeight
+                                    } else {
 
-                });
+                                        fotosHorizontales
+                                            .push(foto);
 
-            };
+                                    }
+
+                                    resolve();
+
+                                };
 
 
-            imagen.onerror =
-                () => {
+                            imagen.onerror =
+                                function () {
 
-                    reject(
-                        new Error(
-                            "No se pudo cargar la imagen."
-                        )
+                                    resolve();
+
+                                };
+
+
+                            imagen.src =
+                                foto.secure_url;
+
+                        }
                     );
 
-                };
+                }
+            );
 
 
-            imagen.src =
-                url;
+        await Promise.all(tareas);
 
-        }
-    );
-
-}
+    }
 
 
-/* ==========================================
-   CONSTRUIR EXPERIENCIA
-========================================== */
+    /* =========================================================
+       CONSTRUIR EXPERIENCIA
+    ========================================================= */
 
-function construirExperiencia(
-    datosEvento,
-    datosMedia
-) {
+    function construirExperiencia(
+        media
+    ) {
 
-    const portada =
-        datosMedia.portada &&
-        datosMedia.portada.length
-            ? datosMedia.portada[0].secure_url
-            : "";
-
-
-    const logo =
-        datosMedia.logo &&
-        datosMedia.logo.length
-            ? datosMedia.logo[0].secure_url
-            : "";
+        const portada =
+            media.portada &&
+            media.portada.length
+                ? media.portada[0].secure_url
+                : "";
 
 
-    const nombre =
-        datosEvento.nombre ||
-        "NOVA MOMENTS";
+        const logo =
+            media.logo &&
+            media.logo.length
+                ? media.logo[0].secure_url
+                : "";
 
 
-    const nombreEvento =
-        datosEvento.evento ||
-        "";
+        document.getElementById(
+            "app"
+        ).innerHTML = `
 
-
-    const fecha =
-        datosEvento.fecha ||
-        "";
-
-
-    app.innerHTML = `
-
-        <section
-            class="hero"
-            style="
-                background-image:
-                url('${portada}');
-            "
-        >
-
-            <div class="hero-content">
-
+            <section class="hero">
 
                 ${
-                    logo
-                        ? `
-
-                            <div
-                                class="logo-wrapper"
-                            >
-
-                                <img
-                                    class="photographer-logo"
-                                    src="${logo}"
-                                    alt="Logotipo del fotógrafo"
-                                    draggable="false"
-                                >
-
-                            </div>
-
-                        `
-                        : ""
+                    portada
+                    ?
+                    `
+                    <img
+                        class="hero-image"
+                        src="${portada}"
+                        alt=""
+                        draggable="false"
+                    >
+                    `
+                    :
+                    ""
                 }
 
-
-                <div class="hero-label">
-
-                    NOVA MOMENTS
-
-                </div>
+                <div
+                    class="hero-overlay"
+                ></div>
 
 
-                <h1 class="hero-title">
-
-                    ${nombre}
-
-                </h1>
-
-
-                <div class="hero-event">
-
-                    ${nombreEvento}
+                <div
+                    class="hero-content"
+                >
 
                     ${
-                        fecha
-                            ? " · " + fecha
-                            : ""
+                        logo
+                        ?
+                        `
+                        <img
+                            class="photographer-logo"
+                            src="${logo}"
+                            alt="Fotógrafo"
+                            draggable="false"
+                        >
+                        `
+                        :
+                        ""
                     }
+
+
+                    <h1
+                        class="hero-event"
+                    >
+                        ${
+                            escaparHTML(
+                                datosEvento.evento_nombre ||
+                                ""
+                            )
+                        }
+                    </h1>
+
+
+                    <div
+                        class="hero-name"
+                    >
+                        ${
+                            escaparHTML(
+                                datosEvento.nombre ||
+                                ""
+                            )
+                        }
+                    </div>
+
+
+                    <div
+                        class="hero-date"
+                    >
+                        ${
+                            escaparHTML(
+                                datosEvento.fecha ||
+                                ""
+                            )
+                        }
+                    </div>
 
                 </div>
 
+            </section>
+
+
+            <div class="content">
+
+                <section
+                    class="gallery-section"
+                >
+
+                    <div
+                        class="section-header"
+                    >
+
+                        <h2
+                            class="section-title"
+                        >
+                            FOTOGRAFÍAS VERTICALES
+                        </h2>
+
+                        <span
+                            class="section-subtitle"
+                        >
+                            ${
+                                fotosVerticales.length
+                            }
+                            fotografías
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="photo-grid"
+                        id="verticalGallery"
+                    ></div>
+
+                </section>
+
+
+                <section
+                    class="gallery-section"
+                >
+
+                    <div
+                        class="section-header"
+                    >
+
+                        <h2
+                            class="section-title"
+                        >
+                            FOTOGRAFÍAS HORIZONTALES
+                        </h2>
+
+                        <span
+                            class="section-subtitle"
+                        >
+                            ${
+                                fotosHorizontales.length
+                            }
+                            fotografías
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="photo-grid"
+                        id="horizontalGallery"
+                    ></div>
+
+                </section>
 
             </div>
 
-        </section>
+        `;
 
 
-        <main>
+        construirGaleria(
+            fotosVerticales,
+            "verticalGallery",
+            "vertical"
+        );
 
 
-            ${
-                fotosVerticales.length
-                    ? `
-
-                        <section
-                            class="gallery-section"
-                        >
-
-                            <div
-                                class="section-heading"
-                            >
-
-                                <h2>
-
-                                    FOTOGRAFÍAS
-                                    VERTICALES
-
-                                </h2>
+        construirGaleria(
+            fotosHorizontales,
+            "horizontalGallery",
+            "horizontal"
+        );
 
 
-                                <div
-                                    class="section-line"
-                                ></div>
+        if (
+            fotosVerticales.length === 0
+        ) {
 
-                            </div>
+            document.getElementById(
+                "verticalGallery"
+            ).innerHTML = `
 
+                <div class="empty-gallery">
+                    No hay fotografías verticales.
+                </div>
 
-                            <div
-                                class="
-                                    gallery
-                                    vertical-gallery
-                                "
-                                id="verticalGallery"
-                            ></div>
+            `;
 
-
-                        </section>
-
-                    `
-                    : ""
-            }
+        }
 
 
-            ${
-                fotosHorizontales.length
-                    ? `
+        if (
+            fotosHorizontales.length === 0
+        ) {
 
-                        <section
-                            class="gallery-section"
-                        >
+            document.getElementById(
+                "horizontalGallery"
+            ).innerHTML = `
 
-                            <div
-                                class="section-heading"
-                            >
+                <div class="empty-gallery">
+                    No hay fotografías horizontales.
+                </div>
 
-                                <h2>
+            `;
 
-                                    FOTOGRAFÍAS
-                                    HORIZONTALES
-
-                                </h2>
+        }
 
 
-                                <div
-                                    class="section-line"
-                                ></div>
-
-                            </div>
-
-
-                            <div
-                                class="
-                                    gallery
-                                    horizontal-gallery
-                                "
-                                id="horizontalGallery"
-                            ></div>
-
-
-                        </section>
-
-                    `
-                    : ""
-            }
-
-
-            ${
-                !fotosVerticales.length &&
-                !fotosHorizontales.length
-                    ? `
-
-                        <div class="error">
-
-                            <div class="error-title">
-
-                                NO HAY FOTOGRAFÍAS
-
-                            </div>
-
-                            <div class="error-detail">
-
-                                El evento está disponible,
-                                pero no encontramos fotografías
-                                en la carpeta FOTOS.
-
-                            </div>
-
-                        </div>
-
-                    `
-                    : ""
-            }
-
-
-        </main>
-
-    `;
-
-
-    construirGaleria(
-        document.getElementById(
-            "verticalGallery"
-        ),
-        fotosVerticales
-    );
-
-
-    construirGaleria(
-        document.getElementById(
-            "horizontalGallery"
-        ),
-        fotosHorizontales
-    );
-
-}
-
-
-/* ==========================================
-   CONSTRUIR GALERÍA
-========================================== */
-
-function construirGaleria(
-    contenedor,
-    fotos
-) {
-
-    if (!contenedor) {
-
-        return;
+        actualizarEstadosGaleria();
 
     }
 
 
-    fotos.forEach(
-        (
-            foto,
-            indice
-        ) => {
+    /* =========================================================
+       CONSTRUIR GALERÍA
+    ========================================================= */
 
-            const card =
-                document.createElement(
-                    "div"
-                );
+    function construirGaleria(
+        fotos,
+        contenedorId,
+        orientacion
+    ) {
 
-
-            card.className =
-                "photo-card";
-
-
-            const imagen =
-                document.createElement(
-                    "img"
-                );
-
-
-            imagen.src =
-                foto.secure_url;
-
-
-            imagen.alt =
-                "";
-
-
-            imagen.draggable =
-                false;
-
-
-            imagen.loading =
-                "lazy";
-
-
-            card.appendChild(
-                imagen
+        const contenedor =
+            document.getElementById(
+                contenedorId
             );
 
 
-            card.addEventListener(
-                "click",
-                () => {
+        fotos.forEach(
+            (foto, indice) => {
 
-                    abrirLightbox(
-                        fotos,
-                        indice
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    `photo-card ${orientacion}`;
+
+
+                card.dataset.publicId =
+                    foto.public_id;
+
+
+                card.innerHTML = `
+
+                    <img
+                        src="${foto.secure_url}"
+                        alt=""
+                        loading="lazy"
+                        draggable="false"
+                    >
+
+                    <div
+                        class="photo-selected"
+                    >
+                        ✓
+                    </div>
+
+                `;
+
+
+                card.addEventListener(
+                    "click",
+                    function () {
+
+                        listaActual =
+                            fotos;
+
+                        indiceActual =
+                            indice;
+
+                        abrirLightbox();
+
+                    }
+                );
+
+
+                contenedor.appendChild(
+                    card
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       LIGHTBOX
+    ========================================================= */
+
+    function abrirLightbox() {
+
+        if (
+            !listaActual ||
+            !listaActual.length
+        ) {
+            return;
+        }
+
+
+        const lightbox =
+            document.getElementById(
+                "lightbox"
+            );
+
+
+        lightbox.classList.add(
+            "active"
+        );
+
+
+        document.body.style.overflow =
+            "hidden";
+
+
+        mostrarFoto();
+
+    }
+
+
+    function mostrarFoto() {
+
+        const foto =
+            listaActual[indiceActual];
+
+
+        if (!foto) {
+            return;
+        }
+
+
+        const imagen =
+            document.getElementById(
+                "lightboxImage"
+            );
+
+
+        imagen.src =
+            foto.secure_url;
+
+
+        imagen.alt =
+            "";
+
+
+        document.getElementById(
+            "lightboxCounter"
+        ).textContent =
+
+            `${indiceActual + 1} / ${listaActual.length}`;
+
+    }
+
+
+    function fotoAnterior() {
+
+        if (!listaActual.length) {
+            return;
+        }
+
+
+        indiceActual--;
+
+        if (
+            indiceActual < 0
+        ) {
+
+            indiceActual =
+                listaActual.length - 1;
+
+        }
+
+
+        mostrarFoto();
+
+    }
+
+
+    function fotoSiguiente() {
+
+        if (!listaActual.length) {
+            return;
+        }
+
+
+        indiceActual++;
+
+        if (
+            indiceActual >=
+            listaActual.length
+        ) {
+
+            indiceActual = 0;
+
+        }
+
+
+        mostrarFoto();
+
+    }
+
+
+    function cerrarLightbox() {
+
+        document.getElementById(
+            "lightbox"
+        ).classList.remove(
+            "active"
+        );
+
+
+        document.body.style.overflow =
+            "";
+
+    }
+
+
+    /* =========================================================
+       FOTO ACTUAL
+    ========================================================= */
+
+    function obtenerFotoActual() {
+
+        if (
+            !listaActual ||
+            !listaActual.length
+        ) {
+
+            return null;
+
+        }
+
+
+        return listaActual[
+            indiceActual
+        ];
+
+    }
+
+
+    /* =========================================================
+       ABRIR PANEL DE COMPRA
+    ========================================================= */
+
+    function abrirPanelCompra() {
+
+        const foto =
+            obtenerFotoActual();
+
+
+        if (!foto) {
+            return;
+        }
+
+
+        document.getElementById(
+            "purchasePhoto"
+        ).src =
+            foto.secure_url;
+
+
+        document.getElementById(
+            "purchaseSize"
+        ).textContent =
+            TAMANO_PRODUCTO;
+
+
+        document.getElementById(
+            "purchaseUnitPrice"
+        ).textContent =
+            formatoPrecio(
+                PRECIO_UNITARIO
+            );
+
+
+        const existente =
+            seleccion.find(
+                item =>
+                    item.public_id ===
+                    foto.public_id
+            );
+
+
+        const cantidad =
+            existente
+                ? existente.cantidad
+                : 1;
+
+
+        actualizarPanelCompra(
+            cantidad
+        );
+
+
+        document.getElementById(
+            "purchaseOverlay"
+        ).classList.add(
+            "active"
+        );
+
+
+        document.getElementById(
+            "purchasePanel"
+        ).classList.add(
+            "active"
+        );
+
+    }
+
+
+    function cerrarPanelCompra() {
+
+        document.getElementById(
+            "purchaseOverlay"
+        ).classList.remove(
+            "active"
+        );
+
+
+        document.getElementById(
+            "purchasePanel"
+        ).classList.remove(
+            "active"
+        );
+
+    }
+
+
+    /* =========================================================
+       CANTIDAD DE COMPRA
+    ========================================================= */
+
+    let cantidadCompra = 1;
+
+
+    function actualizarPanelCompra(
+        cantidad
+    ) {
+
+        cantidadCompra =
+            Math.max(
+                1,
+                cantidad
+            );
+
+
+        document.getElementById(
+            "quantityNumber"
+        ).textContent =
+            cantidadCompra;
+
+
+        document.getElementById(
+            "purchaseSubtotal"
+        ).textContent =
+            formatoPrecio(
+                cantidadCompra *
+                PRECIO_UNITARIO
+            );
+
+    }
+
+
+    /* =========================================================
+       AGREGAR A SELECCIÓN
+    ========================================================= */
+
+    function agregarSeleccion() {
+
+        const foto =
+            obtenerFotoActual();
+
+
+        if (!foto) {
+            return;
+        }
+
+
+        const existente =
+            seleccion.find(
+                item =>
+                    item.public_id ===
+                    foto.public_id
+            );
+
+
+        if (existente) {
+
+            existente.cantidad =
+                cantidadCompra;
+
+        } else {
+
+            seleccion.push({
+
+                public_id:
+                    foto.public_id,
+
+                secure_url:
+                    foto.secure_url,
+
+                cantidad:
+                    cantidadCompra
+
+            });
+
+        }
+
+
+        guardarSeleccion();
+
+
+        actualizarEstadosGaleria();
+
+
+        cerrarPanelCompra();
+
+
+        cerrarLightbox();
+
+
+        mostrarToast(
+            "Fotografía agregada a tu selección"
+        );
+
+    }
+
+
+    /* =========================================================
+       ESTADO VISUAL DE GALERÍAS
+    ========================================================= */
+
+    function actualizarEstadosGaleria() {
+
+        document
+            .querySelectorAll(
+                ".photo-card"
+            )
+            .forEach(
+                card => {
+
+                    const publicId =
+                        card.dataset.publicId;
+
+
+                    const existe =
+                        seleccion.some(
+                            item =>
+                                item.public_id ===
+                                publicId
+                        );
+
+
+                    card.classList.toggle(
+                        "is-selected",
+                        existe
                     );
 
                 }
             );
 
+    }
 
-            contenedor.appendChild(
-                card
+
+    /* =========================================================
+       PANEL MI SELECCIÓN
+    ========================================================= */
+
+    function abrirSeleccion() {
+
+        renderizarSeleccion();
+
+
+        document.getElementById(
+            "selectionPanel"
+        ).classList.add(
+            "active"
+        );
+
+
+        document.body.style.overflow =
+            "hidden";
+
+    }
+
+
+    function cerrarSeleccion() {
+
+        document.getElementById(
+            "selectionPanel"
+        ).classList.remove(
+            "active"
+        );
+
+
+        document.body.style.overflow =
+            "";
+
+    }
+
+
+    function renderizarSeleccion() {
+
+        const contenedor =
+            document.getElementById(
+                "selectionItems"
             );
 
-        }
-    );
 
-}
+        contenedor.innerHTML = "";
 
-
-/* ==========================================
-   LIGHTBOX
-========================================== */
-
-function abrirLightbox(
-    fotos,
-    indice
-) {
-
-    listaActual =
-        fotos;
-
-    indiceActual =
-        indice;
-
-
-    mostrarFoto();
-
-
-    lightbox.classList.add(
-        "active"
-    );
-
-
-    document.body.classList.add(
-        "no-scroll"
-    );
-
-}
-
-
-function mostrarFoto() {
-
-    if (
-        !listaActual.length
-    ) {
-
-        return;
-
-    }
-
-
-    const foto =
-        listaActual[
-            indiceActual
-        ];
-
-
-    lightboxImage.src =
-        foto.secure_url;
-
-
-    lightboxCounter.textContent =
-        `${indiceActual + 1} / ${listaActual.length}`;
-
-}
-
-
-function fotoAnterior() {
-
-    if (
-        !listaActual.length
-    ) {
-
-        return;
-
-    }
-
-
-    indiceActual =
-        (
-            indiceActual -
-            1 +
-            listaActual.length
-        ) %
-        listaActual.length;
-
-
-    mostrarFoto();
-
-}
-
-
-function fotoSiguiente() {
-
-    if (
-        !listaActual.length
-    ) {
-
-        return;
-
-    }
-
-
-    indiceActual =
-        (
-            indiceActual +
-            1
-        ) %
-        listaActual.length;
-
-
-    mostrarFoto();
-
-}
-
-
-function cerrarLightbox() {
-
-    lightbox.classList.remove(
-        "active"
-    );
-
-
-    document.body.classList.remove(
-        "no-scroll"
-    );
-
-
-    lightboxImage.src = "";
-
-}
-
-
-/* ==========================================
-   BOTONES LIGHTBOX
-========================================== */
-
-document
-    .getElementById(
-        "lightboxClose"
-    )
-    .addEventListener(
-        "click",
-        cerrarLightbox
-    );
-
-
-document
-    .getElementById(
-        "lightboxPrev"
-    )
-    .addEventListener(
-        "click",
-        fotoAnterior
-    );
-
-
-document
-    .getElementById(
-        "lightboxNext"
-    )
-    .addEventListener(
-        "click",
-        fotoSiguiente
-    );
-
-
-/* ==========================================
-   TECLADO
-========================================== */
-
-document.addEventListener(
-    "keydown",
-    event => {
 
         if (
-            !lightbox.classList.contains(
-                "active"
-            )
+            seleccion.length === 0
         ) {
+
+            contenedor.innerHTML = `
+
+                <div
+                    class="selection-empty"
+                >
+
+                    Todavía no seleccionaste
+                    ninguna fotografía.
+
+                    <br><br>
+
+                    Podés recorrer la galería
+                    y agregar las fotografías
+                    que quieras comprar.
+
+                </div>
+
+            `;
+
+
+            document.getElementById(
+                "selectionTotal"
+            ).textContent =
+                "$0";
+
 
             return;
 
         }
 
 
-        if (
-            event.key ===
-            "ArrowLeft"
-        ) {
+        seleccion.forEach(
+            (item, indice) => {
 
-            fotoAnterior();
-
-        }
-
-
-        if (
-            event.key ===
-            "ArrowRight"
-        ) {
-
-            fotoSiguiente();
-
-        }
+                const elemento =
+                    document.createElement(
+                        "div"
+                    );
 
 
-        if (
-            event.key ===
-            "Escape"
-        ) {
+                elemento.className =
+                    "selection-item";
 
-            cerrarLightbox();
 
-        }
+                elemento.innerHTML = `
+
+                    <div
+                        class="selection-item-image"
+                    >
+
+                        <img
+                            src="${item.secure_url}"
+                            alt=""
+                            draggable="false"
+                        >
+
+                    </div>
+
+
+                    <div
+                        class="selection-item-info"
+                    >
+
+                        <div
+                            class="selection-item-title"
+                        >
+                            Fotografía seleccionada
+                        </div>
+
+
+                        <div
+                            class="selection-item-detail"
+                        >
+                            ${TAMANO_PRODUCTO}
+                            <br>
+                            ${formatoPrecio(PRECIO_UNITARIO)}
+                            por unidad
+                        </div>
+
+
+                        <div
+                            class="selection-quantity"
+                        >
+
+                            <button
+                                type="button"
+                                onclick="cambiarCantidadSeleccion(${indice}, -1)"
+                            >
+                                −
+                            </button>
+
+                            <span>
+                                ${item.cantidad}
+                            </span>
+
+                            <button
+                                type="button"
+                                onclick="cambiarCantidadSeleccion(${indice}, 1)"
+                            >
+                                +
+                            </button>
+
+                        </div>
+
+
+                        <button
+                            class="selection-remove"
+                            type="button"
+                            onclick="eliminarSeleccion(${indice})"
+                        >
+                            ELIMINAR
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="selection-item-price"
+                    >
+                        ${formatoPrecio(
+                            item.cantidad *
+                            PRECIO_UNITARIO
+                        )}
+                    </div>
+
+                `;
+
+
+                contenedor.appendChild(
+                    elemento
+                );
+
+            }
+        );
+
+
+        document.getElementById(
+            "selectionTotal"
+        ).textContent =
+            formatoPrecio(
+                totalSeleccion()
+            );
 
     }
-);
 
 
-/* ==========================================
-   PROTECCIÓN BÁSICA
-========================================== */
+    /* =========================================================
+       CAMBIAR CANTIDAD
+    ========================================================= */
 
-document.addEventListener(
-    "contextmenu",
-    event => {
+    function cambiarCantidadSeleccion(
+        indice,
+        cambio
+    ) {
 
         if (
-            event.target.tagName ===
-            "IMG"
+            !seleccion[indice]
+        ) {
+            return;
+        }
+
+
+        seleccion[indice].cantidad +=
+            cambio;
+
+
+        if (
+            seleccion[indice].cantidad <=
+            0
         ) {
 
-            event.preventDefault();
+            seleccion.splice(
+                indice,
+                1
+            );
 
         }
 
+
+        guardarSeleccion();
+
+
+        renderizarSeleccion();
+
+
+        actualizarEstadosGaleria();
+
     }
-);
 
 
-document.addEventListener(
-    "dragstart",
-    event => {
+    /* =========================================================
+       ELIMINAR
+    ========================================================= */
+
+    function eliminarSeleccion(
+        indice
+    ) {
 
         if (
-            event.target.tagName ===
-            "IMG"
+            !seleccion[indice]
         ) {
-
-            event.preventDefault();
-
+            return;
         }
 
+
+        seleccion.splice(
+            indice,
+            1
+        );
+
+
+        guardarSeleccion();
+
+
+        renderizarSeleccion();
+
+
+        actualizarEstadosGaleria();
+
     }
-);
 
 
-/* ==========================================
-   CERRAR SESIÓN
-========================================== */
+    /* =========================================================
+       TOAST
+    ========================================================= */
 
-document
-    .getElementById(
-        "logout"
-    )
-    .addEventListener(
+    let toastTimer = null;
+
+
+    function mostrarToast(
+        mensaje
+    ) {
+
+        const toast =
+            document.getElementById(
+                "toast"
+            );
+
+
+        toast.textContent =
+            mensaje;
+
+
+        toast.classList.add(
+            "show"
+        );
+
+
+        clearTimeout(
+            toastTimer
+        );
+
+
+        toastTimer =
+            setTimeout(
+                () => {
+
+                    toast.classList.remove(
+                        "show"
+                    );
+
+                },
+                2500
+            );
+
+    }
+
+
+    /* =========================================================
+       EVENTOS LIGHTBOX
+    ========================================================= */
+
+    document.getElementById(
+        "lightboxClose"
+    ).addEventListener(
+        "click",
+        cerrarLightbox
+    );
+
+
+    document.getElementById(
+        "lightboxPrev"
+    ).addEventListener(
+        "click",
+        fotoAnterior
+    );
+
+
+    document.getElementById(
+        "lightboxNext"
+    ).addEventListener(
+        "click",
+        fotoSiguiente
+    );
+
+
+    document.getElementById(
+        "lightboxBuy"
+    ).addEventListener(
+        "click",
+        abrirPanelCompra
+    );
+
+
+    /* =========================================================
+       EVENTOS PANEL COMPRA
+    ========================================================= */
+
+    document.getElementById(
+        "purchaseClose"
+    ).addEventListener(
+        "click",
+        cerrarPanelCompra
+    );
+
+
+    document.getElementById(
+        "purchaseOverlay"
+    ).addEventListener(
+        "click",
+        cerrarPanelCompra
+    );
+
+
+    document.getElementById(
+        "quantityMinus"
+    ).addEventListener(
         "click",
         () => {
+
+            actualizarPanelCompra(
+                cantidadCompra - 1
+            );
+
+        }
+    );
+
+
+    document.getElementById(
+        "quantityPlus"
+    ).addEventListener(
+        "click",
+        () => {
+
+            actualizarPanelCompra(
+                cantidadCompra + 1
+            );
+
+        }
+    );
+
+
+    document.getElementById(
+        "addSelection"
+    ).addEventListener(
+        "click",
+        agregarSeleccion
+    );
+
+
+    /* =========================================================
+       EVENTOS MI SELECCIÓN
+    ========================================================= */
+
+    document.getElementById(
+        "openSelection"
+    ).addEventListener(
+        "click",
+        abrirSeleccion
+    );
+
+
+    document.getElementById(
+        "selectionClose"
+    ).addEventListener(
+        "click",
+        cerrarSeleccion
+    );
+
+
+    /* =========================================================
+       CONTINUAR
+       POR AHORA SOLO MENSAJE.
+       MERCADO PAGO SE AGREGA EN EL PRÓXIMO PASO.
+    ========================================================= */
+
+    document.getElementById(
+        "selectionNext"
+    ).addEventListener(
+        "click",
+        function () {
+
+            if (
+                seleccion.length === 0
+            ) {
+
+                mostrarToast(
+                    "Primero seleccioná alguna fotografía."
+                );
+
+                return;
+
+            }
+
+
+            mostrarToast(
+                "La confirmación del pedido se agregará en el próximo paso."
+            );
+
+        }
+    );
+
+
+    /* =========================================================
+       TECLADO
+    ========================================================= */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            const lightbox =
+                document.getElementById(
+                    "lightbox"
+                );
+
+
+            if (
+                lightbox.classList.contains(
+                    "active"
+                )
+            ) {
+
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    cerrarLightbox();
+
+                }
+
+                if (
+                    event.key === "ArrowLeft"
+                ) {
+
+                    fotoAnterior();
+
+                }
+
+                if (
+                    event.key === "ArrowRight"
+                ) {
+
+                    fotoSiguiente();
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       CERRAR LIGHTBOX AL TOCAR FONDO
+    ========================================================= */
+
+    document.getElementById(
+        "lightbox"
+    ).addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target === this
+            ) {
+
+                cerrarLightbox();
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       PROTECCIÓN BÁSICA DE IMÁGENES
+    ========================================================= */
+
+    document.addEventListener(
+        "contextmenu",
+        function (event) {
+
+            if (
+                event.target.tagName ===
+                "IMG"
+            ) {
+
+                event.preventDefault();
+
+            }
+
+        }
+    );
+
+
+    document.addEventListener(
+        "dragstart",
+        function (event) {
+
+            if (
+                event.target.tagName ===
+                "IMG"
+            ) {
+
+                event.preventDefault();
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       LOGOUT
+    ========================================================= */
+
+    document.getElementById(
+        "logoutButton"
+    ).addEventListener(
+        "click",
+        function () {
 
             sessionStorage.removeItem(
                 "nova_usuario"
@@ -1619,15 +3103,40 @@ document
     );
 
 
-/* ==========================================
-   INICIAR
-========================================== */
+    /* =========================================================
+       ESCAPAR HTML
+    ========================================================= */
 
-cargarExperiencia();
+    function escaparHTML(
+        texto
+    ) {
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.textContent =
+            texto == null
+                ? ""
+                : texto;
+
+
+        return div.innerHTML;
+
+    }
+
+
+    /* =========================================================
+       INICIO
+    ========================================================= */
+
+    cargarSeleccion();
+
+    cargarExperiencia();
 
 </script>
 
-
 </body>
-
 </html>
