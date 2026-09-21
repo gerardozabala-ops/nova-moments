@@ -18,7 +18,7 @@
 
     <link
         rel="preconnect"
-        href="https://fonts.gstatic.com"
+        href="https://fonts.googleapis.com"
         crossorigin
     >
 
@@ -309,11 +309,6 @@
             border-radius: 16px;
             padding: 20px;
 
-            /*
-                Debe estar por encima del lightbox
-                para que COMPRAR abra el panel
-                en primer plano.
-            */
             z-index: 650;
 
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
@@ -1581,12 +1576,6 @@
                 datos.fotos || [];
 
 
-            /*
-                Esperamos a que el navegador
-                obtenga las dimensiones reales
-                de cada fotografía.
-            */
-
             await clasificarFotos();
 
 
@@ -2138,7 +2127,7 @@
         try {
 
             const guardada =
-                localStorage.getItem(
+                sessionStorage.getItem(
                     storageKey
                 );
 
@@ -2170,7 +2159,7 @@
 
     function guardarSeleccion() {
 
-        localStorage.setItem(
+        sessionStorage.setItem(
             storageKey,
             JSON.stringify(
                 seleccion
@@ -2939,6 +2928,23 @@
 
         localStorage.removeItem(
             "nova_evento"
+        );
+
+        /*
+            Eliminamos también cualquier selección
+            de esta sesión.
+        */
+        sessionStorage.removeItem(
+            storageKey
+        );
+
+        /*
+            Eliminamos la selección antigua
+            que pudiera haber quedado de la
+            versión anterior que usaba localStorage.
+        */
+        localStorage.removeItem(
+            storageKey
         );
 
 
