@@ -135,11 +135,33 @@ export async function onRequestPost(context) {
                 cantidad * precioUnitario;
 
 
+            // =========================
+            // VALIDAR FOTO
+            // =========================
+
             if (
                 !item.foto_id ||
-                !cantidad ||
+                typeof item.foto_id !== "string" ||
+                !item.foto_id.trim()
+            ) {
+
+                return Response.json({
+                    ok: false,
+                    error:
+                        "Uno de los artículos no tiene un identificador válido."
+                }, { status: 400 });
+
+            }
+
+
+            // =========================
+            // VALIDAR CANTIDAD Y PRECIO
+            // =========================
+
+            if (
+                !Number.isInteger(cantidad) ||
                 cantidad < 1 ||
-                !precioUnitario ||
+                !Number.isFinite(precioUnitario) ||
                 precioUnitario < 1
             ) {
 
@@ -155,18 +177,37 @@ export async function onRequestPost(context) {
             totalCalculado += subtotal;
 
 
+            // =========================
+            // IDENTIFICADOR DE CLOUDINARY
+            // =========================
+            //
+            // El foto_id que llega desde NOVA
+            // corresponde al public_id de Cloudinary.
+            //
+            // Ejemplo:
+            //
+            // foto_id:
+            // ZAB_3981
+            //
+            // se guarda como:
+            //
+            // nombre_archivo:
+            // ZAB_3981
+            //
+            // El comprador nunca recibe este dato.
+            // =========================
+
+            const identificador =
+                item.foto_id.trim();
+
+
             itemsPreparados.push({
 
                 foto_id:
-                    item.foto_id,
-
-                // =====================================
-                // POR AHORA NO CONFIAMOS EN EL NOMBRE
-                // ENVIADO DESDE EL NAVEGADOR
-                // =====================================
+                    identificador,
 
                 nombre_archivo:
-                    "PENDIENTE",
+                    identificador,
 
                 cantidad:
                     cantidad,
