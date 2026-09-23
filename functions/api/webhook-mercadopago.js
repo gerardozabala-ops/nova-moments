@@ -25,7 +25,7 @@ export async function onRequestPost(context) {
 
 
         // =========================
-        // DATOS DE LA NOTIFICACIÓN
+        // URL Y HEADERS
         // =========================
 
         const url =
@@ -50,7 +50,7 @@ export async function onRequestPost(context) {
 
 
         // =========================
-        // EXTRAER FIRMA
+        // EXTRAER ts Y v1
         // =========================
 
         let ts = "";
@@ -61,20 +61,22 @@ export async function onRequestPost(context) {
 
         for (const parte of partes) {
 
-            const partesClave =
-                parte.split("=");
+            const posicion =
+                parte.indexOf("=");
 
-            if (
-                partesClave.length !== 2
-            ) {
+            if (posicion === -1) {
                 continue;
             }
 
             const clave =
-                partesClave[0].trim();
+                parte
+                    .slice(0, posicion)
+                    .trim();
 
             const valor =
-                partesClave[1].trim();
+                parte
+                    .slice(posicion + 1)
+                    .trim();
 
             if (clave === "ts") {
                 ts = valor;
@@ -88,7 +90,7 @@ export async function onRequestPost(context) {
 
 
         // =========================
-        // VALIDAR DATOS DE FIRMA
+        // VALIDAR DATOS NECESARIOS
         // =========================
 
         if (
@@ -99,7 +101,13 @@ export async function onRequestPost(context) {
         ) {
 
             console.error(
-                "Webhook sin datos suficientes para validar firma."
+                "Webhook sin datos suficientes para validar firma.",
+                {
+                    dataId,
+                    xRequestId,
+                    tieneTs: !!ts,
+                    tieneHash: !!hash
+                }
             );
 
             return Response.json({
@@ -112,7 +120,7 @@ export async function onRequestPost(context) {
 
 
         // =========================
-        // CREAR MANIFEST
+        // MANIFEST OFICIAL
         // =========================
 
         const manifest =
@@ -120,22 +128,16 @@ export async function onRequestPost(context) {
 
 
         // =========================
-        // HMAC SHA256
+        // GENERAR HMAC SHA256
         // =========================
 
         const encoder =
             new TextEncoder();
 
-        const keyData =
-            encoder.encode(secret);
-
-        const messageData =
-            encoder.encode(manifest);
-
         const cryptoKey =
             await crypto.subtle.importKey(
                 "raw",
-                keyData,
+                encoder.encode(secret),
                 {
                     name: "HMAC",
                     hash: "SHA-256"
@@ -144,17 +146,17 @@ export async function onRequestPost(context) {
                 ["sign"]
             );
 
-        const firmaCalculadaBuffer =
+        const firmaBuffer =
             await crypto.subtle.sign(
                 "HMAC",
                 cryptoKey,
-                messageData
+                encoder.encode(manifest)
             );
 
 
         const bytes =
             new Uint8Array(
-                firmaCalculadaBuffer
+                firmaBuffer
             );
 
         const firmaCalculada =
@@ -169,12 +171,11 @@ export async function onRequestPost(context) {
 
 
         // =========================
-        // COMPARAR FIRMAS
+        // COMPARAR FIRMA
         // =========================
 
         if (
-            firmaCalculada !==
-            hash
+            firmaCalculada !== hash
         ) {
 
             console.error(
@@ -205,12 +206,11 @@ export async function onRequestPost(context) {
 
 
         // =========================
-        // VERIFICAR TIPO
+        // TIPO DE EVENTO
         // =========================
 
         const tipo =
             datos.type ||
-            datos.topic ||
             "";
 
         if (
@@ -235,7 +235,7 @@ export async function onRequestPost(context) {
                 ? String(
                     datos.data.id
                 )
-                : "";
+                : dataId;
 
 
         if (!paymentId) {
@@ -258,7 +258,6 @@ export async function onRequestPost(context) {
 
         const accessToken =
             context.env.MP_ACCESS_TOKEN;
-
 
         if (!accessToken) {
 
@@ -297,18 +296,23 @@ export async function onRequestPost(context) {
             await respuesta.json();
 
 
+        // =========================
+        // SI EL PAGO NO EXISTE
+        // =========================
+
         if (!respuesta.ok) {
 
             console.error(
-                "Error consultando pago:",
+                "Mercado Pago no pudo consultar el pago:",
                 pago
             );
 
             return Response.json({
-                ok: false,
-                error:
-                    "No se pudo consultar el pago."
-            }, { status: 502 });
+                ok: true,
+                recibido: true,
+                payment_id:
+                    paymentId
+            });
 
         }
 
@@ -325,17 +329,17 @@ export async function onRequestPost(context) {
 
 
         console.log(
-            "Pago:",
-            paymentId,
-            "Estado:",
-            estado,
-            "Pedido:",
-            pedidoId
+            "Pago recibido:",
+            {
+                paymentId,
+                estado,
+                pedidoId
+            }
         );
 
 
         // =========================
-        // VERIFICAR PEDIDO
+        // SIN PEDIDO
         // =========================
 
         if (!pedidoId) {
@@ -346,7 +350,11 @@ export async function onRequestPost(context) {
 
             return Response.json({
                 ok: true,
-                recibido: true
+                recibido: true,
+                payment_id:
+                    paymentId,
+                estado_pago:
+                    estado
             });
 
         }
@@ -385,6 +393,8 @@ export async function onRequestPost(context) {
         return Response.json({
 
             ok: true,
+
+            recibido: true,
 
             pedido_id:
                 pedidoId,
