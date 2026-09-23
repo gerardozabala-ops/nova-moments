@@ -2,17 +2,210 @@ export async function onRequestPost(context) {
 
     try {
 
+        // =========================
+        // CONFIGURACIÓN
+        // =========================
+
+        const secret =
+            context.env.MP_WEBHOOK_SECRET;
+
+        if (!secret) {
+
+            console.error(
+                "Falta MP_WEBHOOK_SECRET."
+            );
+
+            return Response.json({
+                ok: false,
+                error:
+                    "Webhook no configurado."
+            }, { status: 500 });
+
+        }
+
+
+        // =========================
+        // DATOS DE LA NOTIFICACIÓN
+        // =========================
+
+        const url =
+            new URL(context.request.url);
+
+        const dataId =
+            (
+                url.searchParams.get(
+                    "data.id"
+                ) || ""
+            ).toLowerCase();
+
+        const xSignature =
+            context.request.headers.get(
+                "x-signature"
+            ) || "";
+
+        const xRequestId =
+            context.request.headers.get(
+                "x-request-id"
+            ) || "";
+
+
+        // =========================
+        // EXTRAER FIRMA
+        // =========================
+
+        let ts = "";
+        let hash = "";
+
+        const partes =
+            xSignature.split(",");
+
+        for (const parte of partes) {
+
+            const partesClave =
+                parte.split("=");
+
+            if (
+                partesClave.length !== 2
+            ) {
+                continue;
+            }
+
+            const clave =
+                partesClave[0].trim();
+
+            const valor =
+                partesClave[1].trim();
+
+            if (clave === "ts") {
+                ts = valor;
+            }
+
+            if (clave === "v1") {
+                hash = valor;
+            }
+
+        }
+
+
+        // =========================
+        // VALIDAR DATOS DE FIRMA
+        // =========================
+
+        if (
+            !dataId ||
+            !xRequestId ||
+            !ts ||
+            !hash
+        ) {
+
+            console.error(
+                "Webhook sin datos suficientes para validar firma."
+            );
+
+            return Response.json({
+                ok: false,
+                error:
+                    "Firma incompleta."
+            }, { status: 401 });
+
+        }
+
+
+        // =========================
+        // CREAR MANIFEST
+        // =========================
+
+        const manifest =
+            `id:${dataId};request-id:${xRequestId};ts:${ts};`;
+
+
+        // =========================
+        // HMAC SHA256
+        // =========================
+
+        const encoder =
+            new TextEncoder();
+
+        const keyData =
+            encoder.encode(secret);
+
+        const messageData =
+            encoder.encode(manifest);
+
+        const cryptoKey =
+            await crypto.subtle.importKey(
+                "raw",
+                keyData,
+                {
+                    name: "HMAC",
+                    hash: "SHA-256"
+                },
+                false,
+                ["sign"]
+            );
+
+        const firmaCalculadaBuffer =
+            await crypto.subtle.sign(
+                "HMAC",
+                cryptoKey,
+                messageData
+            );
+
+
+        const bytes =
+            new Uint8Array(
+                firmaCalculadaBuffer
+            );
+
+        const firmaCalculada =
+            Array.from(bytes)
+                .map(
+                    byte =>
+                        byte
+                            .toString(16)
+                            .padStart(2, "0")
+                )
+                .join("");
+
+
+        // =========================
+        // COMPARAR FIRMAS
+        // =========================
+
+        if (
+            firmaCalculada !==
+            hash
+        ) {
+
+            console.error(
+                "Firma de Mercado Pago inválida."
+            );
+
+            return Response.json({
+                ok: false,
+                error:
+                    "Firma inválida."
+            }, { status: 401 });
+
+        }
+
+
+        // =========================
+        // LEER BODY
+        // =========================
+
         const datos =
             await context.request.json();
 
+
         console.log(
-            "Webhook Mercado Pago recibido:",
+            "Webhook Mercado Pago validado:",
             JSON.stringify(datos)
         );
 
 
         // =========================
-        // VERIFICAR TIPO DE EVENTO
+        // VERIFICAR TIPO
         // =========================
 
         const tipo =
@@ -20,7 +213,9 @@ export async function onRequestPost(context) {
             datos.topic ||
             "";
 
-        if (tipo !== "payment") {
+        if (
+            tipo !== "payment"
+        ) {
 
             return Response.json({
                 ok: true,
@@ -31,13 +226,15 @@ export async function onRequestPost(context) {
 
 
         // =========================
-        // OBTENER ID DEL PAGO
+        // PAYMENT ID
         // =========================
 
         const paymentId =
             datos.data &&
             datos.data.id
-                ? String(datos.data.id)
+                ? String(
+                    datos.data.id
+                )
                 : "";
 
 
@@ -116,14 +313,8 @@ export async function onRequestPost(context) {
         }
 
 
-        console.log(
-            "Pago Mercado Pago:",
-            JSON.stringify(pago)
-        );
-
-
         // =========================
-        // DATOS IMPORTANTES
+        // DATOS DEL PAGO
         // =========================
 
         const estado =
@@ -132,6 +323,20 @@ export async function onRequestPost(context) {
         const pedidoId =
             pago.external_reference || "";
 
+
+        console.log(
+            "Pago:",
+            paymentId,
+            "Estado:",
+            estado,
+            "Pedido:",
+            pedidoId
+        );
+
+
+        // =========================
+        // VERIFICAR PEDIDO
+        // =========================
 
         if (!pedidoId) {
 
@@ -178,9 +383,18 @@ export async function onRequestPost(context) {
         // =========================
 
         return Response.json({
+
             ok: true,
-            pedido_id: pedidoId,
-            estado_pago: estado
+
+            pedido_id:
+                pedidoId,
+
+            payment_id:
+                paymentId,
+
+            estado_pago:
+                estado
+
         });
 
 
