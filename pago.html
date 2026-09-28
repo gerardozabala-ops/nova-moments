@@ -35,6 +35,13 @@
 
 
     <!-- =========================
+         MERCADO PAGO SDK
+    ========================== -->
+
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+
+
+    <!-- =========================
          ESTILOS
     ========================== -->
 
@@ -298,63 +305,45 @@
         }
 
 
-        .pay-button {
+        /* =========================
+           PAYMENT BRICK
+        ========================== */
 
-            width: 100%;
+        .brick-section {
 
-            border: none;
+            margin-top: 24px;
 
-            border-radius: 12px;
+            padding-top: 24px;
 
-            padding:
-                16px
-                20px;
+            border-top:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.08
+                );
+        }
 
-            background:
-                #009ee3;
 
-            color: #ffffff;
+        .brick-title {
 
             font-family:
-                "Inter",
+                "Montserrat",
                 Arial,
                 sans-serif;
 
-            font-size: 16px;
+            font-size: 17px;
 
             font-weight: 600;
 
-            cursor: pointer;
-
-            transition:
-                transform 0.15s ease,
-                opacity 0.15s ease;
+            margin-bottom: 16px;
         }
 
 
-        .pay-button:hover {
+        #paymentBrick_container {
 
-            transform:
-                translateY(-1px);
-        }
-
-
-        .pay-button:active {
-
-            transform:
-                translateY(0);
-        }
-
-
-        .pay-button:disabled {
-
-            opacity: 0.45;
-
-            cursor:
-                not-allowed;
-
-            transform:
-                none;
+            width: 100%;
         }
 
 
@@ -362,7 +351,7 @@
 
             width: 100%;
 
-            margin-top: 12px;
+            margin-top: 18px;
 
             padding:
                 13px
@@ -392,6 +381,18 @@
             font-size: 14px;
 
             cursor: pointer;
+        }
+
+
+        .back-button:hover {
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.04
+                );
         }
 
 
@@ -535,8 +536,8 @@
 
 
             <p class="description">
-                Revisá el pedido antes de continuar
-                al pago.
+                Revisá el pedido antes de elegir
+                el medio de pago.
             </p>
 
 
@@ -553,6 +554,10 @@
                 style="display:none;"
             >
 
+
+                <!-- =========================
+                     INFORMACIÓN DEL PEDIDO
+                ========================== -->
 
                 <div class="order-info">
 
@@ -620,15 +625,28 @@
                 </div>
 
 
-                <button
-                    id="payButton"
-                    class="pay-button"
-                    type="button"
-                    disabled
-                >
-                    PAGAR CON MERCADO PAGO
-                </button>
+                <!-- =========================
+                     PAYMENT BRICK
+                ========================== -->
 
+                <div class="brick-section">
+
+                    <div class="brick-title">
+                        Elegí cómo pagar
+                    </div>
+
+
+                    <div
+                        id="paymentBrick_container"
+                    >
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     VOLVER
+                ========================== -->
 
                 <button
                     id="backButton"
@@ -639,6 +657,10 @@
                 </button>
 
 
+                <!-- =========================
+                     ESTADO
+                ========================== -->
+
                 <div
                     id="status"
                     class="status"
@@ -648,8 +670,8 @@
 
                 <div class="security-note">
 
-                    Serás dirigido a Mercado Pago
-                    para completar el pago.
+                    Pago procesado de forma segura
+                    por Mercado Pago.
 
                 </div>
 
@@ -700,11 +722,6 @@
                 "total"
             );
 
-        const payButton =
-            document.getElementById(
-                "payButton"
-            );
-
         const backButton =
             document.getElementById(
                 "backButton"
@@ -725,6 +742,7 @@
                 window.location.search
             );
 
+
         const pedidoId =
             (
                 parametros.get(
@@ -734,10 +752,14 @@
 
 
         // =========================
-        // ESTADO
+        // CONFIGURACIÓN MERCADO PAGO
         // =========================
 
-        let checkoutUrl =
+        const publicKey =
+            "TEST-ec736240-0eaa-4e44-891c-2f6a25b93231";
+
+
+        let paymentBrickController =
             null;
 
 
@@ -777,9 +799,6 @@
             contenido.style.display =
                 "block";
 
-            payButton.disabled =
-                true;
-
             status.textContent =
                 mensaje;
 
@@ -792,7 +811,29 @@
 
 
         // =========================
-        // CREAR PAGO
+        // MOSTRAR ESTADO
+        // =========================
+
+        function mostrarEstado(
+            mensaje
+        ) {
+
+            status.textContent =
+                mensaje;
+
+            status.classList.add(
+                "visible"
+            );
+
+            status.classList.remove(
+                "error"
+            );
+
+        }
+
+
+        // =========================
+        // CARGAR PEDIDO Y BRICK
         // =========================
 
         async function cargarPago() {
@@ -809,22 +850,33 @@
 
             try {
 
+                // =========================
+                // CREAR PREFERENCIA
+                // =========================
+
                 const respuesta =
                     await fetch(
                         "/api/crear-pago",
                         {
-                            method: "POST",
+
+                            method:
+                                "POST",
 
                             headers: {
+
                                 "Content-Type":
                                     "application/json"
+
                             },
 
                             body:
                                 JSON.stringify({
+
                                     pedido_id:
                                         pedidoId
+
                                 })
+
                         }
                     );
 
@@ -856,6 +908,7 @@
 
 
                 eventoIdElement.textContent =
+                    datos.evento_id ||
                     "NOVA MOMENTS";
 
 
@@ -870,22 +923,8 @@
 
 
                 // =========================
-                // URL DE CHECKOUT
+                // MOSTRAR CONTENIDO
                 // =========================
-
-                checkoutUrl =
-                    datos.init_point ||
-                    null;
-
-
-                if (!checkoutUrl) {
-
-                    throw new Error(
-                        "Mercado Pago no devolvió la URL de checkout."
-                    );
-
-                }
-
 
                 loading.style.display =
                     "none";
@@ -893,8 +932,165 @@
                 contenido.style.display =
                     "block";
 
-                payButton.disabled =
-                    false;
+
+                // =========================
+                // VERIFICAR PREFERENCE ID
+                // =========================
+
+                if (!datos.preference_id) {
+
+                    throw new Error(
+                        "Mercado Pago no devolvió el identificador de la preferencia."
+                    );
+
+                }
+
+
+                // =========================
+                // INICIALIZAR MERCADO PAGO
+                // =========================
+
+                const mp =
+                    new MercadoPago(
+                        publicKey
+                    );
+
+
+                const bricksBuilder =
+                    mp.bricks();
+
+
+                // =========================
+                // CONFIGURACIÓN DEL PAYMENT BRICK
+                // =========================
+
+                const settings = {
+
+                    initialization: {
+
+                        amount:
+                            Number(
+                                datos.total
+                            ),
+
+                        preferenceId:
+                            datos.preference_id
+
+                    },
+
+
+                    customization: {
+
+                        paymentMethods: {
+
+                            ticket:
+                                "all",
+
+                            creditCard:
+                                "all",
+
+                            prepaidCard:
+                                "all",
+
+                            debitCard:
+                                "all",
+
+                            mercadoPago:
+                                "all"
+
+                        }
+
+                    },
+
+
+                    callbacks: {
+
+                        onReady:
+                            () => {
+
+                                console.log(
+                                    "Payment Brick listo."
+                                );
+
+                            },
+
+
+                        onSubmit:
+                            async (
+                                {
+                                    selectedPaymentMethod,
+                                    formData
+                                }
+                            ) => {
+
+                                console.log(
+                                    "Método seleccionado:",
+                                    selectedPaymentMethod
+                                );
+
+                                console.log(
+                                    "Datos del Brick:",
+                                    formData
+                                );
+
+
+                                mostrarEstado(
+                                    "El formulario de pago está funcionando. El procesamiento del pago se conectará en el siguiente paso."
+                                );
+
+
+                                /*
+                                 * TODAVÍA NO PROCESAMOS
+                                 * EL PAGO.
+                                 *
+                                 * En el siguiente paso:
+                                 *
+                                 * formData
+                                 *     ↓
+                                 * /api/procesar-pago
+                                 *     ↓
+                                 * Mercado Pago /v1/payments
+                                 *
+                                 */
+
+
+                                throw new Error(
+                                    "Procesamiento de pago pendiente de configuración."
+                                );
+
+                            },
+
+
+                        onError:
+                            (error) => {
+
+                                console.error(
+                                    "Error Payment Brick:",
+                                    error
+                                );
+
+
+                                mostrarError(
+                                    "No se pudo cargar correctamente el formulario de pago."
+                                );
+
+                            }
+
+                    }
+
+                };
+
+
+                // =========================
+                // CREAR PAYMENT BRICK
+                // =========================
+
+                paymentBrickController =
+                    await bricksBuilder.create(
+                        "payment",
+                        "paymentBrick_container",
+                        settings
+                    );
 
 
             } catch (error) {
@@ -903,6 +1099,7 @@
                     "Error preparando pago:",
                     error
                 );
+
 
                 mostrarError(
                     error.message ||
@@ -915,33 +1112,33 @@
 
 
         // =========================
-        // PAGAR
-        // =========================
-
-        payButton.addEventListener(
-            "click",
-            function () {
-
-                if (!checkoutUrl) {
-
-                    return;
-                }
-
-
-                window.location.href =
-                    checkoutUrl;
-
-            }
-        );
-
-
-        // =========================
         // VOLVER
         // =========================
 
         backButton.addEventListener(
             "click",
             function () {
+
+                if (
+                    paymentBrickController
+                ) {
+
+                    try {
+
+                        paymentBrickController
+                            .unmount();
+
+                    } catch (error) {
+
+                        console.warn(
+                            "No se pudo desmontar Payment Brick:",
+                            error
+                        );
+
+                    }
+
+                }
+
 
                 if (
                     document.referrer &&
@@ -956,6 +1153,38 @@
 
                     window.location.href =
                         "experiencia-venta.html";
+
+                }
+
+            }
+        );
+
+
+        // =========================
+        // LIMPIAR BRICK AL SALIR
+        // =========================
+
+        window.addEventListener(
+            "beforeunload",
+            function () {
+
+                if (
+                    paymentBrickController
+                ) {
+
+                    try {
+
+                        paymentBrickController
+                            .unmount();
+
+                    } catch (error) {
+
+                        console.warn(
+                            "Error desmontando Payment Brick:",
+                            error
+                        );
+
+                    }
 
                 }
 
