@@ -313,7 +313,7 @@ export async function onRequestPost(context) {
                     pedido.nombre,
 
                 email:
-                    pedido.email || undefined
+                    "test@testuser.com"
 
             }
 
