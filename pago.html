@@ -872,20 +872,16 @@
                 // =========================
                 // URL DE CHECKOUT
                 // =========================
-                //
-                // Para esta primera prueba
-                // utilizamos sandbox.
-                // =========================
 
                 checkoutUrl =
-                    datos.sandbox_init_point ||
+                    datos.init_point ||
                     null;
 
 
                 if (!checkoutUrl) {
 
                     throw new Error(
-                        "Mercado Pago no devolvió la URL de prueba."
+                        "Mercado Pago no devolvió la URL de checkout."
                     );
 
                 }
