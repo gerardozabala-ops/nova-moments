@@ -25,12 +25,11 @@
     <link
         rel="preconnect"
         href="https://fonts.gstatic.com"
-        crossorigin
     >
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700&display=swap"
         rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700&display=swap"
     >
 
 
@@ -850,6 +849,15 @@
 
 
         // =========================
+        // NUEVO:
+        // CONTROLAR SI EL PAGO FUE APROBADO
+        // =========================
+
+        let pagoAprobado =
+            false;
+
+
+        // =========================
         // FORMATEAR DINERO
         // =========================
 
@@ -1241,6 +1249,14 @@
                                         "approved"
                                     ) {
 
+                                        // =========================
+                                        // MARCAR PAGO APROBADO
+                                        // =========================
+
+                                        pagoAprobado =
+                                            true;
+
+
                                         mostrarExito(
                                             "¡Pago aprobado! Tu pedido fue procesado correctamente."
                                         );
@@ -1420,6 +1436,29 @@
 
                 }
 
+
+                // =========================
+                // SI EL PAGO FUE APROBADO
+                // VOLVER EXPLÍCITAMENTE A VENTA
+                // =========================
+
+                if (
+                    pagoAprobado
+                ) {
+
+                    window.location.href =
+                        `experiencia-venta.html?pago=approved&pedido=${encodeURIComponent(
+                            pedidoId
+                        )}`;
+
+                    return;
+
+                }
+
+
+                // =========================
+                // COMPORTAMIENTO NORMAL
+                // =========================
 
                 if (
                     document.referrer &&
