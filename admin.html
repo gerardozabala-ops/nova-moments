@@ -19,7 +19,7 @@
 
     <link
         rel="preconnect"
-        href="https://fonts.gstatic.com"
+        href="https://fonts.googleapis.com"
         crossorigin
     >
 
@@ -47,20 +47,22 @@
 
         body {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 24px;
         }
 
         .admin-container {
             width: 100%;
-            max-width: 420px;
+            max-width: 1100px;
+            margin: 0 auto;
         }
+
+        /* =====================================================
+           LOGO
+        ===================================================== */
 
         .logo {
             text-align: center;
-            margin-bottom: 42px;
+            margin: 30px 0 42px;
         }
 
         .logo-nova {
@@ -68,14 +70,23 @@
             font-size: 30px;
             font-weight: 700;
             letter-spacing: 5px;
-            margin-bottom: 8px;
         }
 
         .logo-subtitle {
+            margin-top: 8px;
             font-size: 11px;
             letter-spacing: 3px;
             color: #777777;
             text-transform: uppercase;
+        }
+
+        /* =====================================================
+           LOGIN
+        ===================================================== */
+
+        #loginSection {
+            max-width: 420px;
+            margin: 0 auto;
         }
 
         .login-card {
@@ -121,14 +132,10 @@
             font-family: "Inter", sans-serif;
             font-size: 14px;
             outline: none;
-            transition:
-                border-color 0.2s ease,
-                background 0.2s ease;
         }
 
         .field input:focus {
             border-color: #555555;
-            background: #0a0a0a;
         }
 
         .field input::placeholder {
@@ -148,23 +155,16 @@
             font-weight: 700;
             letter-spacing: 1.5px;
             cursor: pointer;
-            transition:
-                opacity 0.2s ease,
-                transform 0.1s ease;
-        }
-
-        .login-button:hover {
-            opacity: 0.9;
-        }
-
-        .login-button:active {
-            transform: scale(0.99);
         }
 
         .login-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
+
+        /* =====================================================
+           MENSAJES
+        ===================================================== */
 
         .message {
             display: none;
@@ -188,31 +188,249 @@
             color: #a7d8af;
         }
 
+        /* =====================================================
+           PANEL
+        ===================================================== */
+
+        #adminPanel {
+            display: none;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .panel-title {
+            margin: 0;
+            font-family: "Montserrat", sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .panel-subtitle {
+            margin: 7px 0 0;
+            color: #777777;
+            font-size: 12px;
+        }
+
+        .reload-button {
+            border: 1px solid #292929;
+            background: #0d0d0d;
+            color: #ffffff;
+            border-radius: 9px;
+            padding: 11px 15px;
+            font-family: "Inter", sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .reload-button:hover {
+            background: #151515;
+        }
+
+        /* =====================================================
+           ESTADO
+        ===================================================== */
+
+        .panel-message {
+            display: none;
+            margin-bottom: 20px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            background: #0d0d0d;
+            border: 1px solid #202020;
+            color: #aaaaaa;
+            font-size: 12px;
+        }
+
+        /* =====================================================
+           PEDIDOS
+        ===================================================== */
+
+        .pedidos {
+            display: grid;
+            gap: 16px;
+        }
+
+        .pedido-card {
+            background: #0d0d0d;
+            border: 1px solid #202020;
+            border-radius: 16px;
+            padding: 22px;
+        }
+
+        .pedido-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .pedido-id {
+            font-family: "Montserrat", sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .pedido-fecha {
+            margin-top: 5px;
+            color: #777777;
+            font-size: 11px;
+        }
+
+        .estado {
+            padding: 6px 9px;
+            border-radius: 7px;
+            background: #181818;
+            border: 1px solid #292929;
+            color: #cccccc;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .pedido-datos {
+            display: grid;
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .dato {
+            padding: 12px;
+            background: #080808;
+            border-radius: 9px;
+        }
+
+        .dato-label {
+            color: #666666;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+        }
+
+        .dato-valor {
+            color: #dddddd;
+            font-size: 12px;
+            word-break: break-word;
+        }
+
+        .items-title {
+            color: #888888;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 9px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 11px 0;
+            border-top: 1px solid #1b1b1b;
+            font-size: 12px;
+        }
+
+        .item-name {
+            color: #cccccc;
+        }
+
+        .item-detail {
+            color: #777777;
+            white-space: nowrap;
+        }
+
+        .pedido-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #292929;
+        }
+
+        .pedido-total-label {
+            color: #888888;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pedido-total-value {
+            font-family: "Montserrat", sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .sin-pedidos {
+            text-align: center;
+            padding: 50px 20px;
+            background: #0d0d0d;
+            border: 1px solid #202020;
+            border-radius: 16px;
+            color: #666666;
+            font-size: 13px;
+        }
+
         .footer {
             text-align: center;
-            margin-top: 26px;
+            margin: 35px 0 15px;
             color: #444444;
             font-size: 10px;
             letter-spacing: 1px;
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 700px) {
 
             body {
                 padding: 18px;
             }
 
             .logo {
-                margin-bottom: 32px;
+                margin: 20px 0 32px;
             }
 
             .logo-nova {
                 font-size: 26px;
             }
 
+            .panel-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .pedido-datos {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+        @media (max-width: 480px) {
+
             .login-card {
                 padding: 26px 22px;
-                border-radius: 16px;
+            }
+
+            .pedido-card {
+                padding: 17px;
+            }
+
+            .pedido-datos {
+                grid-template-columns: 1fr;
+            }
+
+            .item {
+                flex-direction: column;
+                gap: 4px;
             }
 
         }
@@ -224,6 +442,10 @@
 <body>
 
     <main class="admin-container">
+
+        <!-- =================================================
+             LOGO
+        ================================================== -->
 
         <div class="logo">
 
@@ -238,78 +460,123 @@
         </div>
 
 
-        <section class="login-card">
+        <!-- =================================================
+             LOGIN
+        ================================================== -->
 
-            <h1 class="login-title">
-                Administración
-            </h1>
+        <section id="loginSection">
 
-            <p class="login-description">
-                Acceso privado al panel de gestión de NOVA MOMENTS.
-            </p>
+            <div class="login-card">
+
+                <h1 class="login-title">
+                    Administración
+                </h1>
+
+                <p class="login-description">
+                    Acceso privado al panel de gestión de NOVA MOMENTS.
+                </p>
 
 
-            <form id="adminLoginForm">
+                <form id="adminLoginForm">
 
-                <div class="field">
+                    <div class="field">
 
-                    <label for="usuario">
-                        Usuario
-                    </label>
+                        <label for="usuario">
+                            Usuario
+                        </label>
 
-                    <input
-                        type="text"
-                        id="usuario"
-                        name="usuario"
-                        placeholder="Usuario"
-                        autocomplete="username"
-                        required
+                        <input
+                            type="text"
+                            id="usuario"
+                            name="usuario"
+                            placeholder="Usuario"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="password">
+                            Contraseña
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Contraseña"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="login-button"
+                        id="loginButton"
                     >
+                        INGRESAR
+                    </button>
+
+
+                    <div
+                        class="message error-message"
+                        id="errorMessage"
+                    ></div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PANEL ADMINISTRATIVO
+        ================================================== -->
+
+        <section id="adminPanel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h1 class="panel-title">
+                        Pedidos
+                    </h1>
+
+                    <p class="panel-subtitle">
+                        Gestión de pedidos registrados en NOVA MOMENTS.
+                    </p>
 
                 </div>
-
-
-                <div class="field">
-
-                    <label for="password">
-                        Contraseña
-                    </label>
-
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Contraseña"
-                        autocomplete="current-password"
-                        required
-                    >
-
-                </div>
-
 
                 <button
-                    type="submit"
-                    class="login-button"
-                    id="loginButton"
+                    type="button"
+                    class="reload-button"
+                    id="reloadButton"
                 >
-                    INGRESAR
+                    ACTUALIZAR
                 </button>
 
-
-                <div
-                    class="message error-message"
-                    id="errorMessage"
-                ></div>
+            </div>
 
 
-                <div
-                    class="message success-message"
-                    id="successMessage"
-                >
-                    ACCESO CORRECTO
-                </div>
+            <div
+                class="panel-message"
+                id="panelMessage"
+            ></div>
 
-            </form>
+
+            <div
+                class="pedidos"
+                id="pedidosContainer"
+            ></div>
 
         </section>
 
@@ -326,30 +593,434 @@
         /*
         =========================================================
         NOVA MOMENTS — ADMIN
-        LOGIN ADMINISTRATIVO
+        LOGIN + PEDIDOS
         =========================================================
         */
+
 
         const formulario =
             document.getElementById(
                 "adminLoginForm"
             );
 
+
         const loginButton =
             document.getElementById(
                 "loginButton"
             );
+
 
         const errorMessage =
             document.getElementById(
                 "errorMessage"
             );
 
-        const successMessage =
+
+        const loginSection =
             document.getElementById(
-                "successMessage"
+                "loginSection"
             );
 
+
+        const adminPanel =
+            document.getElementById(
+                "adminPanel"
+            );
+
+
+        const pedidosContainer =
+            document.getElementById(
+                "pedidosContainer"
+            );
+
+
+        const panelMessage =
+            document.getElementById(
+                "panelMessage"
+            );
+
+
+        const reloadButton =
+            document.getElementById(
+                "reloadButton"
+            );
+
+
+        let adminUsuario = "";
+        let adminPassword = "";
+
+
+        /*
+        =========================================================
+        FORMATEAR DINERO
+        =========================================================
+        */
+
+        function formatearDinero(valor) {
+
+            return new Intl.NumberFormat(
+                "es-AR",
+                {
+                    style: "currency",
+                    currency: "ARS",
+                    maximumFractionDigits: 0
+                }
+            ).format(
+                Number(valor) || 0
+            );
+
+        }
+
+
+        /*
+        =========================================================
+        FORMATEAR FECHA
+        =========================================================
+        */
+
+        function formatearFecha(valor) {
+
+            if (!valor) {
+                return "Sin fecha";
+            }
+
+            try {
+
+                return new Date(valor)
+                    .toLocaleString(
+                        "es-AR",
+                        {
+                            dateStyle: "short",
+                            timeStyle: "short"
+                        }
+                    );
+
+            } catch {
+
+                return valor;
+
+            }
+
+        }
+
+
+        /*
+        =========================================================
+        MOSTRAR PEDIDOS
+        =========================================================
+        */
+
+        function mostrarPedidos(pedidos) {
+
+            pedidosContainer.innerHTML = "";
+
+
+            if (
+                !Array.isArray(pedidos) ||
+                pedidos.length === 0
+            ) {
+
+                pedidosContainer.innerHTML = `
+                    <div class="sin-pedidos">
+                        No hay pedidos registrados.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            pedidos.forEach(
+                function (pedido) {
+
+                    const card =
+                        document.createElement(
+                            "article"
+                        );
+
+                    card.className =
+                        "pedido-card";
+
+
+                    const items =
+                        Array.isArray(
+                            pedido.items
+                        )
+                            ? pedido.items
+                            : [];
+
+
+                    let itemsHTML = "";
+
+
+                    items.forEach(
+                        function (item) {
+
+                            itemsHTML += `
+                                <div class="item">
+
+                                    <div class="item-name">
+                                        ${
+                                            item.nombre_archivo ||
+                                            item.foto_id ||
+                                            "Foto"
+                                        }
+                                    </div>
+
+                                    <div class="item-detail">
+                                        ${
+                                            item.cantidad
+                                        }
+                                        ×
+                                        ${
+                                            formatearDinero(
+                                                item.precio_unitario
+                                            )
+                                        }
+                                    </div>
+
+                                </div>
+                            `;
+
+                        }
+                    );
+
+
+                    card.innerHTML = `
+
+                        <div class="pedido-header">
+
+                            <div>
+
+                                <div class="pedido-id">
+                                    ${
+                                        pedido.pedido_id ||
+                                        "Pedido"
+                                    }
+                                </div>
+
+                                <div class="pedido-fecha">
+                                    ${
+                                        formatearFecha(
+                                            pedido.creado_en
+                                        )
+                                    }
+                                </div>
+
+                            </div>
+
+                            <div class="estado">
+                                ${
+                                    pedido.estado_pago ||
+                                    pedido.estado ||
+                                    "pendiente"
+                                }
+                            </div>
+
+                        </div>
+
+
+                        <div class="pedido-datos">
+
+                            <div class="dato">
+
+                                <div class="dato-label">
+                                    Cliente
+                                </div>
+
+                                <div class="dato-valor">
+                                    ${
+                                        pedido.nombre ||
+                                        "—"
+                                    }
+                                </div>
+
+                            </div>
+
+
+                            <div class="dato">
+
+                                <div class="dato-label">
+                                    WhatsApp
+                                </div>
+
+                                <div class="dato-valor">
+                                    ${
+                                        pedido.whatsapp ||
+                                        "—"
+                                    }
+                                </div>
+
+                            </div>
+
+
+                            <div class="dato">
+
+                                <div class="dato-label">
+                                    Email
+                                </div>
+
+                                <div class="dato-valor">
+                                    ${
+                                        pedido.email ||
+                                        "—"
+                                    }
+                                </div>
+
+                            </div>
+
+
+                            <div class="dato">
+
+                                <div class="dato-label">
+                                    Evento
+                                </div>
+
+                                <div class="dato-valor">
+                                    ${
+                                        pedido.evento_id ||
+                                        "—"
+                                    }
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="items-title">
+                            Fotografías seleccionadas
+                        </div>
+
+                        ${
+                            itemsHTML ||
+                            `
+                                <div class="item">
+                                    <div class="item-name">
+                                        Sin fotografías registradas
+                                    </div>
+                                </div>
+                            `
+                        }
+
+
+                        <div class="pedido-total">
+
+                            <div class="pedido-total-label">
+                                Total
+                            </div>
+
+                            <div class="pedido-total-value">
+                                ${
+                                    formatearDinero(
+                                        pedido.total
+                                    )
+                                }
+                            </div>
+
+                        </div>
+
+                    `;
+
+
+                    pedidosContainer.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        }
+
+
+        /*
+        =========================================================
+        CARGAR PEDIDOS
+        =========================================================
+        */
+
+        async function cargarPedidos() {
+
+            panelMessage.style.display =
+                "block";
+
+            panelMessage.textContent =
+                "Consultando pedidos...";
+
+
+            pedidosContainer.innerHTML =
+                "";
+
+
+            try {
+
+                const respuesta =
+                    await fetch(
+                        "/api/admin-pedidos",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    usuario:
+                                        adminUsuario,
+                                    password:
+                                        adminPassword
+                                })
+                        }
+                    );
+
+
+                const datos =
+                    await respuesta.json();
+
+
+                if (
+                    !respuesta.ok ||
+                    !datos.ok
+                ) {
+
+                    throw new Error(
+                        datos.error ||
+                        "No se pudieron cargar los pedidos."
+                    );
+
+                }
+
+
+                panelMessage.style.display =
+                    "none";
+
+
+                mostrarPedidos(
+                    datos.pedidos
+                );
+
+
+            } catch (error) {
+
+                panelMessage.style.display =
+                    "block";
+
+                panelMessage.textContent =
+                    error.message ||
+                    "Error al consultar los pedidos.";
+
+            }
+
+        }
+
+
+        /*
+        =========================================================
+        LOGIN
+        =========================================================
+        */
 
         formulario.addEventListener(
             "submit",
@@ -359,9 +1030,6 @@
 
 
                 errorMessage.style.display =
-                    "none";
-
-                successMessage.style.display =
                     "none";
 
 
@@ -421,46 +1089,51 @@
 
 
                     if (
-                        respuesta.ok &&
-                        datos.ok
+                        !respuesta.ok ||
+                        !datos.ok
                     ) {
 
-                        successMessage.style.display =
-                            "block";
-
-                        loginButton.textContent =
-                            "ACCESO CORRECTO";
-
-
-                        /*
-                        -------------------------------------------------
-                        POR AHORA NO REDIRIGIMOS.
-
-                        En el siguiente paso construiremos el panel
-                        administrativo conectado a D1.
-                        -------------------------------------------------
-                        */
-
-                    } else {
-
-                        errorMessage.textContent =
+                        throw new Error(
                             datos.error ||
-                            "Usuario o contraseña incorrectos.";
-
-                        errorMessage.style.display =
-                            "block";
-
-                        loginButton.disabled =
-                            false;
-
-                        loginButton.textContent =
-                            "INGRESAR";
+                            "Usuario o contraseña incorrectos."
+                        );
 
                     }
+
+
+                    /*
+                    -------------------------------------------------
+                    LOGIN CORRECTO
+                    -------------------------------------------------
+                    */
+
+                    adminUsuario =
+                        usuario;
+
+                    adminPassword =
+                        password;
+
+
+                    loginSection.style.display =
+                        "none";
+
+                    adminPanel.style.display =
+                        "block";
+
+
+                    /*
+                    -------------------------------------------------
+                    CARGAR PEDIDOS DESDE D1
+                    -------------------------------------------------
+                    */
+
+                    await cargarPedidos();
+
 
                 } catch (error) {
 
                     errorMessage.textContent =
+                        error.message ||
                         "No se pudo conectar con el servidor.";
 
                     errorMessage.style.display =
@@ -473,6 +1146,36 @@
                         "INGRESAR";
 
                 }
+
+            }
+        );
+
+
+        /*
+        =========================================================
+        ACTUALIZAR PEDIDOS
+        =========================================================
+        */
+
+        reloadButton.addEventListener(
+            "click",
+            async function () {
+
+                reloadButton.disabled =
+                    true;
+
+                reloadButton.textContent =
+                    "ACTUALIZANDO...";
+
+
+                await cargarPedidos();
+
+
+                reloadButton.disabled =
+                    false;
+
+                reloadButton.textContent =
+                    "ACTUALIZAR";
 
             }
         );
