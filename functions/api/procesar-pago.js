@@ -116,12 +116,22 @@ export async function onRequestPost(context) {
 
 
         // =========================
-        // VERIFICAR ESTADO DEL PEDIDO
+        // VERIFICAR ESTADO DEL PAGO
+        // =========================
+        //
+        // approved:
+        // El pedido ya fue pagado.
+        //
+        // pending:
+        // Existe un pago pendiente.
+        //
+        // rejected / cancelled:
+        // Se permite intentar nuevamente.
         // =========================
 
         if (
-            pedido.estado_pago &&
-            pedido.estado_pago !== "pendiente"
+            pedido.estado_pago === "approved" ||
+            pedido.estado_pago === "pending"
         ) {
 
             return Response.json({
@@ -129,7 +139,9 @@ export async function onRequestPost(context) {
                 ok: false,
 
                 error:
-                    "Este pedido ya fue procesado o tiene un estado de pago diferente de pendiente."
+                    pedido.estado_pago === "approved"
+                        ? "Este pedido ya fue pagado."
+                        : "Este pedido tiene un pago pendiente de confirmación."
 
             }, { status: 409 });
 
@@ -516,7 +528,7 @@ export async function onRequestPost(context) {
 
         const estadoPago =
             resultado.status ||
-            "pendiente";
+            "pending";
 
 
         const statusDetail =
@@ -532,41 +544,18 @@ export async function onRequestPost(context) {
         // =========================
         // ACTUALIZAR D1
         // =========================
+        //
+        // Guardamos exactamente el
+        // estado devuelto por Mercado Pago:
+        //
+        // approved
+        // rejected
+        // pending
+        // cancelled
+        // =========================
 
-        let nuevoEstado =
-            "pendiente";
-
-
-        if (
-            estadoPago ===
-            "approved"
-        ) {
-
-            nuevoEstado =
-                "aprobado";
-
-        } else if (
-            estadoPago ===
-            "rejected"
-        ) {
-
-            nuevoEstado =
-                "rechazado";
-
-        } else if (
-            estadoPago ===
-            "cancelled"
-        ) {
-
-            nuevoEstado =
-                "cancelado";
-
-        } else {
-
-            nuevoEstado =
-                "pendiente";
-
-        }
+        const nuevoEstado =
+            estadoPago;
 
 
         await context.env.DB
