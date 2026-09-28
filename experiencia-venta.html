@@ -1379,6 +1379,65 @@
 
 
     /* =========================================================
+       NUEVO:
+       DETECTAR REGRESO DESPUÉS DE PAGO APROBADO
+    ========================================================= */
+
+    const parametrosRegreso =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const pagoRegreso =
+        parametrosRegreso.get(
+            "pago"
+        );
+
+
+    if (
+        pagoRegreso === "approved"
+    ) {
+
+        /*
+            El pago fue aprobado.
+
+            Eliminamos la selección actual
+            para que el cliente pueda continuar
+            navegando desde cero.
+        */
+
+        sessionStorage.removeItem(
+            storageKey
+        );
+
+
+        /*
+            También eliminamos cualquier
+            selección antigua que pudiera existir
+            en localStorage.
+        */
+
+        localStorage.removeItem(
+            storageKey
+        );
+
+
+        /*
+            Limpiamos la URL para que el parámetro
+            ?pago=approved no quede visible.
+        */
+
+        window.history.replaceState(
+            {},
+            document.title,
+            "experiencia-venta.html"
+        );
+
+    }
+
+
+    /* =========================================================
        DATOS DINÁMICOS DEL PRODUCTO
     ========================================================= */
 
