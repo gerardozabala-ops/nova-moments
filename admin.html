@@ -166,17 +166,26 @@
             cursor: not-allowed;
         }
 
-        .error-message {
+        .message {
             display: none;
             margin-top: 16px;
-            padding: 12px 14px;
+            padding: 13px 14px;
             border-radius: 9px;
-            border: 1px solid #3a2020;
-            background: #160909;
-            color: #d8a0a0;
             font-size: 12px;
             line-height: 1.5;
             text-align: center;
+        }
+
+        .error-message {
+            border: 1px solid #3a2020;
+            background: #160909;
+            color: #d8a0a0;
+        }
+
+        .success-message {
+            border: 1px solid #203a25;
+            background: #09160c;
+            color: #a7d8af;
         }
 
         .footer {
@@ -288,10 +297,16 @@
 
 
                 <div
-                    class="error-message"
+                    class="message error-message"
                     id="errorMessage"
+                ></div>
+
+
+                <div
+                    class="message success-message"
+                    id="successMessage"
                 >
-                    Usuario o contraseña incorrectos.
+                    ACCESO CORRECTO
                 </div>
 
             </form>
@@ -311,13 +326,9 @@
         /*
         =========================================================
         NOVA MOMENTS — ADMIN
-        ETAPA 1
-
-        Esta versión solamente muestra la interfaz.
-        Todavía NO se conecta con D1.
+        LOGIN ADMINISTRATIVO
         =========================================================
         */
-
 
         const formulario =
             document.getElementById(
@@ -334,15 +345,25 @@
                 "errorMessage"
             );
 
+        const successMessage =
+            document.getElementById(
+                "successMessage"
+            );
+
 
         formulario.addEventListener(
             "submit",
-            function (event) {
+            async function (event) {
 
                 event.preventDefault();
 
+
                 errorMessage.style.display =
                     "none";
+
+                successMessage.style.display =
+                    "none";
+
 
                 loginButton.disabled =
                     true;
@@ -351,20 +372,83 @@
                     "VERIFICANDO...";
 
 
-                /*
-                -------------------------------------------------
-                TEMPORAL
-
-                En esta primera etapa no hacemos ningún login.
-
-                El siguiente paso será conectar este formulario
-                con una API segura y D1.
-                -------------------------------------------------
-                */
+                const usuario =
+                    document
+                        .getElementById(
+                            "usuario"
+                        )
+                        .value
+                        .trim();
 
 
-                setTimeout(
-                    function () {
+                const password =
+                    document
+                        .getElementById(
+                            "password"
+                        )
+                        .value;
+
+
+                try {
+
+                    const respuesta =
+                        await fetch(
+                            "/api/admin-login",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                credentials:
+                                    "include",
+
+                                body:
+                                    JSON.stringify({
+                                        usuario:
+                                            usuario,
+                                        password:
+                                            password
+                                    })
+                            }
+                        );
+
+
+                    const datos =
+                        await respuesta.json();
+
+
+                    if (
+                        respuesta.ok &&
+                        datos.ok
+                    ) {
+
+                        successMessage.style.display =
+                            "block";
+
+                        loginButton.textContent =
+                            "ACCESO CORRECTO";
+
+
+                        /*
+                        -------------------------------------------------
+                        POR AHORA NO REDIRIGIMOS.
+
+                        En el siguiente paso construiremos el panel
+                        administrativo conectado a D1.
+                        -------------------------------------------------
+                        */
+
+                    } else {
+
+                        errorMessage.textContent =
+                            datos.error ||
+                            "Usuario o contraseña incorrectos.";
+
+                        errorMessage.style.display =
+                            "block";
 
                         loginButton.disabled =
                             false;
@@ -372,15 +456,23 @@
                         loginButton.textContent =
                             "INGRESAR";
 
-                        errorMessage.textContent =
-                            "El acceso administrativo todavía no está conectado.";
+                    }
 
-                        errorMessage.style.display =
-                            "block";
+                } catch (error) {
 
-                    },
-                    600
-                );
+                    errorMessage.textContent =
+                        "No se pudo conectar con el servidor.";
+
+                    errorMessage.style.display =
+                        "block";
+
+                    loginButton.disabled =
+                        false;
+
+                    loginButton.textContent =
+                        "INGRESAR";
+
+                }
 
             }
         );
