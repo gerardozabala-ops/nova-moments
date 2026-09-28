@@ -308,9 +308,7 @@
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 16px;
             padding: 20px;
-
             z-index: 650;
-
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             display: none;
         }
@@ -1324,7 +1322,7 @@
             id="confirmationClose"
             class="primary-button"
         >
-            CERRAR
+            CONTINUAR AL PAGO
         </button>
 
     </div>
@@ -3110,11 +3108,32 @@
         "click",
         () => {
 
-            document.getElementById(
-                "confirmation"
-            ).classList.remove(
-                "active"
-            );
+            const pedidoCreado =
+                document
+                    .getElementById(
+                        "confirmationData"
+                    )
+                    .querySelector(
+                        "strong"
+                    );
+
+            const pedidoId =
+                pedidoCreado
+                    ? pedidoCreado.textContent.trim()
+                    : "";
+
+            if (!pedidoId) {
+
+                alert(
+                    "No se pudo identificar el pedido."
+                );
+
+                return;
+
+            }
+
+            window.location.href =
+                `pago.html?pedido=${encodeURIComponent(pedidoId)}`;
 
         }
     );
