@@ -156,16 +156,11 @@ export async function onRequestPost(context) {
         // CONSTRUIR ITEMS
         // =========================
         //
-        // IMPORTANTE:
-        //
         // Los precios salen de D1.
+        // No confiamos en datos del navegador.
         //
-        // No confiamos en datos enviados
-        // nuevamente desde el navegador.
-        //
-        // Tampoco enviamos el nombre real
-        // del archivo de la fotografía a
-        // Mercado Pago.
+        // El nombre real de la fotografía
+        // tampoco se envía a Mercado Pago.
         // =========================
 
         const items =
@@ -245,7 +240,7 @@ export async function onRequestPost(context) {
 
 
         // =========================
-        // CALCULAR TOTAL
+        // CALCULAR TOTAL REAL
         // =========================
 
         const totalCalculado =
@@ -278,8 +273,11 @@ export async function onRequestPost(context) {
             console.error(
                 "Diferencia de total:",
                 {
-                    pedido: pedido.total,
-                    calculado: totalCalculado
+                    pedido:
+                        pedido.total,
+
+                    calculado:
+                        totalCalculado
                 }
             );
 
@@ -297,6 +295,16 @@ export async function onRequestPost(context) {
 
         // =========================
         // CREAR PREFERENCIA
+        // =========================
+        //
+        // La Preference se utiliza por
+        // Payment Brick para habilitar
+        // el medio de pago Mercado Pago.
+        //
+        // NO usamos init_point.
+        //
+        // El Brick se mostrará dentro
+        // de pago.html.
         // =========================
 
         const preferencia = {
@@ -361,7 +369,30 @@ export async function onRequestPost(context) {
                 ok: false,
 
                 error:
-                    "Mercado Pago rechazó la creación del pago."
+                    "Mercado Pago rechazó la creación de la preferencia."
+
+            }, { status: 502 });
+
+        }
+
+
+        // =========================
+        // VERIFICAR PREFERENCE ID
+        // =========================
+
+        if (!resultado.id) {
+
+            console.error(
+                "Mercado Pago no devolvió preference ID:",
+                resultado
+            );
+
+            return Response.json({
+
+                ok: false,
+
+                error:
+                    "Mercado Pago no devolvió el identificador de la preferencia."
 
             }, { status: 502 });
 
@@ -379,18 +410,14 @@ export async function onRequestPost(context) {
             pedido_id:
                 pedido.pedido_id,
 
-            preference_id:
-                resultado.id || null,
-
-            init_point:
-                resultado.init_point || null,
-
-            sandbox_init_point:
-                resultado.sandbox_init_point ||
-                null,
+            evento_id:
+                pedido.evento_id,
 
             total:
-                totalCalculado
+                totalCalculado,
+
+            preference_id:
+                resultado.id
 
         });
 
@@ -408,7 +435,7 @@ export async function onRequestPost(context) {
             ok: false,
 
             error:
-                "No se pudo crear el pago."
+                "No se pudo preparar el pago."
 
         }, { status: 500 });
 
