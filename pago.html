@@ -396,6 +396,59 @@
         }
 
 
+        /* =========================
+           REINTENTAR PAGO
+        ========================== */
+
+        .retry-button {
+
+            width: 100%;
+
+            margin-top: 18px;
+
+            padding:
+                14px
+                18px;
+
+            border:
+                none;
+
+            border-radius: 12px;
+
+            background:
+                #ffffff;
+
+            color:
+                #111111;
+
+            font-family:
+                "Inter",
+                Arial,
+                sans-serif;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            display: none;
+        }
+
+
+        .retry-button:hover {
+
+            background:
+                #e8e8e8;
+        }
+
+
+        .retry-button.visible {
+
+            display: block;
+        }
+
+
         .status {
 
             margin-top: 20px;
@@ -660,6 +713,19 @@
 
 
                 <!-- =========================
+                     REINTENTAR PAGO
+                ========================== -->
+
+                <button
+                    id="retryButton"
+                    class="retry-button"
+                    type="button"
+                >
+                    REINTENTAR PAGO
+                </button>
+
+
+                <!-- =========================
                      VOLVER
                 ========================== -->
 
@@ -740,6 +806,11 @@
         const backButton =
             document.getElementById(
                 "backButton"
+            );
+
+        const retryButton =
+            document.getElementById(
+                "retryButton"
             );
 
         const status =
@@ -1078,6 +1149,15 @@
 
 
                                 // =========================
+                                // OCULTAR REINTENTO
+                                // =========================
+
+                                retryButton.classList.remove(
+                                    "visible"
+                                );
+
+
+                                // =========================
                                 // AVISAR AL USUARIO
                                 // =========================
 
@@ -1191,6 +1271,15 @@
                                         );
 
 
+                                        // =========================
+                                        // MOSTRAR REINTENTAR
+                                        // =========================
+
+                                        retryButton.classList.add(
+                                            "visible"
+                                        );
+
+
                                         console.warn(
                                             "Pago rechazado:",
                                             resultadoPago
@@ -1284,6 +1373,23 @@
             }
 
         }
+
+
+        // =========================
+        // REINTENTAR PAGO
+        // =========================
+
+        retryButton.addEventListener(
+            "click",
+            function () {
+
+                window.location.href =
+                    `pago.html?pedido=${encodeURIComponent(
+                        pedidoId
+                    )}`;
+
+            }
+        );
 
 
         // =========================
