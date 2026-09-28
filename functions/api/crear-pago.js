@@ -95,10 +95,17 @@ export async function onRequestPost(context) {
         // =========================
         // VERIFICAR ESTADO
         // =========================
+        //
+        // approved = no permitir otro pago
+        // pending  = no permitir otro pago
+        // rejected = permitir reintento
+        // cancelled = permitir reintento
+        // pendiente = pago inicial
+        // =========================
 
         if (
-            pedido.estado_pago &&
-            pedido.estado_pago !== "pendiente"
+            pedido.estado_pago === "approved" ||
+            pedido.estado_pago === "pending"
         ) {
 
             return Response.json({
@@ -106,7 +113,9 @@ export async function onRequestPost(context) {
                 ok: false,
 
                 error:
-                    "Este pedido ya tiene un estado de pago diferente de pendiente."
+                    pedido.estado_pago === "approved"
+                        ? "Este pedido ya fue pagado."
+                        : "Este pedido tiene un pago pendiente de confirmación."
 
             }, { status: 409 });
 
