@@ -305,17 +305,7 @@ export async function onRequestPost(context) {
                 items,
 
             external_reference:
-                pedido.pedido_id,
-
-            payer: {
-
-                name:
-                    pedido.nombre,
-
-                email:
-                    "test@testuser.com"
-
-            }
+                pedido.pedido_id
 
         };
 
