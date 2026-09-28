@@ -447,6 +447,21 @@
         }
 
 
+        .status.success {
+
+            color: #a8e6b0;
+
+            border:
+                1px solid
+                rgba(
+                    80,
+                    200,
+                    100,
+                    0.15
+                );
+        }
+
+
         .loading {
 
             text-align: center;
@@ -807,6 +822,10 @@
                 "error"
             );
 
+            status.classList.remove(
+                "success"
+            );
+
         }
 
 
@@ -823,6 +842,30 @@
 
             status.classList.add(
                 "visible"
+            );
+
+            status.classList.remove(
+                "error",
+                "success"
+            );
+
+        }
+
+
+        // =========================
+        // MOSTRAR ÉXITO
+        // =========================
+
+        function mostrarExito(
+            mensaje
+        ) {
+
+            status.textContent =
+                mensaje;
+
+            status.classList.add(
+                "visible",
+                "success"
             );
 
             status.classList.remove(
@@ -1034,29 +1077,161 @@
                                 );
 
 
+                                // =========================
+                                // AVISAR AL USUARIO
+                                // =========================
+
                                 mostrarEstado(
-                                    "El formulario de pago está funcionando. El procesamiento del pago se conectará en el siguiente paso."
+                                    "Procesando el pago..."
                                 );
 
 
-                                /*
-                                 * TODAVÍA NO PROCESAMOS
-                                 * EL PAGO.
-                                 *
-                                 * En el siguiente paso:
-                                 *
-                                 * formData
-                                 *     ↓
-                                 * /api/procesar-pago
-                                 *     ↓
-                                 * Mercado Pago /v1/payments
-                                 *
-                                 */
+                                try {
+
+                                    // =========================
+                                    // ENVIAR PAGO AL BACKEND
+                                    // =========================
+
+                                    const respuestaPago =
+                                        await fetch(
+                                            "/api/procesar-pago",
+                                            {
+
+                                                method:
+                                                    "POST",
+
+                                                headers: {
+
+                                                    "Content-Type":
+                                                        "application/json"
+
+                                                },
+
+                                                body:
+                                                    JSON.stringify({
+
+                                                        pedido_id:
+                                                            pedidoId,
+
+                                                        selectedPaymentMethod:
+                                                            selectedPaymentMethod,
+
+                                                        formData:
+                                                            formData
+
+                                                    })
+
+                                            }
+                                        );
 
 
-                                throw new Error(
-                                    "Procesamiento de pago pendiente de configuración."
-                                );
+                                    const resultadoPago =
+                                        await respuestaPago.json();
+
+
+                                    console.log(
+                                        "Respuesta del procesamiento:",
+                                        resultadoPago
+                                    );
+
+
+                                    // =========================
+                                    // ERROR DEL BACKEND
+                                    // =========================
+
+                                    if (
+                                        !respuestaPago.ok ||
+                                        !resultadoPago.ok
+                                    ) {
+
+                                        throw new Error(
+                                            resultadoPago.error ||
+                                            "Mercado Pago no pudo procesar el pago."
+                                        );
+
+                                    }
+
+
+                                    // =========================
+                                    // PAGO APROBADO
+                                    // =========================
+
+                                    if (
+                                        resultadoPago.status ===
+                                        "approved"
+                                    ) {
+
+                                        mostrarExito(
+                                            "¡Pago aprobado! Tu pedido fue procesado correctamente."
+                                        );
+
+
+                                        console.log(
+                                            "Pago aprobado:",
+                                            resultadoPago
+                                        );
+
+
+                                        return;
+
+                                    }
+
+
+                                    // =========================
+                                    // PAGO RECHAZADO
+                                    // =========================
+
+                                    if (
+                                        resultadoPago.status ===
+                                        "rejected"
+                                    ) {
+
+                                        mostrarError(
+                                            "El pago fue rechazado por Mercado Pago. Revisá los datos e intentá nuevamente."
+                                        );
+
+
+                                        console.warn(
+                                            "Pago rechazado:",
+                                            resultadoPago
+                                        );
+
+
+                                        return;
+
+                                    }
+
+
+                                    // =========================
+                                    // OTRO ESTADO
+                                    // =========================
+
+                                    mostrarEstado(
+                                        "El pago fue recibido y quedó pendiente de confirmación."
+                                    );
+
+
+                                    console.log(
+                                        "Pago pendiente:",
+                                        resultadoPago
+                                    );
+
+                                } catch (
+                                    error
+                                ) {
+
+                                    console.error(
+                                        "Error procesando pago:",
+                                        error
+                                    );
+
+
+                                    mostrarError(
+                                        error.message ||
+                                        "No se pudo procesar el pago."
+                                    );
+
+                                }
 
                             },
 
