@@ -14,15 +14,33 @@ export async function onRequestPost(context) {
             datos.password || ""
         );
 
-        // Acceso temporal de prueba
-        if (
-            usuario !== env.ADMIN_USER ||
-            password !== env.ADMIN_PASSWORD
-        ) {
+        // =========================
+        // 1. VERIFICAR PRODUCTOR
+        // =========================
+
+        const productorResult = await env.DB.prepare(`
+            SELECT
+                usuario,
+                productor_id,
+                estado
+            FROM usuarios_productor
+            WHERE usuario = ?
+              AND password = ?
+              AND estado = 'activo'
+            LIMIT 1
+        `)
+        .bind(usuario, password)
+        .all();
+
+        const usuarioProductor =
+            productorResult.results?.[0];
+
+        if (!usuarioProductor) {
+
             return new Response(
                 JSON.stringify({
                     ok: false,
-                    error: "No autorizado."
+                    error: "Usuario o contraseña incorrectos."
                 }),
                 {
                     status: 401,
@@ -33,53 +51,76 @@ export async function onRequestPost(context) {
             );
         }
 
-        // Por ahora Luciano está asociado a EVT-0004
-        const eventoId = "EVT-0004";
+        const productorId =
+            usuarioProductor.productor_id;
+
+
+        // =========================
+        // 2. BUSCAR PEDIDOS
+        // =========================
 
         const pedidosResult = await env.DB.prepare(`
             SELECT
-                id,
-                pedido_id,
-                evento_id,
-                nombre,
-                whatsapp,
-                email,
-                total,
-                estado,
-                estado_pago,
-                creado_en
+                pedidos.id,
+                pedidos.pedido_id,
+                pedidos.evento_id,
+                pedidos.nombre,
+                pedidos.whatsapp,
+                pedidos.email,
+                pedidos.total,
+                pedidos.estado,
+                pedidos.estado_pago,
+                pedidos.creado_en,
+                eventos.nombre AS evento_nombre,
+                eventos.evento AS evento_descripcion,
+                eventos.fecha AS evento_fecha
             FROM pedidos
-            WHERE evento_id = ?
-            ORDER BY id DESC
+            INNER JOIN eventos
+                ON pedidos.evento_id = eventos.evento_id
+            WHERE eventos.productor_id = ?
+            ORDER BY pedidos.id DESC
         `)
-        .bind(eventoId)
+        .bind(productorId)
         .all();
 
-        const pedidos = pedidosResult.results || [];
+        const pedidos =
+            pedidosResult.results || [];
+
+
+        // =========================
+        // 3. BUSCAR ITEMS
+        // =========================
 
         for (const pedido of pedidos) {
 
-            const itemsResult = await env.DB.prepare(`
-                SELECT
-                    foto_id,
-                    nombre_archivo,
-                    cantidad,
-                    precio_unitario,
-                    subtotal
-                FROM pedido_items
-                WHERE pedido_id = ?
-                ORDER BY id ASC
-            `)
-            .bind(pedido.pedido_id)
-            .all();
+            const itemsResult =
+                await env.DB.prepare(`
+                    SELECT
+                        foto_id,
+                        nombre_archivo,
+                        cantidad,
+                        precio_unitario,
+                        subtotal
+                    FROM pedido_items
+                    WHERE pedido_id = ?
+                    ORDER BY id ASC
+                `)
+                .bind(pedido.pedido_id)
+                .all();
 
-            pedido.items = itemsResult.results || [];
+            pedido.items =
+                itemsResult.results || [];
         }
+
+
+        // =========================
+        // 4. RESPUESTA
+        // =========================
 
         return new Response(
             JSON.stringify({
                 ok: true,
-                evento_id: eventoId,
+                productor_id: productorId,
                 pedidos: pedidos
             }),
             {
@@ -95,7 +136,8 @@ export async function onRequestPost(context) {
         return new Response(
             JSON.stringify({
                 ok: false,
-                error: "Error al consultar los pedidos del productor."
+                error:
+                    "Error al consultar los pedidos del productor."
             }),
             {
                 status: 500,
