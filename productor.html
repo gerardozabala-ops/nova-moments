@@ -13,6 +13,16 @@
     <title>NOVA MOMENTS — Productor</title>
 
     <link
+        rel="manifest"
+        href="/manifest-productor.json"
+    >
+
+    <meta
+        name="theme-color"
+        content="#050505"
+    >
+
+    <link
         rel="preconnect"
         href="https://fonts.googleapis.com"
     >
@@ -1156,6 +1166,47 @@
 
             }
         );
+
+
+        /* =========================================================
+           SERVICE WORKER — PWA
+        ========================================================= */
+
+        if ("serviceWorker" in navigator) {
+
+            window.addEventListener(
+                "load",
+                function () {
+
+                    navigator.serviceWorker
+                        .register(
+                            "/sw-productor.js"
+                        )
+                        .then(
+                            function (registro) {
+
+                                console.log(
+                                    "Service Worker registrado:",
+                                    registro.scope
+                                );
+
+                            }
+                        )
+                        .catch(
+                            function (error) {
+
+                                console.error(
+                                    "Error registrando Service Worker:",
+                                    error
+                                );
+
+                            }
+                        );
+
+                }
+            );
+
+        }
 
     </script>
 
