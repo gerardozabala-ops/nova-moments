@@ -56,10 +56,6 @@
             margin: 0 auto;
         }
 
-        /* =====================================================
-           LOGO
-        ===================================================== */
-
         .logo {
             text-align: center;
             margin: 30px 0 42px;
@@ -79,10 +75,6 @@
             color: #777777;
             text-transform: uppercase;
         }
-
-        /* =====================================================
-           LOGIN
-        ===================================================== */
 
         #loginSection {
             max-width: 420px;
@@ -162,10 +154,6 @@
             cursor: not-allowed;
         }
 
-        /* =====================================================
-           MENSAJES
-        ===================================================== */
-
         .message {
             display: none;
             margin-top: 16px;
@@ -181,16 +169,6 @@
             background: #160909;
             color: #d8a0a0;
         }
-
-        .success-message {
-            border: 1px solid #203a25;
-            background: #09160c;
-            color: #a7d8af;
-        }
-
-        /* =====================================================
-           PANEL
-        ===================================================== */
 
         #adminPanel {
             display: none;
@@ -232,10 +210,6 @@
             background: #151515;
         }
 
-        /* =====================================================
-           ESTADO
-        ===================================================== */
-
         .panel-message {
             display: none;
             margin-bottom: 20px;
@@ -246,10 +220,6 @@
             color: #aaaaaa;
             font-size: 12px;
         }
-
-        /* =====================================================
-           PEDIDOS
-        ===================================================== */
 
         .pedidos {
             display: grid;
@@ -297,8 +267,8 @@
         .pedido-datos {
             display: grid;
             grid-template-columns:
-                repeat(4, minmax(0, 1fr));
-            gap: 14px;
+                repeat(5, minmax(0, 1fr));
+            gap: 12px;
             margin-bottom: 20px;
         }
 
@@ -306,6 +276,7 @@
             padding: 12px;
             background: #080808;
             border-radius: 9px;
+            min-width: 0;
         }
 
         .dato-label {
@@ -388,6 +359,15 @@
             letter-spacing: 1px;
         }
 
+        @media (max-width: 900px) {
+
+            .pedido-datos {
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+            }
+
+        }
+
         @media (max-width: 700px) {
 
             body {
@@ -443,10 +423,6 @@
 
     <main class="admin-container">
 
-        <!-- =================================================
-             LOGO
-        ================================================== -->
-
         <div class="logo">
 
             <div class="logo-nova">
@@ -460,10 +436,6 @@
         </div>
 
 
-        <!-- =================================================
-             LOGIN
-        ================================================== -->
-
         <section id="loginSection">
 
             <div class="login-card">
@@ -475,7 +447,6 @@
                 <p class="login-description">
                     Acceso privado al panel de gestión de NOVA MOMENTS.
                 </p>
-
 
                 <form id="adminLoginForm">
 
@@ -496,7 +467,6 @@
 
                     </div>
 
-
                     <div class="field">
 
                         <label for="password">
@@ -514,7 +484,6 @@
 
                     </div>
 
-
                     <button
                         type="submit"
                         class="login-button"
@@ -522,7 +491,6 @@
                     >
                         INGRESAR
                     </button>
-
 
                     <div
                         class="message error-message"
@@ -535,10 +503,6 @@
 
         </section>
 
-
-        <!-- =================================================
-             PANEL ADMINISTRATIVO
-        ================================================== -->
 
         <section id="adminPanel">
 
@@ -566,12 +530,10 @@
 
             </div>
 
-
             <div
                 class="panel-message"
                 id="panelMessage"
             ></div>
-
 
             <div
                 class="pedidos"
@@ -590,55 +552,40 @@
 
     <script>
 
-        /*
-        =========================================================
-        NOVA MOMENTS — ADMIN
-        LOGIN + PEDIDOS
-        =========================================================
-        */
-
-
         const formulario =
             document.getElementById(
                 "adminLoginForm"
             );
-
 
         const loginButton =
             document.getElementById(
                 "loginButton"
             );
 
-
         const errorMessage =
             document.getElementById(
                 "errorMessage"
             );
-
 
         const loginSection =
             document.getElementById(
                 "loginSection"
             );
 
-
         const adminPanel =
             document.getElementById(
                 "adminPanel"
             );
-
 
         const pedidosContainer =
             document.getElementById(
                 "pedidosContainer"
             );
 
-
         const panelMessage =
             document.getElementById(
                 "panelMessage"
             );
-
 
         const reloadButton =
             document.getElementById(
@@ -649,12 +596,6 @@
         let adminUsuario = "";
         let adminPassword = "";
 
-
-        /*
-        =========================================================
-        FORMATEAR DINERO
-        =========================================================
-        */
 
         function formatearDinero(valor) {
 
@@ -671,12 +612,6 @@
 
         }
 
-
-        /*
-        =========================================================
-        FORMATEAR FECHA
-        =========================================================
-        */
 
         function formatearFecha(valor) {
 
@@ -703,12 +638,6 @@
 
         }
 
-
-        /*
-        =========================================================
-        MOSTRAR PEDIDOS
-        =========================================================
-        */
 
         function mostrarPedidos(pedidos) {
 
@@ -885,12 +814,35 @@
 
                             </div>
 
+
+                            <div class="dato">
+
+                                <div class="dato-label">
+                                    Productor
+                                </div>
+
+                                <div class="dato-valor">
+                                    ${
+                                        pedido.productor ||
+                                        "—"
+                                    }
+
+                                    ${
+                                        pedido.productor_id
+                                            ? `(${pedido.productor_id})`
+                                            : ""
+                                    }
+                                </div>
+
+                            </div>
+
                         </div>
 
 
                         <div class="items-title">
                             Fotografías seleccionadas
                         </div>
+
 
                         ${
                             itemsHTML ||
@@ -932,12 +884,6 @@
 
         }
 
-
-        /*
-        =========================================================
-        CARGAR PEDIDOS
-        =========================================================
-        */
 
         async function cargarPedidos() {
 
@@ -1015,12 +961,6 @@
 
         }
 
-
-        /*
-        =========================================================
-        LOGIN
-        =========================================================
-        */
 
         formulario.addEventListener(
             "submit",
@@ -1101,12 +1041,6 @@
                     }
 
 
-                    /*
-                    -------------------------------------------------
-                    LOGIN CORRECTO
-                    -------------------------------------------------
-                    */
-
                     adminUsuario =
                         usuario;
 
@@ -1120,12 +1054,6 @@
                     adminPanel.style.display =
                         "block";
 
-
-                    /*
-                    -------------------------------------------------
-                    CARGAR PEDIDOS DESDE D1
-                    -------------------------------------------------
-                    */
 
                     await cargarPedidos();
 
@@ -1150,12 +1078,6 @@
             }
         );
 
-
-        /*
-        =========================================================
-        ACTUALIZAR PEDIDOS
-        =========================================================
-        */
 
         reloadButton.addEventListener(
             "click",
