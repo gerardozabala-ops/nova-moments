@@ -1,3 +1,5 @@
+import webpush from "web-push";
+
 export async function onRequestPost(context) {
 
     try {
@@ -7,12 +9,13 @@ export async function onRequestPost(context) {
 
         const productorId =
             String(
-                body.productor_id || "LUC-001"
+                body.productor_id || ""
             ).trim();
 
         const titulo =
             String(
-                body.titulo || "NOVA MOMENTS"
+                body.titulo ||
+                "NOVA MOMENTS"
             );
 
         const mensaje =
@@ -28,6 +31,26 @@ export async function onRequestPost(context) {
             );
 
 
+        if (!productorId) {
+
+            return new Response(
+                JSON.stringify({
+                    ok: false,
+                    error:
+                        "Falta productor_id."
+                }),
+                {
+                    status: 400,
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+
+        }
+
+
         const db =
             context.env.DB;
 
@@ -41,13 +64,33 @@ export async function onRequestPost(context) {
         }
 
 
-        /*
-         * BUSCAR SUSCRIPCIONES DEL PRODUCTOR
-         */
+        const publicKey =
+            context.env.VAPID_PUBLIC_KEY;
+
+        const privateKey =
+            context.env.VAPID_PRIVATE_KEY;
+
+
+        if (!publicKey || !privateKey) {
+
+            throw new Error(
+                "Faltan las claves VAPID en Cloudflare."
+            );
+
+        }
+
+
+        webpush.setVapidDetails(
+            "mailto:admin@nova-moments.com",
+            publicKey,
+            privateKey
+        );
+
 
         const resultado =
             await db.prepare(`
                 SELECT
+                    id,
                     endpoint,
                     p256dh,
                     auth
@@ -82,33 +125,6 @@ export async function onRequestPost(context) {
         }
 
 
-        /*
-         * CARGAR WEB-PUSH
-         */
-
-        const webpush =
-            await import("web-push");
-
-
-        /*
-         * CONFIGURAR VAPID
-         */
-
-        webpush.setVapidDetails(
-
-            "mailto:admin@nova-moments.com",
-
-            context.env.VAPID_PUBLIC_KEY,
-
-            context.env.VAPID_PRIVATE_KEY
-
-        );
-
-
-        /*
-         * DATOS DE LA NOTIFICACIÓN
-         */
-
         const payload =
             JSON.stringify({
 
@@ -124,12 +140,9 @@ export async function onRequestPost(context) {
             });
 
 
-        const resultados = [];
+        let enviadas = 0;
+        let fallidas = 0;
 
-
-        /*
-         * ENVIAR A TODAS LAS SUSCRIPCIONES
-         */
 
         for (
             const suscripcion
@@ -160,17 +173,7 @@ export async function onRequestPost(context) {
 
                 );
 
-
-                resultados.push({
-
-                    endpoint:
-                        suscripcion.endpoint,
-
-                    enviado:
-                        true
-
-                });
-
+                enviadas++;
 
             } catch (error) {
 
@@ -179,19 +182,30 @@ export async function onRequestPost(context) {
                     error
                 );
 
+                fallidas++;
 
-                resultados.push({
 
-                    endpoint:
-                        suscripcion.endpoint,
+                /*
+                 * Si el servicio Push informa
+                 * que la suscripción ya no existe,
+                 * la eliminamos de D1.
+                 */
 
-                    enviado:
-                        false,
+                if (
+                    error.statusCode === 404 ||
+                    error.statusCode === 410
+                ) {
 
-                    error:
-                        error.message
+                    await db.prepare(`
+                        DELETE FROM push_suscripciones
+                        WHERE id = ?
+                    `)
+                    .bind(
+                        suscripcion.id
+                    )
+                    .run();
 
-                });
+                }
 
             }
 
@@ -207,20 +221,18 @@ export async function onRequestPost(context) {
                 productor_id:
                     productorId,
 
-                enviados:
-                    resultados.filter(
-                        function (item) {
-                            return item.enviado;
-                        }
-                    ).length,
+                suscripciones:
+                    suscripciones.length,
 
-                resultados:
-                    resultados
+                enviadas:
+                    enviadas,
+
+                fallidas:
+                    fallidas
 
             }),
 
             {
-
                 status: 200,
 
                 headers: {
@@ -254,14 +266,12 @@ export async function onRequestPost(context) {
             }),
 
             {
-
                 status: 500,
 
                 headers: {
                     "Content-Type":
                         "application/json"
                 }
-
             }
 
         );
