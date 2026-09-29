@@ -1049,7 +1049,7 @@
 
                     const respuesta =
                         await fetch(
-                            "/api/admin-login",
+                            "/api/productor-pedidos",
                             {
                                 method: "POST",
 
@@ -1057,9 +1057,6 @@
                                     "Content-Type":
                                         "application/json"
                                 },
-
-                                credentials:
-                                    "include",
 
                                 body:
                                     JSON.stringify({
@@ -1107,7 +1104,9 @@
 
                     /* CARGAR PEDIDOS */
 
-                    await cargarPedidos();
+                    mostrarPedidos(
+                        datos.pedidos
+                    );
 
 
                 } catch (error) {
