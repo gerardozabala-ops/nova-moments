@@ -47,44 +47,42 @@
 
         body {
             min-height: 100vh;
-            padding: 18px;
+            padding: 24px;
         }
 
-        .container {
+        .admin-container {
             width: 100%;
-            max-width: 700px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
-
-        /* =========================
+        /* =====================================================
            LOGO
-        ========================= */
+        ===================================================== */
 
         .logo {
             text-align: center;
-            margin: 22px 0 30px;
+            margin: 30px 0 42px;
         }
 
         .logo-nova {
             font-family: "Montserrat", sans-serif;
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 700;
             letter-spacing: 5px;
         }
 
         .logo-subtitle {
-            margin-top: 7px;
-            font-size: 10px;
+            margin-top: 8px;
+            font-size: 11px;
             letter-spacing: 3px;
             color: #777777;
             text-transform: uppercase;
         }
 
-
-        /* =========================
+        /* =====================================================
            LOGIN
-        ========================= */
+        ===================================================== */
 
         #loginSection {
             max-width: 420px;
@@ -95,32 +93,32 @@
             background: #0d0d0d;
             border: 1px solid #202020;
             border-radius: 18px;
-            padding: 28px;
+            padding: 32px;
         }
 
         .login-title {
-            margin: 0 0 8px;
             font-family: "Montserrat", sans-serif;
             font-size: 21px;
             font-weight: 600;
+            margin: 0 0 8px;
         }
 
         .login-description {
-            margin: 0 0 25px;
-            color: #888888;
             font-size: 13px;
             line-height: 1.6;
+            color: #888888;
+            margin: 0 0 28px;
         }
 
         .field {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .field label {
             display: block;
-            margin-bottom: 7px;
-            color: #aaaaaa;
+            margin-bottom: 8px;
             font-size: 12px;
+            color: #aaaaaa;
         }
 
         .field input {
@@ -140,10 +138,14 @@
             border-color: #555555;
         }
 
+        .field input::placeholder {
+            color: #555555;
+        }
+
         .login-button {
             width: 100%;
             height: 50px;
-            margin-top: 7px;
+            margin-top: 8px;
             border: none;
             border-radius: 10px;
             background: #ffffff;
@@ -160,29 +162,46 @@
             cursor: not-allowed;
         }
 
-        .error {
+        /* =====================================================
+           MENSAJES
+        ===================================================== */
+
+        .message {
             display: none;
-            margin-top: 15px;
-            padding: 12px;
-            border: 1px solid #3a2020;
+            margin-top: 16px;
+            padding: 13px 14px;
             border-radius: 9px;
-            background: #160909;
-            color: #d8a0a0;
             font-size: 12px;
+            line-height: 1.5;
             text-align: center;
         }
 
+        .error-message {
+            border: 1px solid #3a2020;
+            background: #160909;
+            color: #d8a0a0;
+        }
 
-        /* =========================
+        .success-message {
+            border: 1px solid #203a25;
+            background: #09160c;
+            color: #a7d8af;
+        }
+
+        /* =====================================================
            PANEL
-        ========================= */
+        ===================================================== */
 
-        #productorPanel {
+        #adminPanel {
             display: none;
         }
 
         .panel-header {
-            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 28px;
         }
 
         .panel-title {
@@ -198,79 +217,58 @@
             font-size: 12px;
         }
 
-
-        /* =========================
-           RESUMEN
-        ========================= */
-
-        .resumen {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 22px;
-        }
-
-        .resumen-card {
-            padding: 16px;
-            border: 1px solid #202020;
-            border-radius: 14px;
+        .reload-button {
+            border: 1px solid #292929;
             background: #0d0d0d;
+            color: #ffffff;
+            border-radius: 9px;
+            padding: 11px 15px;
+            font-family: "Inter", sans-serif;
+            font-size: 12px;
+            cursor: pointer;
         }
 
-        .resumen-label {
-            color: #777777;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .reload-button:hover {
+            background: #151515;
         }
 
-        .resumen-value {
-            margin-top: 8px;
-            font-family: "Montserrat", sans-serif;
-            font-size: 21px;
-            font-weight: 600;
-        }
-
-
-        /* =========================
+        /* =====================================================
            ESTADO
-        ========================= */
+        ===================================================== */
 
-        .mensaje {
+        .panel-message {
             display: none;
-            margin-bottom: 18px;
-            padding: 13px 14px;
-            border: 1px solid #202020;
+            margin-bottom: 20px;
+            padding: 14px 16px;
             border-radius: 10px;
             background: #0d0d0d;
-            color: #999999;
+            border: 1px solid #202020;
+            color: #aaaaaa;
             font-size: 12px;
-            text-align: center;
         }
 
-
-        /* =========================
+        /* =====================================================
            PEDIDOS
-        ========================= */
+        ===================================================== */
 
         .pedidos {
             display: grid;
-            gap: 13px;
+            gap: 16px;
         }
 
-        .pedido {
-            padding: 18px;
+        .pedido-card {
+            background: #0d0d0d;
             border: 1px solid #202020;
             border-radius: 16px;
-            background: #0d0d0d;
+            padding: 22px;
         }
 
-        .pedido-top {
+        .pedido-header {
             display: flex;
-            justify-content: space-between;
             align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 15px;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 18px;
         }
 
         .pedido-id {
@@ -281,237 +279,158 @@
 
         .pedido-fecha {
             margin-top: 5px;
-            color: #666666;
-            font-size: 10px;
-        }
-
-        .estado-pago {
-            padding: 6px 9px;
-            border: 1px solid #292929;
-            border-radius: 7px;
-            background: #181818;
-            color: #cccccc;
-            font-size: 9px;
-            font-weight: 600;
-            letter-spacing: .7px;
-            text-transform: uppercase;
-        }
-
-        .estado-aprobado {
-            border-color: #29422e;
-            background: #0c170f;
-            color: #a8d6b0;
-        }
-
-        .estado-pendiente {
-            border-color: #403a22;
-            background: #151309;
-            color: #d6c58e;
-        }
-
-        .estado-rechazado {
-            border-color: #432626;
-            background: #180b0b;
-            color: #d9a0a0;
-        }
-
-        .pedido-cliente {
-            margin-bottom: 15px;
-        }
-
-        .cliente-nombre {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .cliente-evento {
-            margin-top: 4px;
             color: #777777;
             font-size: 11px;
+        }
+
+        .estado {
+            padding: 6px 9px;
+            border-radius: 7px;
+            background: #181818;
+            border: 1px solid #292929;
+            color: #cccccc;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .pedido-datos {
+            display: grid;
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .dato {
+            padding: 12px;
+            background: #080808;
+            border-radius: 9px;
+        }
+
+        .dato-label {
+            color: #666666;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+        }
+
+        .dato-valor {
+            color: #dddddd;
+            font-size: 12px;
+            word-break: break-word;
+        }
+
+        .items-title {
+            color: #888888;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 9px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 11px 0;
+            border-top: 1px solid #1b1b1b;
+            font-size: 12px;
+        }
+
+        .item-name {
+            color: #cccccc;
+        }
+
+        .item-detail {
+            color: #777777;
+            white-space: nowrap;
         }
 
         .pedido-total {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 13px;
-            border-top: 1px solid #1d1d1d;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #292929;
         }
 
-        .total-label {
-            color: #777777;
-            font-size: 10px;
+        .pedido-total-label {
+            color: #888888;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        .total-value {
+        .pedido-total-value {
             font-family: "Montserrat", sans-serif;
             font-size: 18px;
             font-weight: 600;
         }
 
-        .ver-pedido {
-            width: 100%;
-            height: 43px;
-            margin-top: 14px;
-            border: 1px solid #292929;
-            border-radius: 9px;
-            background: #111111;
-            color: #ffffff;
-            font-family: "Inter", sans-serif;
-            font-size: 11px;
-            cursor: pointer;
-        }
-
-        .ver-pedido:hover {
-            background: #181818;
-        }
-
-
-        /* =========================
-           MODAL
-        ========================= */
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            padding: 18px;
-            background: rgba(0,0,0,.82);
-            overflow-y: auto;
-        }
-
-        .modal-card {
-            width: 100%;
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 20px;
-            border: 1px solid #292929;
-            border-radius: 17px;
+        .sin-pedidos {
+            text-align: center;
+            padding: 50px 20px;
             background: #0d0d0d;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
-
-        .modal-title {
-            margin: 0;
-            font-family: "Montserrat", sans-serif;
-            font-size: 18px;
-        }
-
-        .cerrar {
-            width: 34px;
-            height: 34px;
-            border: 1px solid #292929;
-            border-radius: 8px;
-            background: #111111;
-            color: #ffffff;
-            cursor: pointer;
-        }
-
-        .detalle {
-            display: grid;
-            gap: 9px;
-            margin-bottom: 20px;
-        }
-
-        .detalle-row {
-            padding: 12px;
-            border-radius: 9px;
-            background: #080808;
-        }
-
-        .detalle-label {
-            margin-bottom: 5px;
+            border: 1px solid #202020;
+            border-radius: 16px;
             color: #666666;
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: .8px;
+            font-size: 13px;
         }
-
-        .detalle-value {
-            color: #dddddd;
-            font-size: 12px;
-            word-break: break-word;
-        }
-
-        .fotos-title {
-            margin: 20px 0 8px;
-            color: #888888;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .foto {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            padding: 11px 0;
-            border-top: 1px solid #1c1c1c;
-            color: #cccccc;
-            font-size: 11px;
-        }
-
-        .foto-precio {
-            color: #777777;
-            white-space: nowrap;
-        }
-
-
-        /* =========================
-           FOOTER
-        ========================= */
 
         .footer {
-            margin: 30px 0 15px;
-            color: #444444;
-            font-size: 9px;
-            letter-spacing: 1px;
             text-align: center;
+            margin: 35px 0 15px;
+            color: #444444;
+            font-size: 10px;
+            letter-spacing: 1px;
         }
 
-
-        /* =========================
-           MOBILE
-        ========================= */
-
-        @media (max-width: 480px) {
+        @media (max-width: 700px) {
 
             body {
-                padding: 14px;
+                padding: 18px;
             }
 
             .logo {
-                margin: 18px 0 25px;
+                margin: 20px 0 32px;
             }
 
             .logo-nova {
-                font-size: 25px;
+                font-size: 26px;
             }
+
+            .panel-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .pedido-datos {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+        @media (max-width: 480px) {
 
             .login-card {
-                padding: 24px 20px;
+                padding: 26px 22px;
             }
 
-            .resumen {
-                grid-template-columns: 1fr 1fr;
+            .pedido-card {
+                padding: 17px;
             }
 
-            .pedido {
-                padding: 16px;
+            .pedido-datos {
+                grid-template-columns: 1fr;
             }
 
-            .modal-card {
-                margin: 20px auto;
+            .item {
+                flex-direction: column;
+                gap: 4px;
             }
 
         }
@@ -520,870 +439,484 @@
 
 </head>
 
-
 <body>
 
-<main class="container">
+    <main class="admin-container">
 
+        <!-- =================================================
+             LOGO
+        ================================================== -->
 
-    <!-- =========================
-         LOGO
-    ========================== -->
+        <div class="logo">
 
-    <div class="logo">
+            <div class="logo-nova">
+                NOVA
+            </div>
 
-        <div class="logo-nova">
-            NOVA
+            <div class="logo-subtitle">
+                Moments
+            </div>
+
         </div>
 
-        <div class="logo-subtitle">
-            Moments
-        </div>
 
-    </div>
+        <!-- =================================================
+             LOGIN
+        ================================================== -->
+
+        <section id="loginSection">
+
+            <div class="login-card">
+
+                <h1 class="login-title">
+                    Productor
+                </h1>
+
+                <p class="login-description">
+                    Acceso privado a los pedidos de NOVA MOMENTS.
+                </p>
 
 
-    <!-- =========================
-         LOGIN
-    ========================== -->
+                <form id="adminLoginForm">
 
-    <section id="loginSection">
+                    <div class="field">
 
-        <div class="login-card">
+                        <label for="usuario">
+                            Usuario
+                        </label>
 
-            <h1 class="login-title">
-                Productor
-            </h1>
+                        <input
+                            type="text"
+                            id="usuario"
+                            name="usuario"
+                            placeholder="Usuario"
+                            autocomplete="username"
+                            required
+                        >
 
-            <p class="login-description">
-                Acceso privado a pedidos de NOVA MOMENTS.
-            </p>
+                    </div>
 
-            <form id="loginForm">
 
-                <div class="field">
+                    <div class="field">
 
-                    <label for="usuario">
-                        Usuario
-                    </label>
+                        <label for="password">
+                            Contraseña
+                        </label>
 
-                    <input
-                        type="text"
-                        id="usuario"
-                        autocomplete="username"
-                        required
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Contraseña"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="login-button"
+                        id="loginButton"
                     >
+                        INGRESAR
+                    </button>
+
+
+                    <div
+                        class="message error-message"
+                        id="errorMessage"
+                    ></div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PANEL PRODUCTOR
+        ================================================== -->
+
+        <section id="adminPanel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h1 class="panel-title">
+                        Pedidos
+                    </h1>
+
+                    <p class="panel-subtitle">
+                        Pedidos correspondientes a tus eventos.
+                    </p>
 
                 </div>
-
-
-                <div class="field">
-
-                    <label for="password">
-                        Contraseña
-                    </label>
-
-                    <input
-                        type="password"
-                        id="password"
-                        autocomplete="current-password"
-                        required
-                    >
-
-                </div>
-
 
                 <button
-                    type="submit"
-                    class="login-button"
-                    id="loginButton"
+                    type="button"
+                    class="reload-button"
+                    id="reloadButton"
                 >
-                    INGRESAR
+                    ACTUALIZAR
                 </button>
 
-
-                <div
-                    class="error"
-                    id="loginError"
-                ></div>
-
-            </form>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         PANEL PRODUCTOR
-    ========================== -->
-
-    <section id="productorPanel">
-
-        <div class="panel-header">
-
-            <h1 class="panel-title">
-                Pedidos
-            </h1>
-
-            <p class="panel-subtitle">
-                Pedidos registrados en NOVA MOMENTS.
-            </p>
-
-        </div>
-
-
-        <div class="resumen">
-
-            <div class="resumen-card">
-
-                <div class="resumen-label">
-                    Pedidos
-                </div>
-
-                <div
-                    class="resumen-value"
-                    id="cantidadPedidos"
-                >
-                    0
-                </div>
-
             </div>
 
 
-            <div class="resumen-card">
+            <div
+                class="panel-message"
+                id="panelMessage"
+            ></div>
 
-                <div class="resumen-label">
-                    Pagados
-                </div>
 
-                <div
-                    class="resumen-value"
-                    id="cantidadPagados"
-                >
-                    0
-                </div>
+            <div
+                class="pedidos"
+                id="pedidosContainer"
+            ></div>
 
-            </div>
+        </section>
 
+
+        <div class="footer">
+            NOVA MOMENTS
         </div>
 
+    </main>
 
-        <div
-            class="mensaje"
-            id="mensaje"
-        ></div>
 
+    <script>
 
-        <div
-            class="pedidos"
-            id="pedidosContainer"
-        ></div>
+        /* =========================================================
+           NOVA MOMENTS — PRODUCTOR
+           LOGIN + PEDIDOS DEL PRODUCTOR
+        ========================================================= */
 
-    </section>
 
+        const formulario =
+            document.getElementById(
+                "adminLoginForm"
+            );
 
-    <div class="footer">
-        NOVA MOMENTS
-    </div>
 
+        const loginButton =
+            document.getElementById(
+                "loginButton"
+            );
 
-</main>
 
+        const errorMessage =
+            document.getElementById(
+                "errorMessage"
+            );
 
-<!-- =========================
-     MODAL DETALLE
-========================== -->
 
-<div
-    class="modal"
-    id="modal"
->
+        const loginSection =
+            document.getElementById(
+                "loginSection"
+            );
 
-    <div class="modal-card">
 
-        <div class="modal-header">
+        const adminPanel =
+            document.getElementById(
+                "adminPanel"
+            );
 
-            <h2
-                class="modal-title"
-                id="modalTitulo"
-            >
-                Pedido
-            </h2>
 
-            <button
-                type="button"
-                class="cerrar"
-                id="cerrarModal"
-            >
-                ×
-            </button>
+        const pedidosContainer =
+            document.getElementById(
+                "pedidosContainer"
+            );
 
-        </div>
 
+        const panelMessage =
+            document.getElementById(
+                "panelMessage"
+            );
 
-        <div
-            class="detalle"
-            id="detallePedido"
-        ></div>
 
+        const reloadButton =
+            document.getElementById(
+                "reloadButton"
+            );
 
-        <div class="fotos-title">
-            Fotografías seleccionadas
-        </div>
 
+        let adminUsuario = "";
+        let adminPassword = "";
 
-        <div
-            id="fotosPedido"
-        ></div>
 
-    </div>
+        /* =========================================================
+           FORMATEAR DINERO
+        ========================================================= */
 
-</div>
+        function formatearDinero(valor) {
 
+            return new Intl.NumberFormat(
+                "es-AR",
+                {
+                    style: "currency",
+                    currency: "ARS",
+                    maximumFractionDigits: 0
+                }
+            ).format(
+                Number(valor) || 0
+            );
 
-<script>
+        }
 
 
-    /*
-    =========================================================
-    NOVA MOMENTS — PRODUCTOR
-    Primera versión
-    =========================================================
-    */
+        /* =========================================================
+           FORMATEAR FECHA
+        ========================================================= */
 
+        function formatearFecha(valor) {
 
-    const loginForm =
-        document.getElementById(
-            "loginForm"
-        );
-
-
-    const loginButton =
-        document.getElementById(
-            "loginButton"
-        );
-
-
-    const loginError =
-        document.getElementById(
-            "loginError"
-        );
-
-
-    const loginSection =
-        document.getElementById(
-            "loginSection"
-        );
-
-
-    const productorPanel =
-        document.getElementById(
-            "productorPanel"
-        );
-
-
-    const pedidosContainer =
-        document.getElementById(
-            "pedidosContainer"
-        );
-
-
-    const mensaje =
-        document.getElementById(
-            "mensaje"
-        );
-
-
-    const cantidadPedidos =
-        document.getElementById(
-            "cantidadPedidos"
-        );
-
-
-    const cantidadPagados =
-        document.getElementById(
-            "cantidadPagados"
-        );
-
-
-    const modal =
-        document.getElementById(
-            "modal"
-        );
-
-
-    const modalTitulo =
-        document.getElementById(
-            "modalTitulo"
-        );
-
-
-    const detallePedido =
-        document.getElementById(
-            "detallePedido"
-        );
-
-
-    const fotosPedido =
-        document.getElementById(
-            "fotosPedido"
-        );
-
-
-    const cerrarModal =
-        document.getElementById(
-            "cerrarModal"
-        );
-
-
-    let usuarioProductor = "";
-
-    let passwordProductor = "";
-
-    let pedidosActuales = [];
-
-
-    /*
-    =========================================================
-    DINERO
-    =========================================================
-    */
-
-    function formatearDinero(valor) {
-
-        return new Intl.NumberFormat(
-            "es-AR",
-            {
-                style: "currency",
-                currency: "ARS",
-                maximumFractionDigits: 0
+            if (!valor) {
+                return "Sin fecha";
             }
-        ).format(
-            Number(valor) || 0
-        );
 
-    }
+            try {
 
+                return new Date(valor)
+                    .toLocaleString(
+                        "es-AR",
+                        {
+                            dateStyle: "short",
+                            timeStyle: "short"
+                        }
+                    );
 
-    /*
-    =========================================================
-    FECHA
-    =========================================================
-    */
+            } catch {
 
-    function formatearFecha(valor) {
+                return valor;
 
-        if (!valor) {
-            return "Sin fecha";
-        }
-
-        try {
-
-            return new Date(valor)
-                .toLocaleString(
-                    "es-AR",
-                    {
-                        dateStyle: "short",
-                        timeStyle: "short"
-                    }
-                );
-
-        } catch {
-
-            return valor;
-
-        }
-
-    }
-
-
-    /*
-    =========================================================
-    ESTADO PAGO
-    =========================================================
-    */
-
-    function obtenerClaseEstado(estado) {
-
-        const valor =
-            String(
-                estado || ""
-            ).toLowerCase();
-
-
-        if (
-            valor === "approved" ||
-            valor === "aprobado"
-        ) {
-
-            return "estado-aprobado";
+            }
 
         }
 
 
-        if (
-            valor === "rejected" ||
-            valor === "rechazado" ||
-            valor === "cancelled"
-        ) {
+        /* =========================================================
+           MOSTRAR PEDIDOS
+        ========================================================= */
 
-            return "estado-rechazado";
+        function mostrarPedidos(pedidos) {
 
-        }
+            pedidosContainer.innerHTML = "";
 
 
-        return "estado-pendiente";
+            if (
+                !Array.isArray(pedidos) ||
+                pedidos.length === 0
+            ) {
 
-    }
+                pedidosContainer.innerHTML = `
+                    <div class="sin-pedidos">
+                        No hay pedidos registrados.
+                    </div>
+                `;
 
-
-    function obtenerTextoEstado(estado) {
-
-        const valor =
-            String(
-                estado || ""
-            ).toLowerCase();
-
-
-        if (
-            valor === "approved" ||
-            valor === "aprobado"
-        ) {
-
-            return "PAGO APROBADO";
-
-        }
+                return;
+            }
 
 
-        if (
-            valor === "rejected" ||
-            valor === "rechazado"
-        ) {
-
-            return "PAGO RECHAZADO";
-
-        }
-
-
-        if (
-            valor === "cancelled"
-        ) {
-
-            return "PAGO CANCELADO";
-
-        }
-
-
-        return "PAGO PENDIENTE";
-
-    }
-
-
-    /*
-    =========================================================
-    MOSTRAR PEDIDOS
-    =========================================================
-    */
-
-    function mostrarPedidos(pedidos) {
-
-        pedidosActuales =
-            Array.isArray(pedidos)
-                ? pedidos
-                : [];
-
-
-        pedidosContainer.innerHTML =
-            "";
-
-
-        cantidadPedidos.textContent =
-            pedidosActuales.length;
-
-
-        const pagados =
-            pedidosActuales.filter(
+            pedidos.forEach(
                 function (pedido) {
 
-                    const estado =
-                        String(
-                            pedido.estado_pago || ""
-                        ).toLowerCase();
+                    const card =
+                        document.createElement(
+                            "article"
+                        );
 
-                    return estado === "approved";
-
-                }
-            ).length;
+                    card.className =
+                        "pedido-card";
 
 
-        cantidadPagados.textContent =
-            pagados;
+                    const items =
+                        Array.isArray(
+                            pedido.items
+                        )
+                            ? pedido.items
+                            : [];
 
 
-        if (
-            pedidosActuales.length === 0
-        ) {
-
-            pedidosContainer.innerHTML = `
-                <div class="mensaje"
-                     style="display:block;">
-                    No hay pedidos registrados.
-                </div>
-            `;
-
-            return;
-
-        }
+                    let itemsHTML = "";
 
 
-        pedidosActuales.forEach(
-            function (pedido, indice) {
+                    items.forEach(
+                        function (item) {
 
-                const estado =
-                    pedido.estado_pago ||
-                    pedido.estado ||
-                    "pendiente";
+                            itemsHTML += `
+                                <div class="item">
 
+                                    <div class="item-name">
+                                        ${
+                                            item.nombre_archivo ||
+                                            item.foto_id ||
+                                            "Foto"
+                                        }
+                                    </div>
 
-                const card =
-                    document.createElement(
-                        "article"
+                                    <div class="item-detail">
+                                        ${
+                                            item.cantidad
+                                        }
+                                        ×
+                                        ${
+                                            formatearDinero(
+                                                item.precio_unitario
+                                            )
+                                        }
+                                    </div>
+
+                                </div>
+                            `;
+
+                        }
                     );
 
 
-                card.className =
-                    "pedido";
+                    card.innerHTML = `
 
+                        <div class="pedido-header">
 
-                card.innerHTML = `
+                            <div>
 
-                    <div class="pedido-top">
+                                <div class="pedido-id">
+                                    ${
+                                        pedido.pedido_id ||
+                                        "Pedido"
+                                    }
+                                </div>
 
-                        <div>
+                                <div class="pedido-fecha">
+                                    ${
+                                        formatearFecha(
+                                            pedido.creado_en
+                                        )
+                                    }
+                                </div>
 
-                            <div class="pedido-id">
+                            </div>
+
+                            <div class="estado">
                                 ${
-                                    pedido.pedido_id ||
-                                    "Pedido"
+                                    pedido.estado_pago ||
+                                    pedido.estado ||
+                                    "pendiente"
                                 }
                             </div>
 
-                            <div class="pedido-fecha">
+                        </div>
+
+
+                        <div class="pedido-datos">
+
+                            <div class="dato">
+
+                                <div class="dato-label">
+                                    Cliente
+                                </div>
+
+                                <div class="dato-valor">
+                                    ${
+                                        pedido.nombre ||
+                                        "—"
+                                    }
+                                </div>
+
+                            </div>
+
+
+                            <div class="dato">
+
+                                <div class="dato-label">
+                                    WhatsApp
+                                </div>
+
+                                <div class="dato-valor">
+                                    ${
+                                        pedido.whatsapp ||
+                                        "—"
+                                    }
+                                </div>
+
+                            </div>
+
+
+                            <div class="dato">
+
+                                <div class="dato-label">
+                                    Email
+                                </div>
+
+                                <div class="dato-valor">
+                                    ${
+                                        pedido.email ||
+                                        "—"
+                                    }
+                                </div>
+
+                            </div>
+
+
+                            <div class="dato">
+
+                                <div class="dato-label">
+                                    Evento
+                                </div>
+
+                                <div class="dato-valor">
+                                    ${
+                                        pedido.evento_id ||
+                                        "—"
+                                    }
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="items-title">
+                            Fotografías seleccionadas
+                        </div>
+
+                        ${
+                            itemsHTML ||
+                            `
+                                <div class="item">
+                                    <div class="item-name">
+                                        Sin fotografías registradas
+                                    </div>
+                                </div>
+                            `
+                        }
+
+
+                        <div class="pedido-total">
+
+                            <div class="pedido-total-label">
+                                Total
+                            </div>
+
+                            <div class="pedido-total-value">
                                 ${
-                                    formatearFecha(
-                                        pedido.creado_en
+                                    formatearDinero(
+                                        pedido.total
                                     )
                                 }
                             </div>
 
                         </div>
 
-                        <div
-                            class="estado-pago ${
-                                obtenerClaseEstado(
-                                    estado
-                                )
-                            }"
-                        >
-                            ${
-                                obtenerTextoEstado(
-                                    estado
-                                )
-                            }
-                        </div>
-
-                    </div>
-
-
-                    <div class="pedido-cliente">
-
-                        <div class="cliente-nombre">
-                            ${
-                                pedido.nombre ||
-                                "Cliente sin nombre"
-                            }
-                        </div>
-
-                        <div class="cliente-evento">
-                            Evento:
-                            ${
-                                pedido.evento_id ||
-                                "—"
-                            }
-                        </div>
-
-                    </div>
-
-
-                    <div class="pedido-total">
-
-                        <div class="total-label">
-                            Total
-                        </div>
-
-                        <div class="total-value">
-                            ${
-                                formatearDinero(
-                                    pedido.total
-                                )
-                            }
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        type="button"
-                        class="ver-pedido"
-                        data-indice="${indice}"
-                    >
-                        VER PEDIDO
-                    </button>
-
-                `;
-
-
-                pedidosContainer.appendChild(
-                    card
-                );
-
-            }
-        );
-
-
-        document
-            .querySelectorAll(
-                ".ver-pedido"
-            )
-            .forEach(
-                function (boton) {
-
-                    boton.addEventListener(
-                        "click",
-                        function () {
-
-                            const indice =
-                                Number(
-                                    boton.dataset.indice
-                                );
-
-
-                            abrirPedido(
-                                pedidosActuales[
-                                    indice
-                                ]
-                            );
-
-                        }
-                    );
-
-                }
-            );
-
-    }
-
-
-    /*
-    =========================================================
-    ABRIR PEDIDO
-    =========================================================
-    */
-
-    function abrirPedido(pedido) {
-
-        if (!pedido) {
-            return;
-        }
-
-
-        modalTitulo.textContent =
-            pedido.pedido_id ||
-            "Pedido";
-
-
-        detallePedido.innerHTML = `
-
-            <div class="detalle-row">
-
-                <div class="detalle-label">
-                    Cliente
-                </div>
-
-                <div class="detalle-value">
-                    ${
-                        pedido.nombre || "—"
-                    }
-                </div>
-
-            </div>
-
-
-            <div class="detalle-row">
-
-                <div class="detalle-label">
-                    WhatsApp
-                </div>
-
-                <div class="detalle-value">
-                    ${
-                        pedido.whatsapp || "—"
-                    }
-                </div>
-
-            </div>
-
-
-            <div class="detalle-row">
-
-                <div class="detalle-label">
-                    Email
-                </div>
-
-                <div class="detalle-value">
-                    ${
-                        pedido.email || "—"
-                    }
-                </div>
-
-            </div>
-
-
-            <div class="detalle-row">
-
-                <div class="detalle-label">
-                    Evento
-                </div>
-
-                <div class="detalle-value">
-                    ${
-                        pedido.evento_id || "—"
-                    }
-                </div>
-
-            </div>
-
-
-            <div class="detalle-row">
-
-                <div class="detalle-label">
-                    Estado del pago
-                </div>
-
-                <div class="detalle-value">
-                    ${
-                        obtenerTextoEstado(
-                            pedido.estado_pago
-                        )
-                    }
-                </div>
-
-            </div>
-
-
-            <div class="detalle-row">
-
-                <div class="detalle-label">
-                    Fecha
-                </div>
-
-                <div class="detalle-value">
-                    ${
-                        formatearFecha(
-                            pedido.creado_en
-                        )
-                    }
-                </div>
-
-            </div>
-
-
-            <div class="detalle-row">
-
-                <div class="detalle-label">
-                    Total
-                </div>
-
-                <div class="detalle-value">
-                    ${
-                        formatearDinero(
-                            pedido.total
-                        )
-                    }
-                </div>
-
-            </div>
-
-        `;
-
-
-        fotosPedido.innerHTML =
-            "";
-
-
-        const items =
-            Array.isArray(
-                pedido.items
-            )
-                ? pedido.items
-                : [];
-
-
-        if (
-            items.length === 0
-        ) {
-
-            fotosPedido.innerHTML = `
-                <div class="foto">
-                    <div>
-                        No hay fotografías registradas.
-                    </div>
-                </div>
-            `;
-
-        } else {
-
-            items.forEach(
-                function (item) {
-
-                    const fila =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    fila.className =
-                        "foto";
-
-
-                    fila.innerHTML = `
-
-                        <div>
-                            ${
-                                item.nombre_archivo ||
-                                item.foto_id ||
-                                "Foto"
-                            }
-
-                            ×
-                            ${
-                                item.cantidad || 0
-                            }
-                        </div>
-
-                        <div class="foto-precio">
-                            ${
-                                formatearDinero(
-                                    item.subtotal
-                                )
-                            }
-                        </div>
-
                     `;
 
 
-                    fotosPedido.appendChild(
-                        fila
+                    pedidosContainer.appendChild(
+                        card
                     );
 
                 }
@@ -1392,199 +925,28 @@
         }
 
 
-        modal.style.display =
-            "block";
+        /* =========================================================
+           CARGAR PEDIDOS DEL PRODUCTOR
+        ========================================================= */
 
-        document.body.style.overflow =
-            "hidden";
+        async function cargarPedidos() {
 
-    }
-
-
-    /*
-    =========================================================
-    CERRAR MODAL
-    =========================================================
-    */
-
-    function cerrarDetalle() {
-
-        modal.style.display =
-            "none";
-
-        document.body.style.overflow =
-            "";
-
-    }
-
-
-    cerrarModal.addEventListener(
-        "click",
-        cerrarDetalle
-    );
-
-
-    modal.addEventListener(
-        "click",
-        function (event) {
-
-            if (
-                event.target === modal
-            ) {
-
-                cerrarDetalle();
-
-            }
-
-        }
-    );
-
-
-    document.addEventListener(
-        "keydown",
-        function (event) {
-
-            if (
-                event.key === "Escape"
-            ) {
-
-                cerrarDetalle();
-
-            }
-
-        }
-    );
-
-
-    /*
-    =========================================================
-    CARGAR PEDIDOS
-    =========================================================
-    */
-
-    async function cargarPedidos() {
-
-        mensaje.style.display =
-            "block";
-
-        mensaje.textContent =
-            "Consultando pedidos...";
-
-
-        try {
-
-            const respuesta =
-                await fetch(
-                    "/api/admin-pedidos",
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify({
-
-                                usuario:
-                                    usuarioProductor,
-
-                                password:
-                                    passwordProductor
-
-                            })
-
-                    }
-                );
-
-
-            const datos =
-                await respuesta.json();
-
-
-            if (
-                !respuesta.ok ||
-                !datos.ok
-            ) {
-
-                throw new Error(
-                    datos.error ||
-                    "No se pudieron cargar los pedidos."
-                );
-
-            }
-
-
-            mensaje.style.display =
-                "none";
-
-
-            mostrarPedidos(
-                datos.pedidos
-            );
-
-
-        } catch (error) {
-
-            mensaje.style.display =
+            panelMessage.style.display =
                 "block";
 
-            mensaje.textContent =
-                error.message ||
-                "Error al consultar los pedidos.";
-
-        }
-
-    }
+            panelMessage.textContent =
+                "Consultando pedidos...";
 
 
-    /*
-    =========================================================
-    LOGIN
-    =========================================================
-    */
-
-    loginForm.addEventListener(
-        "submit",
-        async function (event) {
-
-            event.preventDefault();
-
-
-            loginError.style.display =
-                "none";
-
-
-            loginButton.disabled =
-                true;
-
-            loginButton.textContent =
-                "VERIFICANDO...";
-
-
-            const usuario =
-                document
-                    .getElementById(
-                        "usuario"
-                    )
-                    .value
-                    .trim();
-
-
-            const password =
-                document
-                    .getElementById(
-                        "password"
-                    )
-                    .value;
+            pedidosContainer.innerHTML =
+                "";
 
 
             try {
 
                 const respuesta =
                     await fetch(
-                        "/api/admin-login",
+                        "/api/productor-pedidos",
                         {
                             method: "POST",
 
@@ -1593,20 +955,13 @@
                                     "application/json"
                             },
 
-                            credentials:
-                                "include",
-
                             body:
                                 JSON.stringify({
-
                                     usuario:
-                                        usuario,
-
+                                        adminUsuario,
                                     password:
-                                        password
-
+                                        adminPassword
                                 })
-
                         }
                     );
 
@@ -1622,52 +977,188 @@
 
                     throw new Error(
                         datos.error ||
-                        "Usuario o contraseña incorrectos."
+                        "No se pudieron cargar los pedidos."
                     );
 
                 }
 
 
-                usuarioProductor =
-                    usuario;
-
-                passwordProductor =
-                    password;
-
-
-                loginSection.style.display =
+                panelMessage.style.display =
                     "none";
 
-                productorPanel.style.display =
+
+                mostrarPedidos(
+                    datos.pedidos
+                );
+
+
+            } catch (error) {
+
+                panelMessage.style.display =
                     "block";
+
+                panelMessage.textContent =
+                    error.message ||
+                    "Error al consultar los pedidos.";
+
+            }
+
+        }
+
+
+        /* =========================================================
+           LOGIN
+        ========================================================= */
+
+        formulario.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                errorMessage.style.display =
+                    "none";
+
+
+                loginButton.disabled =
+                    true;
+
+                loginButton.textContent =
+                    "VERIFICANDO...";
+
+
+                const usuario =
+                    document
+                        .getElementById(
+                            "usuario"
+                        )
+                        .value
+                        .trim();
+
+
+                const password =
+                    document
+                        .getElementById(
+                            "password"
+                        )
+                        .value;
+
+
+                try {
+
+                    const respuesta =
+                        await fetch(
+                            "/api/admin-login",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                credentials:
+                                    "include",
+
+                                body:
+                                    JSON.stringify({
+                                        usuario:
+                                            usuario,
+                                        password:
+                                            password
+                                    })
+                            }
+                        );
+
+
+                    const datos =
+                        await respuesta.json();
+
+
+                    if (
+                        !respuesta.ok ||
+                        !datos.ok
+                    ) {
+
+                        throw new Error(
+                            datos.error ||
+                            "Usuario o contraseña incorrectos."
+                        );
+
+                    }
+
+
+                    /* LOGIN CORRECTO */
+
+                    adminUsuario =
+                        usuario;
+
+                    adminPassword =
+                        password;
+
+
+                    loginSection.style.display =
+                        "none";
+
+                    adminPanel.style.display =
+                        "block";
+
+
+                    /* CARGAR PEDIDOS */
+
+                    await cargarPedidos();
+
+
+                } catch (error) {
+
+                    errorMessage.textContent =
+                        error.message ||
+                        "No se pudo conectar con el servidor.";
+
+                    errorMessage.style.display =
+                        "block";
+
+                    loginButton.disabled =
+                        false;
+
+                    loginButton.textContent =
+                        "INGRESAR";
+
+                }
+
+            }
+        );
+
+
+        /* =========================================================
+           ACTUALIZAR PEDIDOS
+        ========================================================= */
+
+        reloadButton.addEventListener(
+            "click",
+            async function () {
+
+                reloadButton.disabled =
+                    true;
+
+                reloadButton.textContent =
+                    "ACTUALIZANDO...";
 
 
                 await cargarPedidos();
 
 
-            } catch (error) {
-
-                loginError.textContent =
-                    error.message ||
-                    "No se pudo conectar con NOVA.";
-
-                loginError.style.display =
-                    "block";
-
-
-                loginButton.disabled =
+                reloadButton.disabled =
                     false;
 
-                loginButton.textContent =
-                    "INGRESAR";
+                reloadButton.textContent =
+                    "ACTUALIZAR";
 
             }
+        );
 
-        }
-    );
-
-
-</script>
+    </script>
 
 </body>
 
