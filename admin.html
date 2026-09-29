@@ -293,6 +293,27 @@
             word-break: break-word;
         }
 
+        .productor-dato {
+            border: 1px solid #252525;
+        }
+
+        .productor-dato .dato-label {
+            color: #888888;
+        }
+
+        .productor-dato .dato-valor {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .productor-id {
+            display: block;
+            margin-top: 4px;
+            color: #777777;
+            font-size: 10px;
+            font-weight: 400;
+        }
+
         .items-title {
             color: #888888;
             font-size: 11px;
@@ -715,6 +736,16 @@
                     );
 
 
+                    const productorNombre =
+                        pedido.productor ||
+                        "Productor no informado";
+
+
+                    const productorId =
+                        pedido.productor_id ||
+                        "";
+
+
                     card.innerHTML = `
 
                         <div class="pedido-header">
@@ -815,23 +846,26 @@
                             </div>
 
 
-                            <div class="dato">
+                            <div class="dato productor-dato">
 
                                 <div class="dato-label">
                                     Productor
                                 </div>
 
                                 <div class="dato-valor">
-                                    ${
-                                        pedido.productor ||
-                                        "—"
-                                    }
+
+                                    ${productorNombre}
 
                                     ${
-                                        pedido.productor_id
-                                            ? `(${pedido.productor_id})`
+                                        productorId
+                                            ? `
+                                                <span class="productor-id">
+                                                    ${productorId}
+                                                </span>
+                                            `
                                             : ""
                                     }
+
                                 </div>
 
                             </div>
@@ -906,15 +940,21 @@
                         {
                             method: "POST",
 
+                            cache: "no-store",
+
                             headers: {
                                 "Content-Type":
-                                    "application/json"
+                                    "application/json",
+
+                                "Cache-Control":
+                                    "no-cache"
                             },
 
                             body:
                                 JSON.stringify({
                                     usuario:
                                         adminUsuario,
+
                                     password:
                                         adminPassword
                                 })
@@ -1017,6 +1057,7 @@
                                     JSON.stringify({
                                         usuario:
                                             usuario,
+
                                         password:
                                             password
                                     })
