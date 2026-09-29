@@ -34,21 +34,27 @@ export async function onRequestPost(context) {
             );
         }
 
-        // Obtener pedidos
+        // Obtener pedidos junto con su productor
         const pedidosResult = await env.DB.prepare(`
             SELECT
-                id,
-                pedido_id,
-                evento_id,
-                nombre,
-                whatsapp,
-                email,
-                total,
-                estado,
-                estado_pago,
-                creado_en
+                pedidos.id,
+                pedidos.pedido_id,
+                pedidos.evento_id,
+                pedidos.nombre,
+                pedidos.whatsapp,
+                pedidos.email,
+                pedidos.total,
+                pedidos.estado,
+                pedidos.estado_pago,
+                pedidos.creado_en,
+                eventos.productor_id,
+                productores.nombre AS productor
             FROM pedidos
-            ORDER BY id DESC
+            LEFT JOIN eventos
+                ON pedidos.evento_id = eventos.evento_id
+            LEFT JOIN productores
+                ON eventos.productor_id = productores.productor_id
+            ORDER BY pedidos.id DESC
         `).all();
 
         const pedidos = pedidosResult.results || [];
