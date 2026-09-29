@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prueba Push - NOVA MOMENTS</title>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 420px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            border: 0;
+            border-radius: 12px;
+            background: white;
+            color: #111;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #resultado {
+            margin-top: 25px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <h1>🔔 Prueba Push</h1>
+
+    <p>
+        Enviará una notificación de prueba
+        al productor LUC-001.
+    </p>
+
+    <button id="btnEnviar">
+        ENVIAR NOTIFICACIÓN DE PRUEBA
+    </button>
+
+    <div id="resultado"></div>
+
+</div>
+
+<script>
+
+const boton =
+    document.getElementById("btnEnviar");
+
+const resultado =
+    document.getElementById("resultado");
+
+
+boton.addEventListener("click", async function () {
+
+    boton.disabled = true;
+
+    boton.textContent =
+        "ENVIANDO...";
+
+    resultado.textContent =
+        "";
+
+
+    try {
+
+        const respuesta =
+            await fetch("/api/push-enviar", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    productor_id:
+                        "LUC-001",
+
+                    titulo:
+                        "NOVA MOMENTS",
+
+                    mensaje:
+                        "🔔 Esta es una notificación de prueba.",
+
+                    url:
+                        "/productor.html"
+
+                })
+
+            });
+
+
+        const datos =
+            await respuesta.json();
+
+
+        if (!respuesta.ok) {
+
+            throw new Error(
+                datos.error ||
+                "Error al enviar la notificación."
+            );
+
+        }
+
+
+        resultado.innerHTML =
+            "✅ Notificación enviada.<br><br>" +
+            JSON.stringify(
+                datos,
+                null,
+                2
+            );
+
+
+    } catch (error) {
+
+        resultado.textContent =
+            "❌ Error: " +
+            error.message;
+
+    }
+
+
+    boton.disabled = false;
+
+    boton.textContent =
+        "ENVIAR NOTIFICACIÓN DE PRUEBA";
+
+});
+
+</script>
+
+</body>
+</html>
