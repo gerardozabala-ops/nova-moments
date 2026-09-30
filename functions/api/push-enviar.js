@@ -1,4 +1,8 @@
-import webpush from "web-push";
+```javascript
+import {
+    buildPushPayload
+} from "@block65/webcrypto-web-push";
+
 
 export async function onRequestPost(context) {
 
@@ -7,10 +11,12 @@ export async function onRequestPost(context) {
         const body =
             await context.request.json();
 
+
         const productorId =
             String(
                 body.productor_id || ""
             ).trim();
+
 
         const titulo =
             String(
@@ -18,11 +24,13 @@ export async function onRequestPost(context) {
                 "NOVA MOMENTS"
             );
 
+
         const mensaje =
             String(
                 body.mensaje ||
                 "Tenés una nueva notificación."
             );
+
 
         const url =
             String(
@@ -34,17 +42,22 @@ export async function onRequestPost(context) {
         if (!productorId) {
 
             return new Response(
+
                 JSON.stringify({
                     ok: false,
-                    error: "Falta productor_id."
+                    error:
+                        "Falta productor_id."
                 }),
+
                 {
                     status: 400,
+
                     headers: {
                         "Content-Type":
                             "application/json"
                     }
                 }
+
             );
 
         }
@@ -66,6 +79,7 @@ export async function onRequestPost(context) {
         const publicKey =
             context.env.VAPID_PUBLIC_KEY;
 
+
         const privateKey =
             context.env.VAPID_PRIVATE_KEY;
 
@@ -77,13 +91,6 @@ export async function onRequestPost(context) {
             );
 
         }
-
-
-        webpush.setVapidDetails(
-            "mailto:admin@nova-moments.com",
-            publicKey,
-            privateKey
-        );
 
 
         const resultado =
@@ -107,36 +114,25 @@ export async function onRequestPost(context) {
         if (suscripciones.length === 0) {
 
             return new Response(
+
                 JSON.stringify({
                     ok: false,
                     error:
                         "No hay suscripciones Push para este productor."
                 }),
+
                 {
                     status: 404,
+
                     headers: {
                         "Content-Type":
                             "application/json"
                     }
                 }
+
             );
 
         }
-
-
-        const payload =
-            JSON.stringify({
-
-                titulo:
-                    titulo,
-
-                mensaje:
-                    mensaje,
-
-                url:
-                    url
-
-            });
 
 
         let enviadas = 0;
@@ -152,29 +148,113 @@ export async function onRequestPost(context) {
 
             try {
 
-                await webpush.sendNotification(
+                const pushSubscription = {
 
-                    {
-                        endpoint:
-                            suscripcion.endpoint,
+                    endpoint:
+                        suscripcion.endpoint,
 
-                        keys: {
+                    expirationTime:
+                        null,
 
-                            p256dh:
-                                suscripcion.p256dh,
+                    keys: {
 
-                            auth:
-                                suscripcion.auth
+                        p256dh:
+                            suscripcion.p256dh,
 
-                        }
+                        auth:
+                            suscripcion.auth
 
-                    },
+                    }
 
-                    payload
+                };
 
-                );
+
+                const vapid = {
+
+                    subject:
+                        "mailto:admin@nova-moments.com",
+
+                    publicKey:
+                        publicKey,
+
+                    privateKey:
+                        privateKey
+
+                };
+
+
+                const payload =
+                    await buildPushPayload(
+
+                        {
+                            data: JSON.stringify({
+
+                                titulo:
+                                    titulo,
+
+                                mensaje:
+                                    mensaje,
+
+                                url:
+                                    url
+
+                            }),
+
+                            options: {
+
+                                ttl: 86400,
+
+                                urgency:
+                                    "normal"
+
+                            }
+
+                        },
+
+                        pushSubscription,
+
+                        vapid
+
+                    );
+
+
+                const respuesta =
+                    await fetch(
+
+                        suscripcion.endpoint,
+
+                        payload
+
+                    );
+
+
+                if (!respuesta.ok) {
+
+                    const cuerpo =
+                        await respuesta.text();
+
+
+                    const error =
+                        new Error(
+                            `Push rechazado: HTTP ${respuesta.status} ${respuesta.statusText}`
+                        );
+
+
+                    error.statusCode =
+                        respuesta.status;
+
+
+                    error.body =
+                        cuerpo;
+
+
+                    throw error;
+
+                }
+
 
                 enviadas++;
+
 
             } catch (error) {
 
@@ -182,6 +262,7 @@ export async function onRequestPost(context) {
                     "Error enviando Push:",
                     error
                 );
+
 
                 fallidas++;
 
@@ -192,13 +273,16 @@ export async function onRequestPost(context) {
                         suscripcion.id,
 
                     statusCode:
-                        error.statusCode || null,
+                        error.statusCode ||
+                        null,
 
                     message:
-                        error.message || null,
+                        error.message ||
+                        null,
 
                     body:
-                        error.body || null
+                        error.body ||
+                        null
 
                 });
 
@@ -248,6 +332,7 @@ export async function onRequestPost(context) {
             }),
 
             {
+
                 status: 200,
 
                 headers: {
@@ -281,6 +366,7 @@ export async function onRequestPost(context) {
             }),
 
             {
+
                 status: 500,
 
                 headers: {
@@ -295,3 +381,4 @@ export async function onRequestPost(context) {
     }
 
 }
+```
