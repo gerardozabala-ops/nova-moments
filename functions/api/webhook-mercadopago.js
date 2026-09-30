@@ -124,7 +124,10 @@ export async function onRequestPost(context) {
         // =========================
 
         const manifest =
-            `id:${dataId};request-id:${xRequestId};ts:${ts};`;
+            "id:" + dataId +
+            ";request-id:" + xRequestId +
+            ";ts:" + ts +
+            ";";
 
 
         // =========================
@@ -152,7 +155,6 @@ export async function onRequestPost(context) {
                 cryptoKey,
                 encoder.encode(manifest)
             );
-
 
         const bytes =
             new Uint8Array(
@@ -198,7 +200,6 @@ export async function onRequestPost(context) {
         const datos =
             await context.request.json();
 
-
         console.log(
             "Webhook Mercado Pago validado:",
             JSON.stringify(datos)
@@ -236,7 +237,6 @@ export async function onRequestPost(context) {
                     datos.data.id
                 )
                 : dataId;
-
 
         if (!paymentId) {
 
@@ -280,17 +280,18 @@ export async function onRequestPost(context) {
 
         const respuesta =
             await fetch(
-                `https://api.mercadopago.com/v1/payments/${paymentId}`,
+                "https://api.mercadopago.com/v1/payments/" +
+                paymentId,
                 {
                     method: "GET",
 
                     headers: {
                         "Authorization":
-                            `Bearer ${accessToken}`
+                            "Bearer " +
+                            accessToken
                     }
                 }
             );
-
 
         const pago =
             await respuesta.json();
@@ -326,7 +327,6 @@ export async function onRequestPost(context) {
 
         const pedidoId =
             pago.external_reference || "";
-
 
         console.log(
             "Pago recibido:",
@@ -365,12 +365,11 @@ export async function onRequestPost(context) {
         // =========================
 
         await context.env.DB
-            .prepare(`
-                UPDATE pedidos
-                SET
-                    estado_pago = ?
-                WHERE pedido_id = ?
-            `)
+            .prepare(
+                "UPDATE pedidos " +
+                "SET estado_pago = ? " +
+                "WHERE pedido_id = ?"
+            )
             .bind(
                 estado,
                 pedidoId
@@ -384,6 +383,231 @@ export async function onRequestPost(context) {
             "→",
             estado
         );
+
+
+        // ==================================================
+        // NOTIFICACIÓN PUSH
+        // SOLO CUANDO EL PAGO ESTÁ APROBADO
+        // ==================================================
+
+        if (estado === "approved") {
+
+            try {
+
+                // =========================
+                // BUSCAR PEDIDO + PRODUCTOR
+                // =========================
+
+                const pedidoResult =
+                    await context.env.DB
+                        .prepare(
+                            "SELECT " +
+                            "pedidos.pedido_id, " +
+                            "pedidos.nombre, " +
+                            "pedidos.total, " +
+                            "pedidos.evento_id, " +
+                            "eventos.nombre AS evento_nombre, " +
+                            "eventos.productor_id " +
+                            "FROM pedidos " +
+                            "INNER JOIN eventos " +
+                            "ON pedidos.evento_id = eventos.evento_id " +
+                            "WHERE pedidos.pedido_id = ? " +
+                            "LIMIT 1"
+                        )
+                        .bind(
+                            pedidoId
+                        )
+                        .first();
+
+
+                if (!pedidoResult) {
+
+                    console.error(
+                        "No se encontró el pedido para enviar Push:",
+                        pedidoId
+                    );
+
+                } else {
+
+                    const productorId =
+                        String(
+                            pedidoResult.productor_id ||
+                            ""
+                        ).trim();
+
+                    const cliente =
+                        String(
+                            pedidoResult.nombre ||
+                            "Cliente"
+                        ).trim();
+
+                    const evento =
+                        String(
+                            pedidoResult.evento_nombre ||
+                            "Nuevo pedido"
+                        ).trim();
+
+                    const total =
+                        Number(
+                            pedidoResult.total ||
+                            0
+                        );
+
+
+                    // =========================
+                    // BUSCAR FOTOS
+                    // =========================
+
+                    const itemsResult =
+                        await context.env.DB
+                            .prepare(
+                                "SELECT " +
+                                "foto_id, " +
+                                "nombre_archivo, " +
+                                "cantidad " +
+                                "FROM pedido_items " +
+                                "WHERE pedido_id = ? " +
+                                "ORDER BY id ASC"
+                            )
+                            .bind(
+                                pedidoId
+                            )
+                            .all();
+
+                    const items =
+                        itemsResult.results || [];
+
+
+                    const fotos =
+                        items
+                            .map(
+                                item =>
+                                    String(
+                                        item.nombre_archivo ||
+                                        item.foto_id ||
+                                        ""
+                                    ).trim()
+                            )
+                            .filter(
+                                nombre =>
+                                    nombre !== ""
+                            );
+
+
+                    // =========================
+                    // FORMATEAR TOTAL
+                    // =========================
+
+                    const totalFormateado =
+                        total.toLocaleString(
+                            "es-AR",
+                            {
+                                style: "currency",
+                                currency: "ARS",
+                                maximumFractionDigits: 0
+                            }
+                        );
+
+
+                    // =========================
+                    // MENSAJE PUSH
+                    // =========================
+
+                    const mensaje =
+                        "Cliente: " +
+                        cliente +
+                        " · " +
+                        evento +
+                        " · " +
+                        totalFormateado;
+
+
+                    // =========================
+                    // URL DEL PRODUCTOR
+                    // =========================
+
+                    const pushUrl =
+                        "/productor.html";
+
+
+                    // =========================
+                    // ENVIAR PUSH
+                    // =========================
+
+                    const pushResponse =
+                        await fetch(
+                            new URL(
+                                "/api/push-enviar",
+                                url.origin
+                            ),
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify({
+                                        productor_id:
+                                            productorId,
+
+                                        titulo:
+                                            "🔔 Nuevo pedido pagado",
+
+                                        mensaje:
+                                            mensaje,
+
+                                        url:
+                                            pushUrl
+                                    })
+                            }
+                        );
+
+
+                    const pushResultado =
+                        await pushResponse.json();
+
+
+                    console.log(
+                        "Resultado Push:",
+                        pushResultado
+                    );
+
+
+                    // =========================
+                    // REGISTRAR FOTOS EN LOG
+                    // =========================
+
+                    console.log(
+                        "Pedido pagado:",
+                        {
+                            pedidoId,
+                            productorId,
+                            cliente,
+                            evento,
+                            total,
+                            fotos
+                        }
+                    );
+
+                }
+
+            } catch (errorPush) {
+
+                // ==========================================
+                // LA FALLA DE PUSH NO ANULA EL PAGO
+                // ==========================================
+
+                console.error(
+                    "Error enviando notificación Push:",
+                    errorPush
+                );
+
+            }
+
+        }
 
 
         // =========================
