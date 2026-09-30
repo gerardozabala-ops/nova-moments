@@ -1,29 +1,16 @@
-```javascript
-import {
-    buildPushPayload
-} from "@block65/webcrypto-web-push";
-
+import { buildPushPayload } from "@block65/webcrypto-web-push";
 
 export async function onRequestPost(context) {
 
     try {
 
-        const body =
-            await context.request.json();
-
+        const body = await context.request.json();
 
         const productorId =
-            String(
-                body.productor_id || ""
-            ).trim();
-
+            String(body.productor_id || "").trim();
 
         const titulo =
-            String(
-                body.titulo ||
-                "NOVA MOMENTS"
-            );
-
+            String(body.titulo || "NOVA MOMENTS");
 
         const mensaje =
             String(
@@ -31,58 +18,42 @@ export async function onRequestPost(context) {
                 "Tenés una nueva notificación."
             );
 
-
         const url =
             String(
                 body.url ||
                 "/productor.html"
             );
 
-
         if (!productorId) {
 
             return new Response(
-
                 JSON.stringify({
                     ok: false,
-                    error:
-                        "Falta productor_id."
+                    error: "Falta productor_id."
                 }),
-
                 {
                     status: 400,
-
                     headers: {
-                        "Content-Type":
-                            "application/json"
+                        "Content-Type": "application/json"
                     }
                 }
-
             );
 
         }
 
-
-        const db =
-            context.env.DB;
-
+        const db = context.env.DB;
 
         if (!db) {
-
             throw new Error(
                 "La vinculación DB no está disponible."
             );
-
         }
-
 
         const publicKey =
             context.env.VAPID_PUBLIC_KEY;
 
-
         const privateKey =
             context.env.VAPID_PRIVATE_KEY;
-
 
         if (!publicKey || !privateKey) {
 
@@ -91,7 +62,6 @@ export async function onRequestPost(context) {
             );
 
         }
-
 
         const resultado =
             await db.prepare(`
@@ -106,45 +76,33 @@ export async function onRequestPost(context) {
             .bind(productorId)
             .all();
 
-
         const suscripciones =
             resultado.results || [];
-
 
         if (suscripciones.length === 0) {
 
             return new Response(
-
                 JSON.stringify({
                     ok: false,
                     error:
                         "No hay suscripciones Push para este productor."
                 }),
-
                 {
                     status: 404,
-
                     headers: {
-                        "Content-Type":
-                            "application/json"
+                        "Content-Type": "application/json"
                     }
                 }
-
             );
 
         }
-
 
         let enviadas = 0;
         let fallidas = 0;
 
         const errores = [];
 
-
-        for (
-            const suscripcion
-            of suscripciones
-        ) {
+        for (const suscripcion of suscripciones) {
 
             try {
 
@@ -168,7 +126,6 @@ export async function onRequestPost(context) {
 
                 };
 
-
                 const vapid = {
 
                     subject:
@@ -182,27 +139,28 @@ export async function onRequestPost(context) {
 
                 };
 
-
                 const payload =
                     await buildPushPayload(
 
                         {
-                            data: JSON.stringify({
+                            data:
+                                JSON.stringify({
 
-                                titulo:
-                                    titulo,
+                                    titulo:
+                                        titulo,
 
-                                mensaje:
-                                    mensaje,
+                                    mensaje:
+                                        mensaje,
 
-                                url:
-                                    url
+                                    url:
+                                        url
 
-                            }),
+                                }),
 
                             options: {
 
-                                ttl: 86400,
+                                ttl:
+                                    86400,
 
                                 urgency:
                                     "normal"
@@ -217,44 +175,33 @@ export async function onRequestPost(context) {
 
                     );
 
-
                 const respuesta =
                     await fetch(
-
                         suscripcion.endpoint,
-
                         payload
-
                     );
-
 
                 if (!respuesta.ok) {
 
                     const cuerpo =
                         await respuesta.text();
 
-
                     const error =
                         new Error(
                             `Push rechazado: HTTP ${respuesta.status} ${respuesta.statusText}`
                         );
 
-
                     error.statusCode =
                         respuesta.status;
 
-
                     error.body =
                         cuerpo;
-
 
                     throw error;
 
                 }
 
-
                 enviadas++;
-
 
             } catch (error) {
 
@@ -263,9 +210,7 @@ export async function onRequestPost(context) {
                     error
                 );
 
-
                 fallidas++;
-
 
                 errores.push({
 
@@ -286,7 +231,6 @@ export async function onRequestPost(context) {
 
                 });
 
-
                 if (
                     error.statusCode === 404 ||
                     error.statusCode === 410
@@ -306,7 +250,6 @@ export async function onRequestPost(context) {
             }
 
         }
-
 
         return new Response(
 
@@ -332,7 +275,6 @@ export async function onRequestPost(context) {
             }),
 
             {
-
                 status: 200,
 
                 headers: {
@@ -344,14 +286,12 @@ export async function onRequestPost(context) {
 
         );
 
-
     } catch (error) {
 
         console.error(
             "Error en push-enviar:",
             error
         );
-
 
         return new Response(
 
@@ -366,7 +306,6 @@ export async function onRequestPost(context) {
             }),
 
             {
-
                 status: 500,
 
                 headers: {
@@ -381,4 +320,3 @@ export async function onRequestPost(context) {
     }
 
 }
-```
