@@ -6,23 +6,23 @@ export async function onRequestPost(context) {
 
         const body = await context.request.json();
 
-        const productorId =
-            String(body.productor_id || "").trim();
+        const productorId = String(
+            body.productor_id || ""
+        ).trim();
 
-        const titulo =
-            String(body.titulo || "NOVA MOMENTS");
+        const titulo = String(
+            body.titulo || "NOVA MOMENTS"
+        );
 
-        const mensaje =
-            String(
-                body.mensaje ||
-                "Tenés una nueva notificación."
-            );
+        const mensaje = String(
+            body.mensaje ||
+            "Tenés una nueva notificación."
+        );
 
-        const url =
-            String(
-                body.url ||
-                "/productor.html"
-            );
+        const url = String(
+            body.url ||
+            "/productor.html"
+        );
 
         if (!productorId) {
 
@@ -44,9 +44,11 @@ export async function onRequestPost(context) {
         const db = context.env.DB;
 
         if (!db) {
+
             throw new Error(
                 "La vinculación DB no está disponible."
             );
+
         }
 
         const publicKey =
@@ -63,18 +65,13 @@ export async function onRequestPost(context) {
 
         }
 
-        const resultado =
-            await db.prepare(`
-                SELECT
-                    id,
-                    endpoint,
-                    p256dh,
-                    auth
-                FROM push_suscripciones
-                WHERE productor_id = ?
-            `)
-            .bind(productorId)
-            .all();
+        const resultado = await db.prepare(
+            "SELECT id, endpoint, p256dh, auth " +
+            "FROM push_suscripciones " +
+            "WHERE productor_id = ?"
+        )
+        .bind(productorId)
+        .all();
 
         const suscripciones =
             resultado.results || [];
@@ -107,7 +104,6 @@ export async function onRequestPost(context) {
             try {
 
                 const pushSubscription = {
-
                     endpoint:
                         suscripcion.endpoint,
 
@@ -115,19 +111,15 @@ export async function onRequestPost(context) {
                         null,
 
                     keys: {
-
                         p256dh:
                             suscripcion.p256dh,
 
                         auth:
                             suscripcion.auth
-
                     }
-
                 };
 
                 const vapid = {
-
                     subject:
                         "mailto:admin@nova-moments.com",
 
@@ -136,16 +128,13 @@ export async function onRequestPost(context) {
 
                     privateKey:
                         privateKey
-
                 };
 
                 const payload =
                     await buildPushPayload(
-
                         {
                             data:
                                 JSON.stringify({
-
                                     titulo:
                                         titulo,
 
@@ -154,25 +143,20 @@ export async function onRequestPost(context) {
 
                                     url:
                                         url
-
                                 }),
 
                             options: {
-
                                 ttl:
                                     86400,
 
                                 urgency:
                                     "normal"
-
                             }
-
                         },
 
                         pushSubscription,
 
                         vapid
-
                     );
 
                 const respuesta =
@@ -188,7 +172,10 @@ export async function onRequestPost(context) {
 
                     const error =
                         new Error(
-                            `Push rechazado: HTTP ${respuesta.status} ${respuesta.statusText}`
+                            "Push rechazado: HTTP " +
+                            respuesta.status +
+                            " " +
+                            respuesta.statusText
                         );
 
                     error.statusCode =
@@ -198,7 +185,6 @@ export async function onRequestPost(context) {
                         cuerpo;
 
                     throw error;
-
                 }
 
                 enviadas++;
@@ -213,7 +199,6 @@ export async function onRequestPost(context) {
                 fallidas++;
 
                 errores.push({
-
                     id:
                         suscripcion.id,
 
@@ -228,7 +213,6 @@ export async function onRequestPost(context) {
                     body:
                         error.body ||
                         null
-
                 });
 
                 if (
@@ -236,10 +220,10 @@ export async function onRequestPost(context) {
                     error.statusCode === 410
                 ) {
 
-                    await db.prepare(`
-                        DELETE FROM push_suscripciones
-                        WHERE id = ?
-                    `)
+                    await db.prepare(
+                        "DELETE FROM push_suscripciones " +
+                        "WHERE id = ?"
+                    )
                     .bind(
                         suscripcion.id
                     )
@@ -252,7 +236,6 @@ export async function onRequestPost(context) {
         }
 
         return new Response(
-
             JSON.stringify({
 
                 ok: true,
@@ -273,17 +256,13 @@ export async function onRequestPost(context) {
                     errores
 
             }),
-
             {
                 status: 200,
-
                 headers: {
                     "Content-Type":
                         "application/json"
                 }
-
             }
-
         );
 
     } catch (error) {
@@ -294,7 +273,6 @@ export async function onRequestPost(context) {
         );
 
         return new Response(
-
             JSON.stringify({
 
                 ok: false,
@@ -304,17 +282,13 @@ export async function onRequestPost(context) {
                     "Error interno del servidor."
 
             }),
-
             {
                 status: 500,
-
                 headers: {
                     "Content-Type":
                         "application/json"
                 }
-
             }
-
         );
 
     }
