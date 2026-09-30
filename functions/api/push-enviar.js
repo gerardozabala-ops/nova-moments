@@ -36,8 +36,7 @@ export async function onRequestPost(context) {
             return new Response(
                 JSON.stringify({
                     ok: false,
-                    error:
-                        "Falta productor_id."
+                    error: "Falta productor_id."
                 }),
                 {
                     status: 400,
@@ -143,6 +142,8 @@ export async function onRequestPost(context) {
         let enviadas = 0;
         let fallidas = 0;
 
+        const errores = [];
+
 
         for (
             const suscripcion
@@ -185,11 +186,22 @@ export async function onRequestPost(context) {
                 fallidas++;
 
 
-                /*
-                 * Si el servicio Push informa
-                 * que la suscripción ya no existe,
-                 * la eliminamos de D1.
-                 */
+                errores.push({
+
+                    id:
+                        suscripcion.id,
+
+                    statusCode:
+                        error.statusCode || null,
+
+                    message:
+                        error.message || null,
+
+                    body:
+                        error.body || null
+
+                });
+
 
                 if (
                     error.statusCode === 404 ||
@@ -228,7 +240,10 @@ export async function onRequestPost(context) {
                     enviadas,
 
                 fallidas:
-                    fallidas
+                    fallidas,
+
+                errores:
+                    errores
 
             }),
 
@@ -272,6 +287,7 @@ export async function onRequestPost(context) {
                     "Content-Type":
                         "application/json"
                 }
+
             }
 
         );
@@ -279,4 +295,3 @@ export async function onRequestPost(context) {
     }
 
 }
-
