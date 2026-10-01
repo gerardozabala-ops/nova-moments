@@ -12,5 +12,11 @@
       "database_name": "nova-moments-db",
       "database_id": "35854d60-3a5c-4468-98fe-bacf48e3f277"
     }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "VIDEOS",
+      "bucket_name": "nova-moments-videos"
+    }
   ]
 }
