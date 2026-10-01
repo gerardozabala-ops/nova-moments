@@ -1383,11 +1383,6 @@ footer {
         );
 
 
-    /*
-       Guardamos las fotografías en un array
-       para poder navegar entre ellas.
-    */
-
     const listaFotos = [];
 
 
@@ -1444,11 +1439,6 @@ footer {
                 );
 
 
-                /*
-                   Usamos el índice real de la foto
-                   dentro de listaFotos.
-                */
-
                 const indiceFoto =
                     listaFotos.length - 1;
 
@@ -1486,6 +1476,12 @@ footer {
 
     /* ==================================================
        VIDEOS
+       
+       Cloudinary:
+       datosMedia.videos
+
+       R2 privado:
+       datosMedia.r2_videos
     ================================================== */
 
     const videosContainer =
@@ -1494,12 +1490,33 @@ footer {
         );
 
 
+    const videosCloudinary =
+        Array.isArray(
+            datosMedia.videos
+        )
+            ? datosMedia.videos
+            : [];
+
+
+    const videosR2 =
+        Array.isArray(
+            datosMedia.r2_videos
+        )
+            ? datosMedia.r2_videos
+            : [];
+
+
+    const listaVideos = [
+        ...videosCloudinary,
+        ...videosR2
+    ];
+
+
     if (
-        Array.isArray(datosMedia.videos) &&
-        datosMedia.videos.length > 0
+        listaVideos.length > 0
     ) {
 
-        datosMedia.videos.forEach(
+        listaVideos.forEach(
             function (video) {
 
                 if (!video.secure_url) {
@@ -1588,7 +1605,11 @@ footer {
                             player.muted =
                                 false;
 
-                            player.play();
+                            player.play()
+                                .catch(
+                                    function () {
+                                    }
+                                );
 
                             overlay.style.display =
                                 "none";
