@@ -656,6 +656,7 @@
 
         let adminUsuario = "";
         let adminPassword = "";
+        let adminProductorId = "";
 
 
         /* =========================================================
@@ -1040,6 +1041,17 @@
             }
 
 
+            if (!adminProductorId) {
+
+                console.error(
+                    "No se puede registrar Push: falta productor_id."
+                );
+
+                return;
+
+            }
+
+
             try {
 
                 /*
@@ -1173,7 +1185,7 @@
                                 JSON.stringify({
 
                                     productor_id:
-                                        "LUC-001",
+                                        adminProductorId,
 
                                     subscription:
                                         subscription.toJSON()
@@ -1202,7 +1214,9 @@
 
 
                 console.log(
-                    "Push registrado correctamente para LUC-001."
+                    "Push registrado correctamente para " +
+                    adminProductorId +
+                    "."
                 );
 
 
@@ -1357,6 +1371,20 @@
                     adminPassword =
                         password;
 
+                    adminProductorId =
+                        String(
+                            datos.productor_id || ""
+                        ).trim();
+
+
+                    if (!adminProductorId) {
+
+                        throw new Error(
+                            "El servidor no devolvió el productor_id."
+                        );
+
+                    }
+
 
                     loginSection.style.display =
                         "none";
@@ -1375,9 +1403,8 @@
                     /*
                      * PREPARAR PUSH
                      *
-                     * Para esta primera prueba
-                     * la suscripción queda asociada
-                     * a LUC-001.
+                     * La suscripción queda asociada
+                     * al productor que acaba de iniciar sesión.
                      */
 
                     prepararPush();
