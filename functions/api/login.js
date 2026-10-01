@@ -23,7 +23,7 @@ export async function onRequestPost(context) {
                     fecha,
                     tipo_experiencia
                 FROM eventos
-                WHERE usuario = ?
+                WHERE LOWER(usuario) = ?
                 AND password = ?
                 AND estado = 'activo'
                 LIMIT 1
