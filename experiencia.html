@@ -653,6 +653,13 @@ footer {
         0 20px 70px rgba(0,0,0,0.5);
 
     user-select: none;
+
+    /*
+     * Evita que el navegador interprete
+     * el gesto como arrastre de imagen.
+     */
+    -webkit-user-drag: none;
+    touch-action: pan-y;
 }
 
 
@@ -2288,6 +2295,123 @@ footer {
 
             fotoSiguiente();
 
+        }
+    );
+
+
+    /* ==================================================
+       GESTOS DE DESLIZAMIENTO
+       CELULAR / PANTALLAS TÁCTILES
+    ================================================== */
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    const distanciaMinimaSwipe = 50;
+
+
+    lightboxImage.addEventListener(
+        "touchstart",
+        function (event) {
+
+            if (
+                event.touches.length !== 1
+            ) {
+
+                return;
+
+            }
+
+
+            touchStartX =
+                event.touches[0].clientX;
+
+            touchStartY =
+                event.touches[0].clientY;
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    lightboxImage.addEventListener(
+        "touchend",
+        function (event) {
+
+            if (
+                event.changedTouches.length !== 1
+            ) {
+
+                return;
+
+            }
+
+
+            const touchEndX =
+                event.changedTouches[0].clientX;
+
+            const touchEndY =
+                event.changedTouches[0].clientY;
+
+
+            const diferenciaX =
+                touchEndX - touchStartX;
+
+            const diferenciaY =
+                touchEndY - touchStartY;
+
+
+            /*
+             * Si el movimiento es principalmente
+             * vertical, no hacemos nada.
+             */
+
+            if (
+                Math.abs(diferenciaX) <=
+                Math.abs(diferenciaY)
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+             * Ignorar movimientos demasiado cortos.
+             */
+
+            if (
+                Math.abs(diferenciaX) <
+                distanciaMinimaSwipe
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+             * IZQUIERDA = SIGUIENTE
+             * DERECHA = ANTERIOR
+             */
+
+            if (
+                diferenciaX < 0
+            ) {
+
+                fotoSiguiente();
+
+            } else {
+
+                fotoAnterior();
+
+            }
+
+        },
+        {
+            passive: true
         }
     );
 
