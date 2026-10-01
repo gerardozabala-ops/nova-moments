@@ -13,12 +13,17 @@
 <title>NOVA MOMENTS</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+>
 
 <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap"
     rel="stylesheet"
 >
+
 
 <style>
 
@@ -289,12 +294,111 @@ header {
 
 
 /* ==================================================
+   BARRA DE SELECCIÓN
+================================================== */
+
+.selection-bar {
+    position: sticky;
+
+    top: 76px;
+
+    z-index: 90;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding:
+        13px 6%;
+
+    background:
+        rgba(12,12,12,0.94);
+
+    border-top:
+        1px solid rgba(255,255,255,0.05);
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:
+        blur(14px);
+
+    -webkit-backdrop-filter:
+        blur(14px);
+}
+
+.selection-info {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color:
+        rgba(255,255,255,0.72);
+
+    font-size: 10px;
+
+    letter-spacing: 1.5px;
+
+    text-transform: uppercase;
+}
+
+.selection-count {
+    color: #ffffff;
+
+    font-weight: 600;
+}
+
+.selection-total {
+    color:
+        rgba(255,255,255,0.45);
+
+    margin-left: 5px;
+}
+
+.selection-button {
+    border:
+        1px solid rgba(255,255,255,0.45);
+
+    background:
+        rgba(255,255,255,0.08);
+
+    color: #ffffff;
+
+    padding:
+        8px 17px;
+
+    border-radius: 20px;
+
+    font-size: 9px;
+
+    font-weight: 500;
+
+    letter-spacing: 1.5px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border 0.2s ease;
+}
+
+.selection-button:hover {
+    background: #ffffff;
+    color: #080808;
+    border-color: #ffffff;
+}
+
+
+/* ==================================================
    MAIN
 ================================================== */
 
 main {
     padding:
-        78px 6% 80px;
+        55px 6% 80px;
 
     max-width: 1700px;
 
@@ -341,6 +445,32 @@ main {
 
 
 /* ==================================================
+   SUBSECCIONES DE FOTOS
+================================================== */
+
+.photo-subsection {
+    margin-bottom: 48px;
+}
+
+.photo-subsection:last-child {
+    margin-bottom: 0;
+}
+
+.photo-subtitle {
+    margin-bottom: 15px;
+
+    color:
+        rgba(255,255,255,0.55);
+
+    font-size: 9px;
+
+    font-weight: 500;
+
+    letter-spacing: 3px;
+}
+
+
+/* ==================================================
    FOTOGRAFÍAS
 ================================================== */
 
@@ -350,7 +480,7 @@ main {
     grid-template-columns:
         repeat(4, 1fr);
 
-    gap: 12px;
+    gap: 10px;
 }
 
 .photo {
@@ -394,7 +524,7 @@ main {
     background:
         linear-gradient(
             to top,
-            rgba(0,0,0,0.25),
+            rgba(0,0,0,0.28),
             transparent 45%
         );
 
@@ -423,6 +553,46 @@ main {
 
 
 /* ==================================================
+   INDICADOR DE FOTO SELECCIONADA
+================================================== */
+
+.photo-selected {
+    position: absolute;
+
+    top: 7px;
+    right: 7px;
+
+    min-width: 25px;
+    height: 25px;
+
+    padding: 0 7px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    background: #ffffff;
+
+    color: #080808;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    z-index: 3;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,0.45);
+}
+
+.photo-selected.hidden {
+    display: none;
+}
+
+
+/* ==================================================
    VIDEOS
 ================================================== */
 
@@ -438,6 +608,10 @@ main {
 .video {
     position: relative;
 
+    aspect-ratio: 16 / 9;
+
+    overflow: hidden;
+
     background: #151515;
 
     cursor: pointer;
@@ -450,36 +624,19 @@ main {
 
 .video video {
     width: 100%;
-    height: auto;
-
-    aspect-ratio: 16 / 9;
+    height: 100%;
 
     object-fit: cover;
 
     display: block;
 
     background: #111111;
-
-    transition:
-        transform 0.5s ease,
-        filter 0.4s ease;
-}
-
-.video:hover video {
-    transform: scale(1.025);
-
-    filter:
-        brightness(1.08);
 }
 
 .video-overlay {
     position: absolute;
 
-    top: 0;
-    left: 0;
-    right: 0;
-
-    aspect-ratio: 16 / 9;
+    inset: 0;
 
     display: flex;
 
@@ -521,35 +678,6 @@ main {
     font-size: 17px;
 
     padding-left: 3px;
-
-    transition:
-        transform 0.25s ease,
-        background 0.25s ease;
-}
-
-.video:hover .play {
-    transform: scale(1.08);
-
-    background:
-        rgba(255,255,255,0.12);
-}
-
-.video-name {
-    padding:
-        10px 4px 12px;
-
-    color:
-        rgba(255,255,255,0.82);
-
-    text-align: center;
-
-    font-size: 12px;
-
-    line-height: 1.4;
-
-    letter-spacing: 0.4px;
-
-    word-break: break-word;
 }
 
 
@@ -622,50 +750,27 @@ footer {
     padding: 30px;
 
     z-index: 500;
-
-    animation:
-        lightboxIn 0.25s ease;
 }
 
 .lightbox.active {
     display: flex;
 }
 
-@keyframes lightboxIn {
-
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-
-}
-
 .lightbox img {
     max-width: 88vw;
-    max-height: 88vh;
+    max-height: 78vh;
 
     object-fit: contain;
+
+    user-select: none;
+
+    -webkit-user-drag: none;
 
     box-shadow:
         0 20px 70px rgba(0,0,0,0.5);
 
-    user-select: none;
-
-    /*
-     * Evita que el navegador interprete
-     * el gesto como arrastre de imagen.
-     */
-    -webkit-user-drag: none;
     touch-action: pan-y;
 }
-
-
-/* ==================================================
-   CONTROLES LIGHTBOX
-================================================== */
 
 .lightbox-button {
     position: absolute;
@@ -731,11 +836,6 @@ footer {
     padding-bottom: 4px;
 }
 
-
-/* ==================================================
-   CONTADOR DE FOTOS
-================================================== */
-
 .photo-counter {
     position: absolute;
 
@@ -743,7 +843,8 @@ footer {
 
     bottom: 22px;
 
-    transform: translateX(-50%);
+    transform:
+        translateX(-50%);
 
     color:
         rgba(255,255,255,0.65);
@@ -757,7 +858,362 @@ footer {
 
 
 /* ==================================================
-   ERROR
+   BOTÓN IMPRIMIR EN LIGHTBOX
+================================================== */
+
+.lightbox-print {
+    position: absolute;
+
+    left: 50%;
+    bottom: 58px;
+
+    transform:
+        translateX(-50%);
+
+    border:
+        1px solid rgba(255,255,255,0.5);
+
+    background:
+        rgba(255,255,255,0.10);
+
+    color: #ffffff;
+
+    padding:
+        10px 22px;
+
+    border-radius: 25px;
+
+    font-size: 9px;
+
+    font-weight: 500;
+
+    letter-spacing: 1.5px;
+
+    cursor: pointer;
+
+    backdrop-filter:
+        blur(5px);
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.lightbox-print:hover {
+    background: #ffffff;
+    color: #080808;
+}
+
+
+/* ==================================================
+   PANEL DE SELECCIÓN
+================================================== */
+
+.selection-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        rgba(0,0,0,0.70);
+
+    display: none;
+
+    z-index: 700;
+}
+
+.selection-overlay.active {
+    display: block;
+}
+
+.selection-panel {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: min(430px, 94vw);
+    height: 100%;
+
+    background: #101010;
+
+    border-left:
+        1px solid #292929;
+
+    box-shadow:
+        -20px 0 60px rgba(0,0,0,0.45);
+
+    display: flex;
+    flex-direction: column;
+
+    animation:
+        panelIn 0.25s ease;
+}
+
+@keyframes panelIn {
+
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+
+}
+
+.selection-panel-header {
+    padding:
+        25px 24px 20px;
+
+    border-bottom:
+        1px solid #252525;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+}
+
+.selection-panel-title {
+    font-size: 12px;
+
+    letter-spacing: 3px;
+
+    color:
+        rgba(255,255,255,0.88);
+}
+
+.selection-close {
+    width: 34px;
+    height: 34px;
+
+    border:
+        1px solid #333333;
+
+    border-radius: 50%;
+
+    background: transparent;
+
+    color: #ffffff;
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+.selection-items {
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding:
+        18px 20px;
+}
+
+.selection-empty {
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: #666666;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+.selection-item {
+    display: grid;
+
+    grid-template-columns:
+        74px 1fr auto;
+
+    gap: 12px;
+
+    align-items: center;
+
+    padding:
+        11px 0;
+
+    border-bottom:
+        1px solid #202020;
+}
+
+.selection-thumb {
+    width: 74px;
+    height: 56px;
+
+    object-fit: cover;
+
+    border-radius: 2px;
+
+    background: #181818;
+}
+
+.selection-item-info {
+    min-width: 0;
+}
+
+.selection-item-name {
+    color:
+        rgba(255,255,255,0.82);
+
+    font-size: 10px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    margin-bottom: 7px;
+}
+
+.selection-item-price {
+    color: #777777;
+
+    font-size: 9px;
+}
+
+.selection-controls {
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+}
+
+.quantity-button {
+    width: 25px;
+    height: 25px;
+
+    border:
+        1px solid #383838;
+
+    border-radius: 50%;
+
+    background: #151515;
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    line-height: 1;
+}
+
+.quantity-value {
+    min-width: 18px;
+
+    text-align: center;
+
+    font-size: 10px;
+
+    color: #ffffff;
+}
+
+.remove-button {
+    display: block;
+
+    margin-top: 6px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #666666;
+
+    font-size: 8px;
+
+    cursor: pointer;
+
+    letter-spacing: 0.5px;
+}
+
+.remove-button:hover {
+    color: #ffffff;
+}
+
+.selection-panel-footer {
+    padding:
+        18px 22px 24px;
+
+    border-top:
+        1px solid #292929;
+
+    background: #0c0c0c;
+}
+
+.selection-summary {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 15px;
+}
+
+.selection-summary-label {
+    color: #777777;
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+}
+
+.selection-summary-total {
+    color: #ffffff;
+
+    font-size: 20px;
+
+    font-weight: 500;
+}
+
+.continue-button {
+    width: 100%;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 25px;
+
+    background: #ffffff;
+
+    color: #080808;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 1.5px;
+
+    cursor: pointer;
+
+    transition:
+        opacity 0.2s ease;
+}
+
+.continue-button:hover {
+    opacity: 0.85;
+}
+
+.continue-button:disabled {
+    opacity: 0.25;
+
+    cursor: default;
+}
+
+
+/* ==================================================
+   MENSAJE DE ERROR
 ================================================== */
 
 .page-message {
@@ -912,9 +1368,41 @@ footer {
         font-size: 10px;
     }
 
+    .selection-bar {
+        top: 62px;
+
+        padding:
+            10px 16px;
+
+        gap: 10px;
+    }
+
+    .selection-info {
+        font-size: 8px;
+
+        letter-spacing: 1px;
+
+        gap: 5px;
+
+        flex-wrap: wrap;
+    }
+
+    .selection-total {
+        display: none;
+    }
+
+    .selection-button {
+        padding:
+            8px 13px;
+
+        font-size: 8px;
+
+        white-space: nowrap;
+    }
+
     main {
         padding:
-            52px 16px 60px;
+            42px 16px 60px;
     }
 
     .section {
@@ -935,15 +1423,45 @@ footer {
         margin-left: 15px;
     }
 
+    .photo-subsection {
+        margin-bottom: 34px;
+    }
+
+    .photo-subtitle {
+        margin-bottom: 10px;
+
+        font-size: 8px;
+
+        letter-spacing: 2.5px;
+    }
+
+    /*
+       Tres columnas en celular para que
+       haya más fotos visibles durante
+       la selección.
+    */
+
     .photo-grid {
         grid-template-columns:
-            repeat(2, 1fr);
+            repeat(3, 1fr);
 
         gap: 5px;
     }
 
     .photo {
         border-radius: 1px;
+    }
+
+    .photo-selected {
+        top: 4px;
+        right: 4px;
+
+        min-width: 21px;
+        height: 21px;
+
+        padding: 0 5px;
+
+        font-size: 8px;
     }
 
     .video-grid {
@@ -963,13 +1481,6 @@ footer {
         font-size: 15px;
     }
 
-    .video-name {
-        font-size: 11px;
-
-        padding:
-            8px 3px 10px;
-    }
-
     footer {
         padding:
             35px 20px 40px;
@@ -977,15 +1488,13 @@ footer {
         font-size: 7px;
     }
 
-    /* LIGHTBOX CELULAR */
-
     .lightbox {
         padding: 18px;
     }
 
     .lightbox img {
         max-width: 92vw;
-        max-height: 78vh;
+        max-height: 72vh;
     }
 
     .lightbox-button {
@@ -1013,9 +1522,22 @@ footer {
     }
 
     .photo-counter {
-        bottom: 15px;
+        bottom: 18px;
 
         font-size: 9px;
+    }
+
+    .lightbox-print {
+        bottom: 52px;
+
+        padding:
+            9px 18px;
+
+        font-size: 8px;
+    }
+
+    .selection-panel {
+        width: 100%;
     }
 
 }
@@ -1086,15 +1608,10 @@ footer {
 
 
 <!-- ==================================================
-     APLICACIÓN
+     HERO
 ================================================== -->
 
 <div id="app">
-
-
-    <!-- ==================================================
-         HERO
-    ================================================== -->
 
     <section
         class="hero"
@@ -1132,8 +1649,47 @@ footer {
 
 
     <!-- ==================================================
-         CONTENIDO
+         BARRA DE SELECCIÓN
     ================================================== -->
+
+    <div
+        class="selection-bar"
+        id="selectionBar"
+    >
+
+        <div class="selection-info">
+
+            <span>
+                MI SELECCIÓN
+            </span>
+
+            <span
+                class="selection-count"
+                id="selectionCount"
+            >
+                0 FOTOS
+            </span>
+
+            <span
+                class="selection-total"
+                id="selectionTotalTop"
+            >
+                $0
+            </span>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="selection-button"
+            id="openSelectionButton"
+        >
+            IMPRIMIR
+        </button>
+
+    </div>
+
 
     <main>
 
@@ -1142,8 +1698,24 @@ footer {
              FOTOGRAFÍAS
         ================================================== -->
 
-        <div id="photoSections">
-        </div>
+        <section class="section">
+
+            <div class="section-header">
+
+                <h2 class="section-title">
+                    FOTOGRAFÍAS
+                </h2>
+
+                <div class="section-line"></div>
+
+            </div>
+
+
+            <div
+                id="photoSections"
+            ></div>
+
+        </section>
 
 
         <!-- ==================================================
@@ -1162,11 +1734,11 @@ footer {
 
             </div>
 
+
             <div
                 class="video-grid"
                 id="videos"
-            >
-            </div>
+            ></div>
 
         </section>
 
@@ -1174,14 +1746,9 @@ footer {
     </main>
 
 
-    <!-- ==================================================
-         FOOTER
-    ================================================== -->
-
     <footer>
         NOVA MOMENTS
     </footer>
-
 
 </div>
 
@@ -1203,6 +1770,7 @@ footer {
         ×
     </button>
 
+
     <button
         class="lightbox-button prev-lightbox"
         id="prevLightbox"
@@ -1211,11 +1779,13 @@ footer {
         ‹
     </button>
 
+
     <img
         id="lightboxImage"
         src=""
         alt="Fotografía del evento"
     >
+
 
     <button
         class="lightbox-button next-lightbox"
@@ -1225,11 +1795,92 @@ footer {
         ›
     </button>
 
+
+    <button
+        type="button"
+        class="lightbox-print"
+        id="lightboxPrintButton"
+    >
+        IMPRIMIR ESTA FOTO
+    </button>
+
+
     <div
         class="photo-counter"
         id="photoCounter"
+    ></div>
+
+</div>
+
+
+<!-- ==================================================
+     PANEL DE SELECCIÓN
+================================================== -->
+
+<div
+    class="selection-overlay"
+    id="selectionOverlay"
+>
+
+    <aside
+        class="selection-panel"
+        id="selectionPanel"
     >
-    </div>
+
+        <div class="selection-panel-header">
+
+            <div class="selection-panel-title">
+                MI SELECCIÓN
+            </div>
+
+            <button
+                type="button"
+                class="selection-close"
+                id="closeSelectionButton"
+                aria-label="Cerrar selección"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            class="selection-items"
+            id="selectionItems"
+        ></div>
+
+
+        <div class="selection-panel-footer">
+
+            <div class="selection-summary">
+
+                <div class="selection-summary-label">
+                    TOTAL
+                </div>
+
+                <div
+                    class="selection-summary-total"
+                    id="selectionSummaryTotal"
+                >
+                    $0
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="continue-button"
+                id="continueButton"
+                disabled
+            >
+                CONTINUAR
+            </button>
+
+        </div>
+
+    </aside>
 
 </div>
 
@@ -1240,7 +1891,7 @@ footer {
 
 
     /* ==================================================
-       OBTENER SESIÓN
+       SESIÓN
     ================================================== */
 
     const usuario =
@@ -1254,7 +1905,10 @@ footer {
         );
 
 
-    if (!usuario || !eventoId) {
+    if (
+        !usuario ||
+        !eventoId
+    ) {
 
         window.location.href =
             "acceso.html";
@@ -1265,7 +1919,749 @@ footer {
 
 
     /* ==================================================
-       CONSULTAR EVENTO EN D1
+       ELEMENTOS
+    ================================================== */
+
+    const hero =
+        document.getElementById(
+            "hero"
+        );
+
+    const clientName =
+        document.getElementById(
+            "clientName"
+        );
+
+    const eventName =
+        document.getElementById(
+            "eventName"
+        );
+
+    const eventDate =
+        document.getElementById(
+            "eventDate"
+        );
+
+    const photoSections =
+        document.getElementById(
+            "photoSections"
+        );
+
+    const videosContainer =
+        document.getElementById(
+            "videos"
+        );
+
+
+    /* ==================================================
+       SELECCIÓN
+    ================================================== */
+
+    const storageKey =
+        "nova_recuerdos_seleccion_" +
+        eventoId;
+
+
+    let seleccion = [];
+
+
+    try {
+
+        const guardado =
+            sessionStorage.getItem(
+                storageKey
+            );
+
+        if (guardado) {
+
+            seleccion =
+                JSON.parse(
+                    guardado
+                );
+
+        }
+
+    } catch (error) {
+
+        seleccion = [];
+
+    }
+
+
+    let precioFoto = 0;
+
+
+    function guardarSeleccion() {
+
+        sessionStorage.setItem(
+            storageKey,
+            JSON.stringify(
+                seleccion
+            )
+        );
+
+    }
+
+
+    function cantidadTotalFotos() {
+
+        return seleccion.reduce(
+            function (total, item) {
+
+                return total +
+                    Number(
+                        item.cantidad
+                    );
+
+            },
+            0
+        );
+
+    }
+
+
+    function totalSeleccion() {
+
+        return seleccion.reduce(
+            function (total, item) {
+
+                return total +
+                    (
+                        Number(item.cantidad) *
+                        Number(precioFoto)
+                    );
+
+            },
+            0
+        );
+
+    }
+
+
+    function formatearDinero(valor) {
+
+        return new Intl.NumberFormat(
+            "es-AR",
+            {
+                style: "currency",
+                currency: "ARS",
+                maximumFractionDigits: 0
+            }
+        ).format(
+            Number(valor) || 0
+        );
+
+    }
+
+
+    /* ==================================================
+       ELEMENTOS DE SELECCIÓN
+    ================================================== */
+
+    const selectionCount =
+        document.getElementById(
+            "selectionCount"
+        );
+
+    const selectionTotalTop =
+        document.getElementById(
+            "selectionTotalTop"
+        );
+
+    const selectionOverlay =
+        document.getElementById(
+            "selectionOverlay"
+        );
+
+    const selectionItems =
+        document.getElementById(
+            "selectionItems"
+        );
+
+    const selectionSummaryTotal =
+        document.getElementById(
+            "selectionSummaryTotal"
+        );
+
+    const continueButton =
+        document.getElementById(
+            "continueButton"
+        );
+
+
+    /* ==================================================
+       ACTUALIZAR INDICADORES
+    ================================================== */
+
+    function actualizarIndicadores() {
+
+        const cantidad =
+            cantidadTotalFotos();
+
+        const total =
+            totalSeleccion();
+
+
+        selectionCount.textContent =
+            cantidad +
+            (
+                cantidad === 1
+                    ? " FOTO"
+                    : " FOTOS"
+            );
+
+
+        selectionTotalTop.textContent =
+            formatearDinero(
+                total
+            );
+
+
+        selectionSummaryTotal.textContent =
+            formatearDinero(
+                total
+            );
+
+
+        continueButton.disabled =
+            seleccion.length === 0;
+
+
+        actualizarIndicadoresFotos();
+
+    }
+
+
+    /* ==================================================
+       MARCAR FOTOS SELECCIONADAS
+    ================================================== */
+
+    function actualizarIndicadoresFotos() {
+
+        const indicadores =
+            document.querySelectorAll(
+                ".photo-selected"
+            );
+
+
+        indicadores.forEach(
+            function (indicador) {
+
+                const fotoId =
+                    indicador.dataset.fotoId;
+
+
+                const item =
+                    seleccion.find(
+                        function (elemento) {
+
+                            return elemento.foto_id ===
+                                fotoId;
+
+                        }
+                    );
+
+
+                if (item) {
+
+                    indicador.textContent =
+                        "✓ " +
+                        item.cantidad;
+
+                    indicador.classList.remove(
+                        "hidden"
+                    );
+
+                } else {
+
+                    indicador.classList.add(
+                        "hidden"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* ==================================================
+       AGREGAR FOTO
+    ================================================== */
+
+    function agregarFoto(foto) {
+
+        if (!foto) {
+            return;
+        }
+
+
+        const fotoId =
+            foto.public_id ||
+            foto.filename ||
+            foto.secure_url;
+
+
+        const existente =
+            seleccion.find(
+                function (item) {
+
+                    return item.foto_id ===
+                        fotoId;
+
+                }
+            );
+
+
+        if (existente) {
+
+            existente.cantidad =
+                Number(
+                    existente.cantidad
+                ) + 1;
+
+        } else {
+
+            seleccion.push({
+
+                foto_id:
+                    fotoId,
+
+                nombre:
+                    foto.filename ||
+                    foto.public_id ||
+                    "Fotografía",
+
+                url:
+                    foto.secure_url,
+
+                cantidad:
+                    1
+
+            });
+
+        }
+
+
+        guardarSeleccion();
+
+        actualizarIndicadores();
+
+        cerrarLightbox();
+
+        abrirSeleccion();
+
+    }
+
+
+    /* ==================================================
+       CAMBIAR CANTIDAD
+    ================================================== */
+
+    function cambiarCantidad(
+        fotoId,
+        cambio
+    ) {
+
+        const item =
+            seleccion.find(
+                function (elemento) {
+
+                    return elemento.foto_id ===
+                        fotoId;
+
+                }
+            );
+
+
+        if (!item) {
+            return;
+        }
+
+
+        item.cantidad =
+            Number(
+                item.cantidad
+            ) + cambio;
+
+
+        if (
+            item.cantidad <= 0
+        ) {
+
+            seleccion =
+                seleccion.filter(
+                    function (elemento) {
+
+                        return elemento.foto_id !==
+                            fotoId;
+
+                    }
+                );
+
+        }
+
+
+        guardarSeleccion();
+
+        actualizarIndicadores();
+
+        renderizarSeleccion();
+
+    }
+
+
+    /* ==================================================
+       ELIMINAR
+    ================================================== */
+
+    function eliminarFoto(
+        fotoId
+    ) {
+
+        seleccion =
+            seleccion.filter(
+                function (item) {
+
+                    return item.foto_id !==
+                        fotoId;
+
+                }
+            );
+
+
+        guardarSeleccion();
+
+        actualizarIndicadores();
+
+        renderizarSeleccion();
+
+    }
+
+
+    /* ==================================================
+       RENDER SELECCIÓN
+    ================================================== */
+
+    function renderizarSeleccion() {
+
+        selectionItems.innerHTML =
+            "";
+
+
+        if (
+            seleccion.length === 0
+        ) {
+
+            selectionItems.innerHTML =
+                `
+                <div class="selection-empty">
+                    Todavía no seleccionaste<br>
+                    ninguna fotografía.
+                </div>
+                `;
+
+            return;
+
+        }
+
+
+        seleccion.forEach(
+            function (item) {
+
+                const fila =
+                    document.createElement(
+                        "div"
+                    );
+
+                fila.className =
+                    "selection-item";
+
+
+                const imagen =
+                    document.createElement(
+                        "img"
+                    );
+
+                imagen.className =
+                    "selection-thumb";
+
+                imagen.src =
+                    item.url;
+
+                imagen.alt =
+                    "Fotografía seleccionada";
+
+
+                const info =
+                    document.createElement(
+                        "div"
+                    );
+
+                info.className =
+                    "selection-item-info";
+
+
+                const nombre =
+                    document.createElement(
+                        "div"
+                    );
+
+                nombre.className =
+                    "selection-item-name";
+
+                nombre.textContent =
+                    item.nombre;
+
+
+                const precio =
+                    document.createElement(
+                        "div"
+                    );
+
+                precio.className =
+                    "selection-item-price";
+
+                precio.textContent =
+                    formatearDinero(
+                        precioFoto
+                    ) +
+                    " por copia";
+
+
+                info.appendChild(
+                    nombre
+                );
+
+                info.appendChild(
+                    precio
+                );
+
+
+                const controles =
+                    document.createElement(
+                        "div"
+                    );
+
+                controles.className =
+                    "selection-controls";
+
+
+                const menos =
+                    document.createElement(
+                        "button"
+                    );
+
+                menos.type =
+                    "button";
+
+                menos.className =
+                    "quantity-button";
+
+                menos.textContent =
+                    "−";
+
+
+                menos.addEventListener(
+                    "click",
+                    function () {
+
+                        cambiarCantidad(
+                            item.foto_id,
+                            -1
+                        );
+
+                    }
+                );
+
+
+                const cantidad =
+                    document.createElement(
+                        "span"
+                    );
+
+                cantidad.className =
+                    "quantity-value";
+
+                cantidad.textContent =
+                    item.cantidad;
+
+
+                const mas =
+                    document.createElement(
+                        "button"
+                    );
+
+                mas.type =
+                    "button";
+
+                mas.className =
+                    "quantity-button";
+
+                mas.textContent =
+                    "+";
+
+
+                mas.addEventListener(
+                    "click",
+                    function () {
+
+                        cambiarCantidad(
+                            item.foto_id,
+                            1
+                        );
+
+                    }
+                );
+
+
+                controles.appendChild(
+                    menos
+                );
+
+                controles.appendChild(
+                    cantidad
+                );
+
+                controles.appendChild(
+                    mas
+                );
+
+
+                const eliminar =
+                    document.createElement(
+                        "button"
+                    );
+
+                eliminar.type =
+                    "button";
+
+                eliminar.className =
+                    "remove-button";
+
+                eliminar.textContent =
+                    "QUITAR";
+
+
+                eliminar.addEventListener(
+                    "click",
+                    function () {
+
+                        eliminarFoto(
+                            item.foto_id
+                        );
+
+                    }
+                );
+
+
+                const controlWrapper =
+                    document.createElement(
+                        "div"
+                    );
+
+                controlWrapper.appendChild(
+                    controles
+                );
+
+                controlWrapper.appendChild(
+                    eliminar
+                );
+
+
+                fila.appendChild(
+                    imagen
+                );
+
+                fila.appendChild(
+                    info
+                );
+
+                fila.appendChild(
+                    controlWrapper
+                );
+
+
+                selectionItems.appendChild(
+                    fila
+                );
+
+            }
+        );
+
+    }
+
+
+    /* ==================================================
+       ABRIR SELECCIÓN
+    ================================================== */
+
+    function abrirSeleccion() {
+
+        renderizarSeleccion();
+
+        selectionOverlay.classList.add(
+            "active"
+        );
+
+        document.body.style.overflow =
+            "hidden";
+
+    }
+
+
+    /* ==================================================
+       CERRAR SELECCIÓN
+    ================================================== */
+
+    function cerrarSeleccion() {
+
+        selectionOverlay.classList.remove(
+            "active"
+        );
+
+        document.body.style.overflow =
+            "";
+
+    }
+
+
+    document.getElementById(
+        "openSelectionButton"
+    ).addEventListener(
+        "click",
+        abrirSeleccion
+    );
+
+
+    document.getElementById(
+        "closeSelectionButton"
+    ).addEventListener(
+        "click",
+        cerrarSeleccion
+    );
+
+
+    selectionOverlay.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target ===
+                selectionOverlay
+            ) {
+
+                cerrarSeleccion();
+
+            }
+
+        }
+    );
+
+
+    /* ==================================================
+       CONSULTAR EVENTO
     ================================================== */
 
     let datosEvento;
@@ -1275,14 +2671,19 @@ footer {
         const respuesta =
             await fetch(
                 "/api/evento?evento=" +
-                encodeURIComponent(eventoId)
+                encodeURIComponent(
+                    eventoId
+                )
             );
+
 
         datosEvento =
             await respuesta.json();
 
 
-        if (!datosEvento.ok) {
+        if (
+            !datosEvento.ok
+        ) {
 
             mostrarError(
                 datosEvento.error ||
@@ -1305,25 +2706,26 @@ footer {
 
 
     /* ==================================================
-       MOSTRAR DATOS DEL EVENTO
+       DATOS DEL EVENTO
     ================================================== */
 
-    document.getElementById(
-        "clientName"
-    ).textContent =
-        datosEvento.nombre || "";
+    clientName.textContent =
+        datosEvento.nombre ||
+        "";
+
+    eventName.textContent =
+        datosEvento.evento_nombre ||
+        "";
+
+    eventDate.textContent =
+        datosEvento.fecha ||
+        "";
 
 
-    document.getElementById(
-        "eventName"
-    ).textContent =
-        datosEvento.evento_nombre || "";
-
-
-    document.getElementById(
-        "eventDate"
-    ).textContent =
-        datosEvento.fecha || "";
+    precioFoto =
+        Number(
+            datosEvento.precio_foto
+        ) || 0;
 
 
     /* ==================================================
@@ -1337,14 +2739,19 @@ footer {
         const respuestaMedia =
             await fetch(
                 "/api/media?evento=" +
-                encodeURIComponent(eventoId)
+                encodeURIComponent(
+                    eventoId
+                )
             );
+
 
         datosMedia =
             await respuestaMedia.json();
 
 
-        if (!datosMedia.ok) {
+        if (
+            !datosMedia.ok
+        ) {
 
             mostrarError(
                 datosMedia.error ||
@@ -1371,18 +2778,21 @@ footer {
     ================================================== */
 
     if (
-        Array.isArray(datosMedia.portada) &&
+        Array.isArray(
+            datosMedia.portada
+        ) &&
         datosMedia.portada.length > 0
     ) {
 
         const portada =
             datosMedia.portada[0];
 
-        if (portada.secure_url) {
 
-            document.getElementById(
-                "hero"
-            ).style.backgroundImage =
+        if (
+            portada.secure_url
+        ) {
+
+            hero.style.backgroundImage =
                 `url("${portada.secure_url}")`;
 
         }
@@ -1391,80 +2801,166 @@ footer {
 
 
     /* ==================================================
-       FOTOGRAFÍAS POR SECCIONES
+       LISTA GLOBAL DE FOTOS
     ================================================== */
-
-    const photoSectionsContainer =
-        document.getElementById(
-            "photoSections"
-        );
-
 
     const listaFotos = [];
 
 
-    /*
-     * Orden visual definido para NOVA.
-     *
-     * Las carpetas pueden existir o no.
-     * Solo se muestran las que tengan fotos.
-     */
+    /* ==================================================
+       CREAR FOTO
+    ================================================== */
 
-    const ordenSecciones = [
-        "EXTERIORES",
-        "COTILLON",
-        "SALON",
-        "VALS"
-    ];
+    function crearFoto(
+        foto,
+        index
+    ) {
+
+        if (
+            !foto ||
+            !foto.secure_url
+        ) {
+
+            return;
+
+        }
 
 
-    const secciones =
+        const indiceGlobal =
+            listaFotos.length;
+
+
+        listaFotos.push(
+            foto
+        );
+
+
+        const photo =
+            document.createElement(
+                "div"
+            );
+
+        photo.className =
+            "photo";
+
+
+        photo.style.animationDelay =
+            `${Math.min(
+                index * 0.035,
+                0.4
+            )}s`;
+
+
+        const image =
+            document.createElement(
+                "img"
+            );
+
+        image.src =
+            foto.secure_url;
+
+        image.alt =
+            "Fotografía del evento";
+
+        image.loading =
+            "lazy";
+
+
+        photo.appendChild(
+            image
+        );
+
+
+        const indicador =
+            document.createElement(
+                "div"
+            );
+
+        indicador.className =
+            "photo-selected hidden";
+
+
+        indicador.dataset.fotoId =
+            foto.public_id ||
+            foto.filename ||
+            foto.secure_url;
+
+
+        photo.appendChild(
+            indicador
+        );
+
+
+        photo.addEventListener(
+            "click",
+            function () {
+
+                abrirLightbox(
+                    indiceGlobal
+                );
+
+            }
+        );
+
+
+        return photo;
+
+    }
+
+
+    /* ==================================================
+       FOTOGRAFÍAS POR SECCIÓN
+    ================================================== */
+
+    if (
         Array.isArray(
             datosMedia.fotos_secciones
-        )
-            ? datosMedia.fotos_secciones
-            : [];
+        ) &&
+        datosMedia.fotos_secciones.length > 0
+    ) {
+
+        const ordenPreferido = [
+            "EXTERIORES",
+            "COTILLON",
+            "SALON",
+            "VALS"
+        ];
 
 
-    /*
-     * Creamos una copia para poder ordenar
-     * sin modificar los datos originales.
-     */
+        const secciones =
+            [...datosMedia.fotos_secciones];
 
-    const seccionesOrdenadas =
-        [...secciones].sort(
+
+        secciones.sort(
             function (a, b) {
 
-                const indiceA =
-                    ordenSecciones.indexOf(
-                        (a.nombre || "")
-                            .toUpperCase()
+                const ia =
+                    ordenPreferido.indexOf(
+                        String(
+                            a.nombre
+                        ).toUpperCase()
                     );
 
-                const indiceB =
-                    ordenSecciones.indexOf(
-                        (b.nombre || "")
-                            .toUpperCase()
+                const ib =
+                    ordenPreferido.indexOf(
+                        String(
+                            b.nombre
+                        ).toUpperCase()
                     );
 
-
-                /*
-                 * Las secciones conocidas van
-                 * primero según nuestro orden.
-                 */
 
                 if (
-                    indiceA !== -1 &&
-                    indiceB !== -1
+                    ia !== -1 &&
+                    ib !== -1
                 ) {
 
-                    return indiceA - indiceB;
+                    return ia - ib;
 
                 }
 
 
                 if (
-                    indiceA !== -1
+                    ia !== -1
                 ) {
 
                     return -1;
@@ -1473,7 +2969,7 @@ footer {
 
 
                 if (
-                    indiceB !== -1
+                    ib !== -1
                 ) {
 
                     return 1;
@@ -1481,306 +2977,29 @@ footer {
                 }
 
 
-                /*
-                 * Si aparece una sección nueva,
-                 * queda alfabéticamente al final.
-                 */
-
-                return (
-                    a.nombre || ""
+                return String(
+                    a.nombre
                 ).localeCompare(
-                    b.nombre || ""
+                    String(
+                        b.nombre
+                    )
                 );
 
             }
         );
 
 
-    /*
-     * ==================================================
-     * CREAR CADA SECCIÓN
-     * ==================================================
-     */
-
-    seccionesOrdenadas.forEach(
-        function (seccion) {
-
-            if (
-                !seccion ||
-                !Array.isArray(seccion.fotos) ||
-                seccion.fotos.length === 0
+        secciones.forEach(
+            function (
+                seccion,
+                indiceSeccion
             ) {
-
-                return;
-
-            }
-
-
-            const section =
-                document.createElement(
-                    "section"
-                );
-
-
-            section.className =
-                "section";
-
-
-            const header =
-                document.createElement(
-                    "div"
-                );
-
-
-            header.className =
-                "section-header";
-
-
-            const title =
-                document.createElement(
-                    "h2"
-                );
-
-
-            title.className =
-                "section-title";
-
-
-            title.textContent =
-                seccion.nombre;
-
-
-            const line =
-                document.createElement(
-                    "div"
-                );
-
-
-            line.className =
-                "section-line";
-
-
-            header.appendChild(
-                title
-            );
-
-            header.appendChild(
-                line
-            );
-
-
-            const grid =
-                document.createElement(
-                    "div"
-                );
-
-
-            grid.className =
-                "photo-grid";
-
-
-            seccion.fotos.forEach(
-                function (foto) {
-
-                    if (
-                        !foto ||
-                        !foto.secure_url
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    /*
-                     * Guardamos todas las fotos
-                     * en una única lista.
-                     *
-                     * Esto mantiene el lightbox
-                     * funcionando entre todas
-                     * las secciones.
-                     */
-
-                    listaFotos.push(
-                        foto.secure_url
-                    );
-
-
-                    const photo =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    photo.className =
-                        "photo";
-
-
-                    photo.style.animationDelay =
-                        `${Math.min(
-                            grid.children.length * 0.04,
-                            0.4
-                        )}s`;
-
-
-                    const image =
-                        document.createElement(
-                            "img"
-                        );
-
-
-                    image.src =
-                        foto.secure_url;
-
-                    image.alt =
-                        "Fotografía del evento";
-
-                    image.loading =
-                        "lazy";
-
-
-                    photo.appendChild(
-                        image
-                    );
-
-
-                    const indiceFoto =
-                        listaFotos.length - 1;
-
-
-                    photo.addEventListener(
-                        "click",
-                        function () {
-
-                            abrirLightbox(
-                                indiceFoto
-                            );
-
-                        }
-                    );
-
-
-                    grid.appendChild(
-                        photo
-                    );
-
-                }
-            );
-
-
-            if (
-                grid.children.length === 0
-            ) {
-
-                return;
-
-            }
-
-
-            section.appendChild(
-                header
-            );
-
-
-            section.appendChild(
-                grid
-            );
-
-
-            photoSectionsContainer.appendChild(
-                section
-            );
-
-        }
-    );
-
-
-    /*
-     * ==================================================
-     * COMPATIBILIDAD
-     *
-     * Si por algún motivo un evento todavía
-     * utiliza fotos directamente dentro de
-     * FOTOS, mantenemos la posibilidad de
-     * mostrarlas.
-     * ==================================================
-     */
-
-    if (
-        seccionesOrdenadas.length === 0 &&
-        Array.isArray(datosMedia.fotos) &&
-        datosMedia.fotos.length > 0
-    ) {
-
-        const section =
-            document.createElement(
-                "section"
-            );
-
-
-        section.className =
-            "section";
-
-
-        const header =
-            document.createElement(
-                "div"
-            );
-
-
-        header.className =
-            "section-header";
-
-
-        const title =
-            document.createElement(
-                "h2"
-            );
-
-
-        title.className =
-            "section-title";
-
-
-        title.textContent =
-            "FOTOGRAFÍAS";
-
-
-        const line =
-            document.createElement(
-                "div"
-            );
-
-
-        line.className =
-            "section-line";
-
-
-        header.appendChild(
-            title
-        );
-
-        header.appendChild(
-            line
-        );
-
-
-        const grid =
-            document.createElement(
-                "div"
-            );
-
-
-        grid.className =
-            "photo-grid";
-
-
-        datosMedia.fotos.forEach(
-            function (foto) {
 
                 if (
-                    !foto ||
-                    !foto.secure_url
+                    !Array.isArray(
+                        seccion.fotos
+                    ) ||
+                    seccion.fotos.length === 0
                 ) {
 
                     return;
@@ -1788,289 +3007,56 @@ footer {
                 }
 
 
-                listaFotos.push(
-                    foto.secure_url
-                );
-
-
-                const photo =
+                const subsection =
                     document.createElement(
                         "div"
                     );
 
-
-                photo.className =
-                    "photo";
-
-
-                const image =
-                    document.createElement(
-                        "img"
-                    );
+                subsection.className =
+                    "photo-subsection";
 
 
-                image.src =
-                    foto.secure_url;
-
-                image.alt =
-                    "Fotografía del evento";
-
-                image.loading =
-                    "lazy";
-
-
-                photo.appendChild(
-                    image
-                );
-
-
-                const indiceFoto =
-                    listaFotos.length - 1;
-
-
-                photo.addEventListener(
-                    "click",
-                    function () {
-
-                        abrirLightbox(
-                            indiceFoto
-                        );
-
-                    }
-                );
-
-
-                grid.appendChild(
-                    photo
-                );
-
-            }
-        );
-
-
-        section.appendChild(
-            header
-        );
-
-
-        section.appendChild(
-            grid
-        );
-
-
-        photoSectionsContainer.appendChild(
-            section
-        );
-
-    }
-
-
-    /*
-     * Si no hay absolutamente ninguna foto.
-     */
-
-    if (
-        listaFotos.length === 0
-    ) {
-
-        photoSectionsContainer.innerHTML =
-            `
-            <section class="section">
-
-                <div class="section-header">
-
-                    <h2 class="section-title">
-                        FOTOGRAFÍAS
-                    </h2>
-
-                    <div class="section-line"></div>
-
-                </div>
-
-                <div class="photo-grid">
-
-                    <div class="empty">
-                        Todavía no hay fotografías disponibles.
-                    </div>
-
-                </div>
-
-            </section>
-            `;
-
-    }
-
-
-    /* ==================================================
-       VIDEOS
-
-       Cloudinary:
-       datosMedia.videos
-
-       R2 privado:
-       datosMedia.r2_videos
-    ================================================== */
-
-    const videosContainer =
-        document.getElementById(
-            "videos"
-        );
-
-
-    const videosCloudinary =
-        Array.isArray(
-            datosMedia.videos
-        )
-            ? datosMedia.videos
-            : [];
-
-
-    const videosR2 =
-        Array.isArray(
-            datosMedia.r2_videos
-        )
-            ? datosMedia.r2_videos
-            : [];
-
-
-    const listaVideos = [
-        ...videosCloudinary,
-        ...videosR2
-    ];
-
-
-    if (
-        listaVideos.length > 0
-    ) {
-
-        listaVideos.forEach(
-            function (video) {
-
-                if (!video.secure_url) {
-                    return;
-                }
-
-
-                const card =
+                const subtitle =
                     document.createElement(
                         "div"
                     );
 
+                subtitle.className =
+                    "photo-subtitle";
 
-                card.className =
-                    "video";
-
-
-                const player =
-                    document.createElement(
-                        "video"
-                    );
+                subtitle.textContent =
+                    seccion.nombre;
 
 
-                player.src =
-                    video.secure_url;
-
-                player.preload =
-                    "metadata";
-
-                player.muted =
-                    true;
-
-                player.playsInline =
-                    true;
-
-
-                card.appendChild(
-                    player
-                );
-
-
-                /* ==================================================
-                   NOMBRE DEL VIDEO
-                ================================================== */
-
-                const nombreVideo =
+                const grid =
                     document.createElement(
                         "div"
                     );
 
-
-                nombreVideo.className =
-                    "video-name";
-
-
-                nombreVideo.textContent =
-                    (video.public_id || "")
-                        .split("/")
-                        .pop()
-                        .replace(/\.[^/.]+$/, "")
-                        .replace(/_/g, " ");
+                grid.className =
+                    "photo-grid";
 
 
-                card.appendChild(
-                    nombreVideo
-                );
+                seccion.fotos.forEach(
+                    function (
+                        foto,
+                        index
+                    ) {
 
+                        const elemento =
+                            crearFoto(
+                                foto,
+                                index
+                            );
 
-                const overlay =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                overlay.className =
-                    "video-overlay";
-
-
-                const play =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                play.className =
-                    "play";
-
-                play.textContent =
-                    "▶";
-
-
-                overlay.appendChild(
-                    play
-                );
-
-
-                card.appendChild(
-                    overlay
-                );
-
-
-                card.addEventListener(
-                    "click",
-                    function () {
 
                         if (
-                            player.paused
+                            elemento
                         ) {
 
-                            player.controls =
-                                true;
-
-                            player.muted =
-                                false;
-
-                            player.play()
-                                .catch(
-                                    function () {
-                                    }
-                                );
-
-                            overlay.style.display =
-                                "none";
-
-                        } else {
-
-                            player.pause();
+                            grid.appendChild(
+                                elemento
+                            );
 
                         }
 
@@ -2078,28 +3064,274 @@ footer {
                 );
 
 
-                player.addEventListener(
-                    "ended",
-                    function () {
+                subsection.appendChild(
+                    subtitle
+                );
 
-                        overlay.style.display =
-                            "flex";
-
-                        player.controls =
-                            false;
-
-                    }
+                subsection.appendChild(
+                    grid
                 );
 
 
-                videosContainer.appendChild(
-                    card
+                photoSections.appendChild(
+                    subsection
                 );
 
             }
         );
 
+
+    } else if (
+        Array.isArray(
+            datosMedia.fotos
+        ) &&
+        datosMedia.fotos.length > 0
+    ) {
+
+        const grid =
+            document.createElement(
+                "div"
+            );
+
+        grid.className =
+            "photo-grid";
+
+
+        datosMedia.fotos.forEach(
+            function (
+                foto,
+                index
+            ) {
+
+                const elemento =
+                    crearFoto(
+                        foto,
+                        index
+                    );
+
+
+                if (
+                    elemento
+                ) {
+
+                    grid.appendChild(
+                        elemento
+                    );
+
+                }
+
+            }
+        );
+
+
+        photoSections.appendChild(
+            grid
+        );
+
+
     } else {
+
+        photoSections.innerHTML =
+            `
+            <div class="empty">
+                Todavía no hay fotografías disponibles.
+            </div>
+            `;
+
+    }
+
+
+    /* ==================================================
+       VIDEOS CLOUDINARY
+    ================================================== */
+
+    function crearVideo(
+        video
+    ) {
+
+        if (
+            !video
+        ) {
+
+            return;
+
+        }
+
+
+        const videoUrl =
+            video.secure_url ||
+            video.url ||
+            "";
+
+
+        if (
+            !videoUrl
+        ) {
+
+            return;
+
+        }
+
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+        card.className =
+            "video";
+
+
+        const player =
+            document.createElement(
+                "video"
+            );
+
+        player.src =
+            videoUrl;
+
+        player.preload =
+            "metadata";
+
+        player.muted =
+            true;
+
+        player.playsInline =
+            true;
+
+
+        card.appendChild(
+            player
+        );
+
+
+        const overlay =
+            document.createElement(
+                "div"
+            );
+
+        overlay.className =
+            "video-overlay";
+
+
+        const play =
+            document.createElement(
+                "div"
+            );
+
+        play.className =
+            "play";
+
+        play.textContent =
+            "▶";
+
+
+        overlay.appendChild(
+            play
+        );
+
+        card.appendChild(
+            overlay
+        );
+
+
+        card.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    player.paused
+                ) {
+
+                    player.controls =
+                        true;
+
+                    player.muted =
+                        false;
+
+                    player.play();
+
+                    overlay.style.display =
+                        "none";
+
+                } else {
+
+                    player.pause();
+
+                }
+
+            }
+        );
+
+
+        player.addEventListener(
+            "ended",
+            function () {
+
+                overlay.style.display =
+                    "flex";
+
+                player.controls =
+                    false;
+
+            }
+        );
+
+
+        videosContainer.appendChild(
+            card
+        );
+
+    }
+
+
+    if (
+        Array.isArray(
+            datosMedia.videos
+        )
+    ) {
+
+        datosMedia.videos.forEach(
+            crearVideo
+        );
+
+    }
+
+
+    /* ==================================================
+       VIDEOS R2
+    ================================================== */
+
+    if (
+        Array.isArray(
+            datosMedia.r2_videos
+        )
+    ) {
+
+        datosMedia.r2_videos.forEach(
+            function (video) {
+
+                const objeto =
+                    typeof video === "string"
+                        ? {
+                            url: video
+                        }
+                        : video;
+
+
+                crearVideo(
+                    objeto
+                );
+
+            }
+        );
+
+    }
+
+
+    if (
+        videosContainer.children.length === 0
+    ) {
 
         videosContainer.innerHTML =
             `
@@ -2145,11 +3377,18 @@ footer {
             "photoCounter"
         );
 
+    const lightboxPrintButton =
+        document.getElementById(
+            "lightboxPrintButton"
+        );
+
 
     let fotoActual = 0;
 
 
-    function abrirLightbox(indice) {
+    function abrirLightbox(
+        indice
+    ) {
 
         if (
             listaFotos.length === 0
@@ -2189,12 +3428,41 @@ footer {
         }
 
 
+        const foto =
+            listaFotos[
+                fotoActual
+            ];
+
+
         lightboxImage.src =
-            listaFotos[fotoActual];
+            foto.secure_url;
 
 
         photoCounter.textContent =
             `${fotoActual + 1} / ${listaFotos.length}`;
+
+
+        const fotoId =
+            foto.public_id ||
+            foto.filename ||
+            foto.secure_url;
+
+
+        const seleccionada =
+            seleccion.find(
+                function (item) {
+
+                    return item.foto_id ===
+                        fotoId;
+
+                }
+            );
+
+
+        lightboxPrintButton.textContent =
+            seleccionada
+                ? `IMPRIMIR · ${seleccionada.cantidad}`
+                : "IMPRIMIR ESTA FOTO";
 
     }
 
@@ -2211,6 +3479,7 @@ footer {
 
 
         fotoActual--;
+
 
         if (
             fotoActual < 0
@@ -2239,6 +3508,7 @@ footer {
 
 
         fotoActual++;
+
 
         if (
             fotoActual >= listaFotos.length
@@ -2299,9 +3569,59 @@ footer {
     );
 
 
+    lightbox.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target ===
+                lightbox
+            ) {
+
+                cerrarLightbox();
+
+            }
+
+        }
+    );
+
+
     /* ==================================================
-       GESTOS DE DESLIZAMIENTO
-       CELULAR / PANTALLAS TÁCTILES
+       IMPRIMIR FOTO ACTUAL
+    ================================================== */
+
+    lightboxPrintButton.addEventListener(
+        "click",
+        function (event) {
+
+            event.stopPropagation();
+
+
+            const foto =
+                listaFotos[
+                    fotoActual
+                ];
+
+
+            if (
+                !foto
+            ) {
+
+                return;
+
+            }
+
+
+            agregarFoto(
+                foto
+            );
+
+        }
+    );
+
+
+    /* ==================================================
+       SWIPE
     ================================================== */
 
     let touchStartX = 0;
@@ -2357,20 +3677,21 @@ footer {
 
 
             const diferenciaX =
-                touchEndX - touchStartX;
+                touchEndX -
+                touchStartX;
 
             const diferenciaY =
-                touchEndY - touchStartY;
+                touchEndY -
+                touchStartY;
 
-
-            /*
-             * Si el movimiento es principalmente
-             * vertical, no hacemos nada.
-             */
 
             if (
-                Math.abs(diferenciaX) <=
-                Math.abs(diferenciaY)
+                Math.abs(
+                    diferenciaX
+                ) <=
+                Math.abs(
+                    diferenciaY
+                )
             ) {
 
                 return;
@@ -2378,12 +3699,10 @@ footer {
             }
 
 
-            /*
-             * Ignorar movimientos demasiado cortos.
-             */
-
             if (
-                Math.abs(diferenciaX) <
+                Math.abs(
+                    diferenciaX
+                ) <
                 distanciaMinimaSwipe
             ) {
 
@@ -2391,11 +3710,6 @@ footer {
 
             }
 
-
-            /*
-             * IZQUIERDA = SIGUIENTE
-             * DERECHA = ANTERIOR
-             */
 
             if (
                 diferenciaX < 0
@@ -2416,22 +3730,9 @@ footer {
     );
 
 
-    lightbox.addEventListener(
-        "click",
-        function (event) {
-
-            if (
-                event.target ===
-                lightbox
-            ) {
-
-                cerrarLightbox();
-
-            }
-
-        }
-    );
-
+    /* ==================================================
+       TECLADO
+    ================================================== */
 
     document.addEventListener(
         "keydown",
@@ -2499,11 +3800,49 @@ footer {
                 "nova_evento"
             );
 
+            sessionStorage.removeItem(
+                storageKey
+            );
+
+
             window.location.href =
                 "acceso.html";
 
         }
     );
+
+
+    /* ==================================================
+       CONTINUAR
+       POR AHORA SOLO AVISO
+    ================================================== */
+
+    continueButton.addEventListener(
+        "click",
+        function () {
+
+            if (
+                seleccion.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            alert(
+                "La selección está lista. El siguiente paso será conectar el pedido y el pago."
+            );
+
+        }
+    );
+
+
+    /* ==================================================
+       INICIALIZAR
+    ================================================== */
+
+    actualizarIndicadores();
 
 
 })();
@@ -2513,7 +3852,9 @@ footer {
    ERROR
 ================================================== */
 
-function mostrarError(mensaje) {
+function mostrarError(
+    mensaje
+) {
 
     document.body.innerHTML = `
 
