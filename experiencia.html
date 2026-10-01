@@ -1176,6 +1176,11 @@ footer {
     font-weight: 500;
 }
 
+
+/* ==================================================
+   BOTÓN HACER PEDIDO
+================================================== */
+
 .continue-button {
     width: 100%;
 
@@ -1209,6 +1214,52 @@ footer {
     opacity: 0.25;
 
     cursor: default;
+}
+
+
+/* ==================================================
+   BOTÓN SEGUIR VIENDO FOTOS
+================================================== */
+
+.back-gallery-button {
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding: 11px;
+
+    border:
+        1px solid #333333;
+
+    border-radius: 25px;
+
+    background: transparent;
+
+    color:
+        rgba(255,255,255,0.72);
+
+    font-size: 9px;
+
+    font-weight: 500;
+
+    letter-spacing: 1.2px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border 0.2s ease;
+}
+
+.back-gallery-button:hover {
+    background:
+        rgba(255,255,255,0.08);
+
+    color: #ffffff;
+
+    border-color:
+        #555555;
 }
 
 
@@ -1875,7 +1926,16 @@ footer {
                 id="continueButton"
                 disabled
             >
-                CONTINUAR
+                HACER PEDIDO
+            </button>
+
+
+            <button
+                type="button"
+                class="back-gallery-button"
+                id="backGalleryButton"
+            >
+                SEGUIR VIENDO FOTOS
             </button>
 
         </div>
@@ -2086,6 +2146,11 @@ footer {
     const continueButton =
         document.getElementById(
             "continueButton"
+        );
+
+    const backGalleryButton =
+        document.getElementById(
+            "backGalleryButton"
         );
 
 
@@ -2638,6 +2703,12 @@ footer {
     document.getElementById(
         "closeSelectionButton"
     ).addEventListener(
+        "click",
+        cerrarSeleccion
+    );
+
+
+    backGalleryButton.addEventListener(
         "click",
         cerrarSeleccion
     );
@@ -3809,11 +3880,12 @@ footer {
                 "acceso.html";
 
         }
+
     );
 
 
     /* ==================================================
-       CONTINUAR
+       HACER PEDIDO
        POR AHORA SOLO AVISO
     ================================================== */
 
