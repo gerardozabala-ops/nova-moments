@@ -453,10 +453,6 @@
 
     <main class="admin-container">
 
-        <!-- =================================================
-             LOGO
-        ================================================== -->
-
         <div class="logo">
 
             <div class="logo-nova">
@@ -469,10 +465,6 @@
 
         </div>
 
-
-        <!-- =================================================
-             LOGIN
-        ================================================== -->
 
         <section id="loginSection">
 
@@ -546,10 +538,6 @@
         </section>
 
 
-        <!-- =================================================
-             PANEL PRODUCTOR
-        ================================================== -->
-
         <section id="adminPanel">
 
             <div class="panel-header">
@@ -599,12 +587,6 @@
 
 
     <script>
-
-        /* =========================================================
-           NOVA MOMENTS — PRODUCTOR
-           LOGIN + PEDIDOS DEL PRODUCTOR
-        ========================================================= */
-
 
         const formulario =
             document.getElementById(
@@ -659,10 +641,6 @@
         let adminProductorId = "";
 
 
-        /* =========================================================
-           FORMATEAR DINERO
-        ========================================================= */
-
         function formatearDinero(valor) {
 
             return new Intl.NumberFormat(
@@ -678,10 +656,6 @@
 
         }
 
-
-        /* =========================================================
-           FORMATEAR FECHA
-        ========================================================= */
 
         function formatearFecha(valor) {
 
@@ -708,10 +682,6 @@
 
         }
 
-
-        /* =========================================================
-           MOSTRAR PEDIDOS
-        ========================================================= */
 
         function mostrarPedidos(pedidos) {
 
@@ -936,10 +906,6 @@
         }
 
 
-        /* =========================================================
-           CARGAR PEDIDOS DEL PRODUCTOR
-        ========================================================= */
-
         async function cargarPedidos() {
 
             panelMessage.style.display =
@@ -1017,10 +983,6 @@
         }
 
 
-        /* =========================================================
-           PUSH — PREPARAR SUSCRIPCIÓN
-        ========================================================= */
-
         let registroServiceWorker = null;
 
 
@@ -1054,10 +1016,6 @@
 
             try {
 
-                /*
-                 * REGISTRAR SERVICE WORKER
-                 */
-
                 registroServiceWorker =
                     await navigator.serviceWorker.register(
                         "/sw-productor.js"
@@ -1070,16 +1028,8 @@
                 );
 
 
-                /*
-                 * ESPERAR A QUE ESTÉ ACTIVO
-                 */
-
                 await navigator.serviceWorker.ready;
 
-
-                /*
-                 * PEDIR PERMISO
-                 */
 
                 let permiso =
                     Notification.permission;
@@ -1104,10 +1054,6 @@
                 }
 
 
-                /*
-                 * OBTENER CLAVE VAPID PÚBLICA
-                 */
-
                 const respuestaConfig =
                     await fetch(
                         "/api/push-config"
@@ -1131,19 +1077,11 @@
                 }
 
 
-                /*
-                 * BUSCAR SUSCRIPCIÓN EXISTENTE
-                 */
-
                 let subscription =
                     await registroServiceWorker
                         .pushManager
                         .getSubscription();
 
-
-                /*
-                 * CREAR SUSCRIPCIÓN SI NO EXISTE
-                 */
 
                 if (!subscription) {
 
@@ -1164,10 +1102,6 @@
 
                 }
 
-
-                /*
-                 * GUARDAR SUSCRIPCIÓN EN D1
-                 */
 
                 const respuesta =
                     await fetch(
@@ -1232,10 +1166,6 @@
         }
 
 
-        /* =========================================================
-           CONVERTIR CLAVE VAPID
-        ========================================================= */
-
         function convertirClaveBase64(
             base64String
         ) {
@@ -1282,10 +1212,6 @@
 
         }
 
-
-        /* =========================================================
-           LOGIN
-        ========================================================= */
 
         formulario.addEventListener(
             "submit",
@@ -1363,13 +1289,12 @@
                     }
 
 
-                    /* LOGIN CORRECTO */
-
                     adminUsuario =
                         usuario;
 
                     adminPassword =
                         password;
+
 
                     adminProductorId =
                         String(
@@ -1393,19 +1318,10 @@
                         "block";
 
 
-                    /* CARGAR PEDIDOS */
-
                     mostrarPedidos(
                         datos.pedidos
                     );
 
-
-                    /*
-                     * PREPARAR PUSH
-                     *
-                     * La suscripción queda asociada
-                     * al productor que acaba de iniciar sesión.
-                     */
 
                     prepararPush();
 
@@ -1431,10 +1347,6 @@
         );
 
 
-        /* =========================================================
-           ACTUALIZAR PEDIDOS
-        ========================================================= */
-
         reloadButton.addEventListener(
             "click",
             async function () {
@@ -1458,10 +1370,6 @@
             }
         );
 
-
-        /* =========================================================
-           SERVICE WORKER — REGISTRO INICIAL
-        ========================================================= */
 
         if ("serviceWorker" in navigator) {
 
