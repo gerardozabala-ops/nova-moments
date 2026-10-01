@@ -90,6 +90,22 @@ export async function onRequestGet(context) {
                     .endsWith("/VIDEOS")
             );
 
+        /*
+         * VIDEOS PRIVADOS DE R2
+         *
+         * Por ahora los agregamos en una propiedad
+         * separada para no modificar todavía
+         * el funcionamiento actual de RECUERDOS.
+         */
+
+        const videosR2 =
+            context.env.VIDEOS
+                ? await obtenerVideosR2(
+                    context.env.VIDEOS,
+                    evento
+                )
+                : [];
+
         return new Response(
             JSON.stringify({
 
@@ -107,7 +123,10 @@ export async function onRequestGet(context) {
                     convertirRecursos(fotos),
 
                 videos:
-                    convertirRecursos(listaVideos)
+                    convertirRecursos(listaVideos),
+
+                r2_videos:
+                    videosR2
 
             }),
             {
@@ -178,6 +197,60 @@ async function obtenerRecursos(
         JSON.parse(texto);
 
     return datos.resources || [];
+}
+
+
+async function obtenerVideosR2(
+    bucket,
+    evento
+) {
+
+    const prefijo =
+        `${evento}/`;
+
+    const resultado =
+        await bucket.list({
+            prefix: prefijo
+        });
+
+    return resultado.objects
+        .filter(objeto =>
+            /\.(mp4|webm|mov|m4v)$/i
+                .test(objeto.key)
+        )
+        .map(objeto => {
+
+            const partes =
+                objeto.key.split(".");
+
+            const formato =
+                partes.length > 1
+                    ? partes.pop().toLowerCase()
+                    : "";
+
+            return {
+
+                public_id:
+                    objeto.key,
+
+                asset_folder:
+                    `${evento}/VIDEOS`,
+
+                resource_type:
+                    "video",
+
+                format:
+                    formato,
+
+                secure_url:
+                    `/api/video?key=${encodeURIComponent(
+                        objeto.key
+                    )}`
+
+            };
+
+        });
+
 }
 
 
