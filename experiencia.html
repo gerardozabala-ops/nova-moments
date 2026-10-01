@@ -1135,25 +1135,8 @@ footer {
              FOTOGRAFÍAS
         ================================================== -->
 
-        <section class="section">
-
-            <div class="section-header">
-
-                <h2 class="section-title">
-                    FOTOGRAFÍAS
-                </h2>
-
-                <div class="section-line"></div>
-
-            </div>
-
-            <div
-                class="photo-grid"
-                id="photos"
-            >
-            </div>
-
-        </section>
+        <div id="photoSections">
+        </div>
 
 
         <!-- ==================================================
@@ -1401,28 +1384,400 @@ footer {
 
 
     /* ==================================================
-       FOTOGRAFÍAS
+       FOTOGRAFÍAS POR SECCIONES
     ================================================== */
 
-    const photosContainer =
+    const photoSectionsContainer =
         document.getElementById(
-            "photos"
+            "photoSections"
         );
 
 
     const listaFotos = [];
 
 
+    /*
+     * Orden visual definido para NOVA.
+     *
+     * Las carpetas pueden existir o no.
+     * Solo se muestran las que tengan fotos.
+     */
+
+    const ordenSecciones = [
+        "EXTERIORES",
+        "COTILLON",
+        "SALON",
+        "VALS"
+    ];
+
+
+    const secciones =
+        Array.isArray(
+            datosMedia.fotos_secciones
+        )
+            ? datosMedia.fotos_secciones
+            : [];
+
+
+    /*
+     * Creamos una copia para poder ordenar
+     * sin modificar los datos originales.
+     */
+
+    const seccionesOrdenadas =
+        [...secciones].sort(
+            function (a, b) {
+
+                const indiceA =
+                    ordenSecciones.indexOf(
+                        (a.nombre || "")
+                            .toUpperCase()
+                    );
+
+                const indiceB =
+                    ordenSecciones.indexOf(
+                        (b.nombre || "")
+                            .toUpperCase()
+                    );
+
+
+                /*
+                 * Las secciones conocidas van
+                 * primero según nuestro orden.
+                 */
+
+                if (
+                    indiceA !== -1 &&
+                    indiceB !== -1
+                ) {
+
+                    return indiceA - indiceB;
+
+                }
+
+
+                if (
+                    indiceA !== -1
+                ) {
+
+                    return -1;
+
+                }
+
+
+                if (
+                    indiceB !== -1
+                ) {
+
+                    return 1;
+
+                }
+
+
+                /*
+                 * Si aparece una sección nueva,
+                 * queda alfabéticamente al final.
+                 */
+
+                return (
+                    a.nombre || ""
+                ).localeCompare(
+                    b.nombre || ""
+                );
+
+            }
+        );
+
+
+    /*
+     * ==================================================
+     * CREAR CADA SECCIÓN
+     * ==================================================
+     */
+
+    seccionesOrdenadas.forEach(
+        function (seccion) {
+
+            if (
+                !seccion ||
+                !Array.isArray(seccion.fotos) ||
+                seccion.fotos.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            const section =
+                document.createElement(
+                    "section"
+                );
+
+
+            section.className =
+                "section";
+
+
+            const header =
+                document.createElement(
+                    "div"
+                );
+
+
+            header.className =
+                "section-header";
+
+
+            const title =
+                document.createElement(
+                    "h2"
+                );
+
+
+            title.className =
+                "section-title";
+
+
+            title.textContent =
+                seccion.nombre;
+
+
+            const line =
+                document.createElement(
+                    "div"
+                );
+
+
+            line.className =
+                "section-line";
+
+
+            header.appendChild(
+                title
+            );
+
+            header.appendChild(
+                line
+            );
+
+
+            const grid =
+                document.createElement(
+                    "div"
+                );
+
+
+            grid.className =
+                "photo-grid";
+
+
+            seccion.fotos.forEach(
+                function (foto) {
+
+                    if (
+                        !foto ||
+                        !foto.secure_url
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    /*
+                     * Guardamos todas las fotos
+                     * en una única lista.
+                     *
+                     * Esto mantiene el lightbox
+                     * funcionando entre todas
+                     * las secciones.
+                     */
+
+                    listaFotos.push(
+                        foto.secure_url
+                    );
+
+
+                    const photo =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    photo.className =
+                        "photo";
+
+
+                    photo.style.animationDelay =
+                        `${Math.min(
+                            grid.children.length * 0.04,
+                            0.4
+                        )}s`;
+
+
+                    const image =
+                        document.createElement(
+                            "img"
+                        );
+
+
+                    image.src =
+                        foto.secure_url;
+
+                    image.alt =
+                        "Fotografía del evento";
+
+                    image.loading =
+                        "lazy";
+
+
+                    photo.appendChild(
+                        image
+                    );
+
+
+                    const indiceFoto =
+                        listaFotos.length - 1;
+
+
+                    photo.addEventListener(
+                        "click",
+                        function () {
+
+                            abrirLightbox(
+                                indiceFoto
+                            );
+
+                        }
+                    );
+
+
+                    grid.appendChild(
+                        photo
+                    );
+
+                }
+            );
+
+
+            if (
+                grid.children.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            section.appendChild(
+                header
+            );
+
+
+            section.appendChild(
+                grid
+            );
+
+
+            photoSectionsContainer.appendChild(
+                section
+            );
+
+        }
+    );
+
+
+    /*
+     * ==================================================
+     * COMPATIBILIDAD
+     *
+     * Si por algún motivo un evento todavía
+     * utiliza fotos directamente dentro de
+     * FOTOS, mantenemos la posibilidad de
+     * mostrarlas.
+     * ==================================================
+     */
+
     if (
+        seccionesOrdenadas.length === 0 &&
         Array.isArray(datosMedia.fotos) &&
         datosMedia.fotos.length > 0
     ) {
 
-        datosMedia.fotos.forEach(
-            function (foto, index) {
+        const section =
+            document.createElement(
+                "section"
+            );
 
-                if (!foto.secure_url) {
+
+        section.className =
+            "section";
+
+
+        const header =
+            document.createElement(
+                "div"
+            );
+
+
+        header.className =
+            "section-header";
+
+
+        const title =
+            document.createElement(
+                "h2"
+            );
+
+
+        title.className =
+            "section-title";
+
+
+        title.textContent =
+            "FOTOGRAFÍAS";
+
+
+        const line =
+            document.createElement(
+                "div"
+            );
+
+
+        line.className =
+            "section-line";
+
+
+        header.appendChild(
+            title
+        );
+
+        header.appendChild(
+            line
+        );
+
+
+        const grid =
+            document.createElement(
+                "div"
+            );
+
+
+        grid.className =
+            "photo-grid";
+
+
+        datosMedia.fotos.forEach(
+            function (foto) {
+
+                if (
+                    !foto ||
+                    !foto.secure_url
+                ) {
+
                     return;
+
                 }
 
 
@@ -1439,10 +1794,6 @@ footer {
 
                 photo.className =
                     "photo";
-
-
-                photo.style.animationDelay =
-                    `${Math.min(index * 0.04, 0.4)}s`;
 
 
                 const image =
@@ -1482,20 +1833,62 @@ footer {
                 );
 
 
-                photosContainer.appendChild(
+                grid.appendChild(
                     photo
                 );
 
             }
         );
 
-    } else {
 
-        photosContainer.innerHTML =
+        section.appendChild(
+            header
+        );
+
+
+        section.appendChild(
+            grid
+        );
+
+
+        photoSectionsContainer.appendChild(
+            section
+        );
+
+    }
+
+
+    /*
+     * Si no hay absolutamente ninguna foto.
+     */
+
+    if (
+        listaFotos.length === 0
+    ) {
+
+        photoSectionsContainer.innerHTML =
             `
-            <div class="empty">
-                Todavía no hay fotografías disponibles.
-            </div>
+            <section class="section">
+
+                <div class="section-header">
+
+                    <h2 class="section-title">
+                        FOTOGRAFÍAS
+                    </h2>
+
+                    <div class="section-line"></div>
+
+                </div>
+
+                <div class="photo-grid">
+
+                    <div class="empty">
+                        Todavía no hay fotografías disponibles.
+                    </div>
+
+                </div>
+
+            </section>
             `;
 
     }
@@ -1503,7 +1896,7 @@ footer {
 
     /* ==================================================
        VIDEOS
-       
+
        Cloudinary:
        datosMedia.videos
 
