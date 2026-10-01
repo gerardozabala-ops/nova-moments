@@ -4725,38 +4725,15 @@ footer {
                 }
 
 
-                orderSuccessId.textContent =
-                    "PEDIDO " +
-                    datos.pedido_id;
+                /* ==================================================
+                   REDIRIGIR AL PAGO DEL PEDIDO
+                ================================================== */
 
-
-                orderSuccessTotal.textContent =
-                    "Total: " +
-                    formatearDinero(
-                        datos.total
+                window.location.href =
+                    "pago-recuerdos.html?pedido=" +
+                    encodeURIComponent(
+                        datos.pedido_id
                     );
-
-
-                orderFormContent.style.display =
-                    "none";
-
-
-                orderSuccess.classList.add(
-                    "active"
-                );
-
-
-                sessionStorage.removeItem(
-                    storageKey
-                );
-
-
-                seleccion = [];
-
-
-                actualizarIndicadores();
-
-                renderizarSeleccion();
 
 
             } catch (error) {
