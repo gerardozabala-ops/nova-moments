@@ -81,7 +81,7 @@ export async function onRequestGet(context) {
         const fotos =
             recursosImagen.filter(recurso =>
                 (recurso.asset_folder || "")
-                    .endsWith("/FOTOS")
+                    .startsWith(`${prefijo}FOTOS`)
             );
 
         const listaVideos =
@@ -91,11 +91,33 @@ export async function onRequestGet(context) {
             );
 
         /*
-         * VIDEOS PRIVADOS DE R2
+         * ==================================================
+         * FOTOS POR SECCIÓN
+         * ==================================================
          *
-         * Por ahora los agregamos en una propiedad
-         * separada para no modificar todavía
-         * el funcionamiento actual de RECUERDOS.
+         * Detecta automáticamente las carpetas que están
+         * dentro de FOTOS.
+         *
+         * Ejemplo:
+         *
+         * FOTOS/EXTERIORES
+         * FOTOS/SALON
+         * FOTOS/VALS
+         * FOTOS/COTILLON
+         *
+         */
+
+        const fotosSecciones =
+            agruparFotosPorSeccion(
+                fotos,
+                prefijo
+            );
+
+
+        /*
+         * ==================================================
+         * VIDEOS PRIVADOS DE R2
+         * ==================================================
          */
 
         const videosR2 =
@@ -105,6 +127,7 @@ export async function onRequestGet(context) {
                     evento
                 )
                 : [];
+
 
         return new Response(
             JSON.stringify({
@@ -119,8 +142,21 @@ export async function onRequestGet(context) {
                 logo:
                     convertirRecursos(logo),
 
+                /*
+                 * Se mantiene la propiedad original
+                 * para no romper la experiencia actual.
+                 */
+
                 fotos:
                     convertirRecursos(fotos),
+
+                /*
+                 * Nueva propiedad:
+                 * fotos agrupadas por sección.
+                 */
+
+                fotos_secciones:
+                    fotosSecciones,
 
                 videos:
                     convertirRecursos(listaVideos),
@@ -151,6 +187,7 @@ export async function onRequestGet(context) {
             }),
             {
                 status: 500,
+
                 headers: {
                     "Content-Type":
                         "application/json"
@@ -197,6 +234,92 @@ async function obtenerRecursos(
         JSON.parse(texto);
 
     return datos.resources || [];
+}
+
+
+/*
+ * ==================================================
+ * AGRUPAR FOTOS POR SECCIÓN
+ * ==================================================
+ */
+
+function agruparFotosPorSeccion(
+    fotos,
+    prefijo
+) {
+
+    const base =
+        `${prefijo}FOTOS/`;
+
+    const grupos = {};
+
+    fotos.forEach(
+        foto => {
+
+            const carpeta =
+                foto.asset_folder || "";
+
+            /*
+             * Eliminamos:
+             *
+             * NOVA_MOMENTS/EVT-XXXX/FOTOS/
+             *
+             */
+
+            if (!carpeta.startsWith(base)) {
+                return;
+            }
+
+            const resto =
+                carpeta.substring(
+                    base.length
+                );
+
+            /*
+             * Si la foto está directamente dentro
+             * de FOTOS, la dejamos en GENERAL.
+             */
+
+            const partes =
+                resto.split("/");
+
+            const seccion =
+                partes[0] || "GENERAL";
+
+            if (!grupos[seccion]) {
+
+                grupos[seccion] = [];
+
+            }
+
+            grupos[seccion].push(
+                foto
+            );
+
+        }
+    );
+
+
+    /*
+     * Convertimos el objeto en un array
+     * más cómodo para experiencia.html.
+     */
+
+    return Object.keys(grupos)
+        .sort()
+        .map(
+            nombre => ({
+
+                nombre:
+                    nombre,
+
+                fotos:
+                    convertirRecursos(
+                        grupos[nombre]
+                    )
+
+            })
+        );
 }
 
 
