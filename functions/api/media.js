@@ -1,3 +1,4 @@
+
 export async function onRequestGet(context) {
 
     const cloudName =
@@ -90,35 +91,11 @@ export async function onRequestGet(context) {
                     .endsWith("/VIDEOS")
             );
 
-        /*
-         * ==================================================
-         * FOTOS POR SECCIÓN
-         * ==================================================
-         *
-         * Detecta automáticamente las carpetas que están
-         * dentro de FOTOS.
-         *
-         * Ejemplo:
-         *
-         * FOTOS/EXTERIORES
-         * FOTOS/SALON
-         * FOTOS/VALS
-         * FOTOS/COTILLON
-         *
-         */
-
         const fotosSecciones =
             agruparFotosPorSeccion(
                 fotos,
                 prefijo
             );
-
-
-        /*
-         * ==================================================
-         * VIDEOS PRIVADOS DE R2
-         * ==================================================
-         */
 
         const videosR2 =
             context.env.VIDEOS
@@ -128,58 +105,27 @@ export async function onRequestGet(context) {
                 )
                 : [];
 
-
         return new Response(
             JSON.stringify({
-
                 ok: true,
-
                 evento: evento,
-
-                portada:
-                    convertirRecursos(portada),
-
-                logo:
-                    convertirRecursos(logo),
-
-                /*
-                 * Se mantiene la propiedad original
-                 * para no romper la experiencia actual.
-                 */
-
-                fotos:
-                    convertirRecursos(fotos),
-
-                /*
-                 * Nueva propiedad:
-                 * fotos agrupadas por sección.
-                 */
-
-                fotos_secciones:
-                    fotosSecciones,
-
-                videos:
-                    convertirRecursos(listaVideos),
-
-                r2_videos:
-                    videosR2
-
+                portada: convertirRecursos(portada),
+                logo: convertirRecursos(logo),
+                fotos: convertirRecursos(fotos),
+                fotos_secciones: fotosSecciones,
+                videos: convertirRecursos(listaVideos),
+                r2_videos: videosR2
             }),
             {
                 status: 200,
-
                 headers: {
-                    "Content-Type":
-                        "application/json",
-
-                    "Cache-Control":
-                        "no-store"
+                    "Content-Type": "application/json",
+                    "Cache-Control": "no-store"
                 }
             }
         );
 
     } catch (error) {
-
         return new Response(
             JSON.stringify({
                 ok: false,
@@ -187,219 +133,101 @@ export async function onRequestGet(context) {
             }),
             {
                 status: 500,
-
                 headers: {
-                    "Content-Type":
-                        "application/json"
+                    "Content-Type": "application/json"
                 }
             }
         );
     }
 }
 
-
-async function obtenerRecursos(
-    cloudName,
-    auth,
-    tipo
-) {
-
+async function obtenerRecursos(cloudName, auth, tipo) {
     const endpoint =
         `https://api.cloudinary.com/v1_1/${cloudName}/resources/${tipo}/upload`;
 
-    const response =
-        await fetch(
-            `${endpoint}?max_results=500`,
-            {
-                method: "GET",
-
-                headers: {
-                    "Authorization":
-                        `Basic ${auth}`
-                }
+    const response = await fetch(
+        `${endpoint}?max_results=500`,
+        {
+            method: "GET",
+            headers: {
+                "Authorization": `Basic ${auth}`
             }
-        );
+        }
+    );
 
-    const texto =
-        await response.text();
+    const texto = await response.text();
 
     if (!response.ok) {
-
         throw new Error(
             `Cloudinary error ${response.status}: ${texto}`
         );
     }
 
-    const datos =
-        JSON.parse(texto);
+    const datos = JSON.parse(texto);
 
     return datos.resources || [];
 }
 
-
-/*
- * ==================================================
- * AGRUPAR FOTOS POR SECCIÓN
- * ==================================================
- */
-
-function agruparFotosPorSeccion(
-    fotos,
-    prefijo
-) {
-
-    const base =
-        `${prefijo}FOTOS/`;
-
+function agruparFotosPorSeccion(fotos, prefijo) {
+    const base = `${prefijo}FOTOS/`;
     const grupos = {};
 
-    fotos.forEach(
-        foto => {
+    fotos.forEach(foto => {
+        const carpeta = foto.asset_folder || "";
 
-            const carpeta =
-                foto.asset_folder || "";
+        if (!carpeta.startsWith(base)) return;
 
-            /*
-             * Eliminamos:
-             *
-             * NOVA_MOMENTS/EVT-XXXX/FOTOS/
-             *
-             */
+        const resto = carpeta.substring(base.length);
+        const partes = resto.split("/");
+        const seccion = partes[0] || "GENERAL";
 
-            if (!carpeta.startsWith(base)) {
-                return;
-            }
+        if (!grupos[seccion]) grupos[seccion] = [];
 
-            const resto =
-                carpeta.substring(
-                    base.length
-                );
-
-            /*
-             * Si la foto está directamente dentro
-             * de FOTOS, la dejamos en GENERAL.
-             */
-
-            const partes =
-                resto.split("/");
-
-            const seccion =
-                partes[0] || "GENERAL";
-
-            if (!grupos[seccion]) {
-
-                grupos[seccion] = [];
-
-            }
-
-            grupos[seccion].push(
-                foto
-            );
-
-        }
-    );
-
-
-    /*
-     * Convertimos el objeto en un array
-     * más cómodo para experiencia.html.
-     */
+        grupos[seccion].push(foto);
+    });
 
     return Object.keys(grupos)
         .sort()
-        .map(
-            nombre => ({
-
-                nombre:
-                    nombre,
-
-                fotos:
-                    convertirRecursos(
-                        grupos[nombre]
-                    )
-
-            })
-        );
+        .map(nombre => ({
+            nombre: nombre,
+            fotos: convertirRecursos(grupos[nombre])
+        }));
 }
 
+async function obtenerVideosR2(bucket, evento) {
+    const prefijo = `${evento}/`;
 
-async function obtenerVideosR2(
-    bucket,
-    evento
-) {
-
-    const prefijo =
-        `${evento}/`;
-
-    const resultado =
-        await bucket.list({
-            prefix: prefijo
-        });
+    const resultado = await bucket.list({
+        prefix: prefijo
+    });
 
     return resultado.objects
         .filter(objeto =>
-            /\.(mp4|webm|mov|m4v)$/i
-                .test(objeto.key)
+            /\.(mp4|webm|mov|m4v)$/i.test(objeto.key)
         )
         .map(objeto => {
-
-            const partes =
-                objeto.key.split(".");
-
-            const formato =
-                partes.length > 1
-                    ? partes.pop().toLowerCase()
-                    : "";
+            const partes = objeto.key.split(".");
+            const formato = partes.length > 1
+                ? partes.pop().toLowerCase()
+                : "";
 
             return {
-
-                public_id:
-                    objeto.key,
-
-                asset_folder:
-                    `${evento}/VIDEOS`,
-
-                resource_type:
-                    "video",
-
-                format:
-                    formato,
-
-                secure_url:
-                    `/api/video?key=${encodeURIComponent(
-                        objeto.key
-                    )}`
-
+                public_id: objeto.key,
+                asset_folder: `${evento}/VIDEOS`,
+                resource_type: "video",
+                format: formato,
+                secure_url: `/api/video?key=${encodeURIComponent(objeto.key)}`,
+                filename: objeto.key.split("/").pop()
             };
-
         });
-
 }
 
-
-function convertirRecursos(
-    recursos
-) {
-
-    return recursos.map(
-        recurso => ({
-
-            public_id:
-                recurso.public_id,
-
-            asset_folder:
-                recurso.asset_folder,
-
-            resource_type:
-                recurso.resource_type,
-
-            format:
-                recurso.format,
-
-            secure_url:
-                recurso.secure_url
-
-        })
-    );
-
+function convertirRecursos(recursos) {
+    return recursos.map(recurso => ({
+        public_id: recurso.public_id,
+        asset_folder: recurso.asset_folder,
+        resource_type: recurso.resource_type,
+        format: recurso.format,
+        secure_url: recurso.secure_url
+    }));
 }
