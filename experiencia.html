@@ -608,50 +608,50 @@ main {
 
 .video {
     position: relative;
-
-    aspect-ratio: 16 / 9;
-
-    overflow: hidden;
-
-    background: #151515;
-
     cursor: pointer;
+    min-width: 0;
+}
 
+.video-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #151515;
     border-radius: 3px;
-
-    box-shadow:
-        0 12px 35px rgba(0,0,0,0.25);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.25);
 }
 
 .video video {
     width: 100%;
     height: 100%;
-
     object-fit: cover;
-
     display: block;
-
     background: #111111;
 }
 
 .video-overlay {
     position: absolute;
-
     inset: 0;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(0,0,0,0.02),
-            rgba(0,0,0,0.28)
-        );
-
+    background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.02),
+        rgba(0,0,0,0.28)
+    );
     pointer-events: none;
+}
+
+.video-name {
+    margin-top: 11px;
+    color: rgba(255,255,255,0.62);
+    font-family: "DM Sans", Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
 }
 
 .play {
@@ -3950,145 +3950,73 @@ footer {
        VIDEOS CLOUDINARY
     ================================================== */
 
-    function crearVideo(
-        video
-    ) {
+    function crearVideo(video) {
+        if (!video) return;
 
-        if (
-            !video
-        ) {
+        const videoUrl = video.secure_url || video.url || "";
+        if (!videoUrl) return;
 
-            return;
+        const card = document.createElement("div");
+        card.className = "video";
 
+        const frame = document.createElement("div");
+        frame.className = "video-frame";
+
+        const player = document.createElement("video");
+        player.src = videoUrl;
+        player.preload = "metadata";
+        player.muted = true;
+        player.playsInline = true;
+
+        frame.appendChild(player);
+
+        const overlay = document.createElement("div");
+        overlay.className = "video-overlay";
+
+        const play = document.createElement("div");
+        play.className = "play";
+        play.textContent = "▶";
+
+        overlay.appendChild(play);
+        frame.appendChild(overlay);
+        card.appendChild(frame);
+
+        const nombreArchivo =
+            video.filename ||
+            (video.public_id ? video.public_id.split("/").pop() : "");
+
+        if (nombreArchivo) {
+            const nombre = document.createElement("div");
+            nombre.className = "video-name";
+            nombre.textContent = nombreArchivo;
+            card.appendChild(nombre);
         }
 
+        card.addEventListener("click", function () {
+            if (player.paused) {
+                player.controls = true;
+                player.muted = false;
 
-        const videoUrl =
-            video.secure_url ||
-            video.url ||
-            "";
+                const reproduccion = player.play();
+                overlay.style.display = "none";
 
-
-        if (
-            !videoUrl
-        ) {
-
-            return;
-
-        }
-
-
-        const card =
-            document.createElement(
-                "div"
-            );
-
-        card.className =
-            "video";
-
-
-        const player =
-            document.createElement(
-                "video"
-            );
-
-        player.src =
-            videoUrl;
-
-        player.preload =
-            "metadata";
-
-        player.muted =
-            true;
-
-        player.playsInline =
-            true;
-
-
-        card.appendChild(
-            player
-        );
-
-
-        const overlay =
-            document.createElement(
-                "div"
-            );
-
-        overlay.className =
-            "video-overlay";
-
-
-        const play =
-            document.createElement(
-                "div"
-            );
-
-        play.className =
-            "play";
-
-        play.textContent =
-            "▶";
-
-
-        overlay.appendChild(
-            play
-        );
-
-        card.appendChild(
-            overlay
-        );
-
-
-        card.addEventListener(
-            "click",
-            function () {
-
-                if (
-                    player.paused
-                ) {
-
-                    player.controls =
-                        true;
-
-                    player.muted =
-                        false;
-
-                    player.play();
-
-                    overlay.style.display =
-                        "none";
-
-                } else {
-
-                    player.pause();
-
+                if (reproduccion && typeof reproduccion.catch === "function") {
+                    reproduccion.catch(function () {
+                        overlay.style.display = "flex";
+                    });
                 }
-
+            } else {
+                player.pause();
             }
-        );
+        });
 
+        player.addEventListener("ended", function () {
+            overlay.style.display = "flex";
+            player.controls = false;
+        });
 
-        player.addEventListener(
-            "ended",
-            function () {
-
-                overlay.style.display =
-                    "flex";
-
-                player.controls =
-                    false;
-
-            }
-        );
-
-
-        videosContainer.appendChild(
-            card
-        );
-
+        videosContainer.appendChild(card);
     }
-
 
     if (
         Array.isArray(
