@@ -411,6 +411,23 @@
             color: #aaa;
         }
 
+        /* Accion secundaria del panel de seleccion */
+        .selection-content .secondary-button {
+            width: 100%;
+            margin-top: 10px;
+            border: 1px solid #444;
+            background: transparent;
+            color: #ddd;
+            padding: 13px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .selection-content .secondary-button:hover {
+            background: #222;
+        }
+
         .primary-button {
             width: 100%;
             border: none;
@@ -1188,8 +1205,17 @@
             <button
                 id="continueButton"
                 class="primary-button"
+                type="button"
             >
-                CONTINUAR
+                HACER PEDIDO
+            </button>
+
+            <button
+                id="backGalleryButton"
+                class="secondary-button"
+                type="button"
+            >
+                SEGUIR VIENDO FOTOS
             </button>
 
         </div>
@@ -3107,6 +3133,14 @@
 
     document.getElementById(
         "closeSelection"
+    ).addEventListener(
+        "click",
+        cerrarSeleccion
+    );
+
+
+    document.getElementById(
+        "backGalleryButton"
     ).addEventListener(
         "click",
         cerrarSeleccion
