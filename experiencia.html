@@ -2562,6 +2562,31 @@ footer {
         eventoId;
 
 
+    // Limpiar la selección únicamente al regresar de un pago aprobado.
+    const parametrosRegreso =
+        new URLSearchParams(window.location.search);
+
+    if (parametrosRegreso.get("pago") === "approved") {
+
+        sessionStorage.removeItem(storageKey);
+
+        parametrosRegreso.delete("pago");
+
+        const queryRestante = parametrosRegreso.toString();
+        const urlLimpia =
+            window.location.pathname +
+            (queryRestante ? "?" + queryRestante : "") +
+            window.location.hash;
+
+        window.history.replaceState(
+            {},
+            document.title,
+            urlLimpia
+        );
+
+    }
+
+
     let seleccion = [];
 
 
