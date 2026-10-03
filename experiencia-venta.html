@@ -424,100 +424,93 @@
 
         /* SELECTION */
 
+        /* BARRA PEQUEÑA DE SELECCIÓN: visible solo cuando hay fotos */
         .selection-button {
             position: fixed;
-            right: 20px;
-            bottom: 20px;
-            z-index: 300;
-            border: none;
-            background: #fff;
-            color: #000;
-            padding: 14px 20px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 700;
+            top: 64px;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 400;
+            border: 0;
+            border-bottom: 1px solid rgba(255,255,255,.10);
+            border-radius: 0;
+            background: rgba(12,12,12,.96);
+            backdrop-filter: blur(14px);
+            color: #fff;
+            padding: 12px 6%;
             display: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            box-shadow: 0 8px 25px rgba(0,0,0,.22);
         }
 
-        .selection-button.active {
-            display: block;
-        }
-
-        .selection-count {
-            margin-left: 5px;
-        }
+        .selection-button.active { display: flex; }
+        .selection-info { color: rgba(255,255,255,.72); text-transform: uppercase; }
+        .selection-count { margin-left: 8px; color: #fff; }
+        .selection-total-top { margin-left: 10px; color: rgba(255,255,255,.55); letter-spacing: .5px; }
+        .selection-button-label { border: 1px solid rgba(255,255,255,.45); border-radius: 20px; padding: 8px 17px; white-space: nowrap; }
+        .selection-button:hover .selection-button-label { background: #fff; color: #080808; }
 
         .selection-panel {
             position: fixed;
             inset: 0;
+            background: rgba(0,0,0,0.75);
             z-index: 550;
             display: none;
             justify-content: flex-end;
-            background: rgba(0,0,0,.72);
-            backdrop-filter: blur(5px);
         }
-        .selection-panel.active { display: flex; }
-        .selection-content {
+
+        .selection-panel.active {
             display: flex;
-            flex-direction: column;
-            width: min(470px, 100%);
-            height: 100%;
-            min-height: 0;
-            padding: 28px 26px 18px;
-            overflow-y: auto;
-            background: #101010;
-            border-left: 1px solid rgba(255,255,255,.10);
-            box-shadow: -20px 0 70px rgba(0,0,0,.38);
-            animation: selectionSlideIn .24s ease-out;
         }
-        @keyframes selectionSlideIn { from { transform: translateX(28px); opacity: .65; } to { transform: translateX(0); opacity: 1; } }
+
+        .selection-content {
+            width: 440px;
+            max-width: 100%;
+            height: 100%;
+            background: #111;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
         .selection-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            gap: 16px;
-            padding-bottom: 22px;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #292929;
+            align-items: center;
+            margin-bottom: 25px;
         }
-        .selection-kicker { color: #a9a9a9; font-size: 10px; letter-spacing: 2.2px; margin-bottom: 10px; }
-        .selection-header h2 { margin: 0; color: #fff; font-size: 22px; letter-spacing: 1px; font-weight: 600; }
-        .selection-subtitle { margin: 8px 0 0; color: #8d8d8d; font-size: 12px; line-height: 1.5; }
+
+        .selection-header h2 {
+            font-size: 20px;
+        }
+
         .close-selection {
-            flex: 0 0 38px;
-            width: 38px; height: 38px;
-            border: 1px solid #333; border-radius: 50%;
-            background: #191919; color: #ddd; font-size: 25px; line-height: 1;
-            cursor: pointer; transition: background .2s, border-color .2s;
+            border: none;
+            background: transparent;
+            color: #aaa;
+            font-size: 25px;
         }
-        .close-selection:hover { background: #292929; border-color: #555; }
-        .selection-list { flex: 1 0 auto; }
-        .selection-footer { margin-top: auto; padding-top: 18px; border-top: 1px solid #292929; }
-        .selection-total { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
-        .selection-total-label { display: block; color: #999; font-size: 10px; letter-spacing: 1.5px; }
-        .selection-total-note { display: block; color: #777; font-size: 11px; margin-top: 5px; }
-        .selection-total strong { color: #fff; font-size: 25px; font-weight: 600; white-space: nowrap; }
-        .selection-checkout-button { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; border-radius: 6px; }
-        .back-gallery-button { display: block; width: 100%; margin-top: 12px; padding: 13px 10px; border: 1px solid #343434; border-radius: 6px; background: transparent; color: #c8c8c8; font-size: 11px; letter-spacing: .8px; cursor: pointer; }
-        .back-gallery-button:hover { border-color: #777; color: #fff; }
-        .selection-empty-extra { display: block; }
 
         .selection-item {
             display: grid;
-            grid-template-columns: 76px minmax(0, 1fr) auto;
-            gap: 13px;
+            grid-template-columns: 70px 1fr auto;
+            gap: 12px;
             align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #292929;
+            padding: 12px 0;
+            border-bottom: 1px solid #222;
         }
 
         .selection-item-image {
-            width: 76px;
-            height: 82px;
+            width: 70px;
+            height: 70px;
             object-fit: cover;
-            border-radius: 5px;
-            background: #202020;
+            border-radius: 6px;
         }
 
         .selection-item-name {
@@ -816,9 +809,13 @@
             }
 
             .selection-button {
-                right: 14px;
-                bottom: 14px;
+                top: 64px;
+                padding: 10px 14px;
+                gap: 8px;
+                font-size: 9px;
             }
+            .selection-total-top { margin-left: 5px; }
+            .selection-button-label { padding: 7px 12px; }
 
             .selection-content {
                 width: 100%;
@@ -1125,14 +1122,12 @@
     class="selection-button"
 >
 
-    MI SELECCIÓN
-
-    <span
-        id="selectionCount"
-        class="selection-count"
-    >
-        0
+    <span class="selection-info">
+        MI SELECCIÓN
+        <span id="selectionCount" class="selection-count">0 FOTOS</span>
+        <span id="selectionTotalTop" class="selection-total-top">$0</span>
     </span>
+    <span class="selection-button-label">COMPRAR</span>
 
 </button>
 
@@ -1142,36 +1137,65 @@
 <div
     id="selectionPanel"
     class="selection-panel"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Mi selección de fotografías"
 >
-    <aside class="selection-content">
+
+    <div class="selection-content">
+
         <div class="selection-header">
-            <div>
-                <div class="selection-kicker">NOVA MOMENTS</div>
-                <h2>MI SELECCIÓN</h2>
-                <p class="selection-subtitle">Revisá tus fotografías antes de continuar.</p>
-            </div>
-            <button type="button" id="closeSelection" class="close-selection" aria-label="Cerrar selección">×</button>
+
+            <h2>
+                Mi selección
+            </h2>
+
+            <button
+                id="closeSelection"
+                class="close-selection"
+            >
+                ×
+            </button>
+
         </div>
 
-        <div id="selectionList" class="selection-list"></div>
 
-        <div id="selectionEmpty" class="empty-message">
+        <div id="selectionList"></div>
+
+
+        <div
+            id="selectionEmpty"
+            class="empty-message"
+        >
             Todavía no seleccionaste fotografías.
-            <span>Volvé a la galería y agregá las que quieras imprimir.</span>
         </div>
 
-        <div id="selectionTotalContainer" class="selection-footer" style="display:none;">
+
+        <div
+            id="selectionTotalContainer"
+            style="display:none;"
+        >
+
             <div class="selection-total">
-                <div><span class="selection-total-label">TOTAL DEL PEDIDO</span><span class="selection-total-note">Impresiones seleccionadas</span></div>
-                <strong id="selectionTotal">$0</strong>
+
+                <span>
+                    Total
+                </span>
+
+                <span id="selectionTotal">
+                    $0
+                </span>
+
             </div>
-            <button type="button" id="continueButton" class="primary-button selection-checkout-button">HACER PEDIDO <span aria-hidden="true">→</span></button>
+
+            <button
+                id="continueButton"
+                class="primary-button"
+            >
+                CONTINUAR
+            </button>
+
         </div>
-        <button type="button" id="backGalleryButton" class="back-gallery-button">← SEGUIR VIENDO FOTOS</button>
-    </aside>
+
+    </div>
+
 </div>
 
 
@@ -2235,8 +2259,10 @@
         document.getElementById(
             "selectionCount"
         ).textContent =
-            cantidad;
+            `${cantidad} ${cantidad === 1 ? "FOTO" : "FOTOS"}`;
 
+        const totalTop = document.getElementById("selectionTotalTop");
+        if (totalTop) totalTop.textContent = formatoPrecio(totalSeleccion());
 
         const boton =
             document.getElementById(
@@ -2327,8 +2353,9 @@
 
         cerrarCompra();
 
-
         renderizarSeleccion();
+        // Al agregar una foto, mostrar la selección en primer plano.
+        abrirSeleccion();
 
     }
 
@@ -3083,24 +3110,6 @@
     ).addEventListener(
         "click",
         cerrarSeleccion
-    );
-
-    document.getElementById(
-        "backGalleryButton"
-    ).addEventListener(
-        "click",
-        cerrarSeleccion
-    );
-
-    document.getElementById(
-        "selectionPanel"
-    ).addEventListener(
-        "click",
-        (event) => {
-            if (event.target.id === "selectionPanel") {
-                cerrarSeleccion();
-            }
-        }
     );
 
 
