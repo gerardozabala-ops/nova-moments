@@ -28,8 +28,16 @@ export async function onRequestGet(context) {
 
     try {
 
-        const objeto =
-            await bucket.get(key);
+        const range = context.request.headers.get("Range");
+
+        const objeto = await bucket.get(
+            key,
+            range
+                ? {
+                    range: context.request.headers
+                }
+                : undefined
+        );
 
         if (!objeto) {
 
@@ -41,8 +49,7 @@ export async function onRequestGet(context) {
             );
         }
 
-        const headers =
-            new Headers();
+        const headers = new Headers();
 
         objeto.writeHttpMetadata(headers);
 
@@ -61,10 +68,33 @@ export async function onRequestGet(context) {
             objeto.size.toString()
         );
 
+        let status = 200;
+
+        if (range && objeto.range) {
+
+            const inicio = objeto.range.offset;
+
+            const longitud = objeto.range.length;
+
+            const fin = inicio + longitud - 1;
+
+            headers.set(
+                "Content-Range",
+                `bytes ${inicio}-${fin}/${objeto.size}`
+            );
+
+            headers.set(
+                "Content-Length",
+                longitud.toString()
+            );
+
+            status = 206;
+        }
+
         return new Response(
             objeto.body,
             {
-                status: 200,
+                status,
                 headers
             }
         );
