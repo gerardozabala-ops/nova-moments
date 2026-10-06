@@ -7,16 +7,22 @@ export async function onRequestGet(context) {
     const key = url.searchParams.get("key");
 
     if (!bucket) {
+
         return new Response(
             "R2 no está configurado.",
-            { status: 500 }
+            {
+                status: 500
+            }
         );
     }
 
     if (!key) {
+
         return new Response(
             "Falta indicar el video.",
-            { status: 400 }
+            {
+                status: 400
+            }
         );
     }
 
@@ -36,9 +42,12 @@ export async function onRequestGet(context) {
             );
 
         if (!objeto) {
+
             return new Response(
                 "Video no encontrado.",
-                { status: 404 }
+                {
+                    status: 404
+                }
             );
         }
 
