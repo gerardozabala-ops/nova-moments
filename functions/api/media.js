@@ -1,4 +1,3 @@
-
 export async function onRequestGet(context) {
 
     const cloudName =
@@ -126,6 +125,7 @@ export async function onRequestGet(context) {
         );
 
     } catch (error) {
+
         return new Response(
             JSON.stringify({
                 ok: false,
@@ -141,47 +141,99 @@ export async function onRequestGet(context) {
     }
 }
 
-async function obtenerRecursos(cloudName, auth, tipo) {
+
+async function obtenerRecursos(
+    cloudName,
+    auth,
+    tipo
+) {
+
     const endpoint =
         `https://api.cloudinary.com/v1_1/${cloudName}/resources/${tipo}/upload`;
 
-    const response = await fetch(
-        `${endpoint}?max_results=500`,
-        {
-            method: "GET",
-            headers: {
-                "Authorization": `Basic ${auth}`
-            }
+    let recursos = [];
+
+    let nextCursor = null;
+
+    do {
+
+        let url =
+            `${endpoint}?max_results=500`;
+
+        if (nextCursor) {
+
+            url +=
+                `&next_cursor=${encodeURIComponent(nextCursor)}`;
         }
-    );
 
-    const texto = await response.text();
+        const response =
+            await fetch(
+                url,
+                {
+                    method: "GET",
+                    headers: {
+                        "Authorization":
+                            `Basic ${auth}`
+                    }
+                }
+            );
 
-    if (!response.ok) {
-        throw new Error(
-            `Cloudinary error ${response.status}: ${texto}`
-        );
-    }
+        const texto =
+            await response.text();
 
-    const datos = JSON.parse(texto);
+        if (!response.ok) {
 
-    return datos.resources || [];
+            throw new Error(
+                `Cloudinary error ${response.status}: ${texto}`
+            );
+        }
+
+        const datos =
+            JSON.parse(texto);
+
+        recursos =
+            recursos.concat(
+                datos.resources || []
+            );
+
+        nextCursor =
+            datos.next_cursor || null;
+
+    } while (nextCursor);
+
+    return recursos;
 }
 
-function agruparFotosPorSeccion(fotos, prefijo) {
-    const base = `${prefijo}FOTOS/`;
+
+function agruparFotosPorSeccion(
+    fotos,
+    prefijo
+) {
+
+    const base =
+        `${prefijo}FOTOS/`;
+
     const grupos = {};
 
     fotos.forEach(foto => {
-        const carpeta = foto.asset_folder || "";
 
-        if (!carpeta.startsWith(base)) return;
+        const carpeta =
+            foto.asset_folder || "";
 
-        const resto = carpeta.substring(base.length);
-        const partes = resto.split("/");
-        const seccion = partes[0] || "GENERAL";
+        if (!carpeta.startsWith(base))
+            return;
 
-        if (!grupos[seccion]) grupos[seccion] = [];
+        const resto =
+            carpeta.substring(base.length);
+
+        const partes =
+            resto.split("/");
+
+        const seccion =
+            partes[0] || "GENERAL";
+
+        if (!grupos[seccion])
+            grupos[seccion] = [];
 
         grupos[seccion].push(foto);
     });
@@ -189,45 +241,92 @@ function agruparFotosPorSeccion(fotos, prefijo) {
     return Object.keys(grupos)
         .sort()
         .map(nombre => ({
+
             nombre: nombre,
-            fotos: convertirRecursos(grupos[nombre])
+
+            fotos:
+                convertirRecursos(
+                    grupos[nombre]
+                )
         }));
 }
 
-async function obtenerVideosR2(bucket, evento) {
-    const prefijo = `${evento}/`;
 
-    const resultado = await bucket.list({
-        prefix: prefijo
-    });
+async function obtenerVideosR2(
+    bucket,
+    evento
+) {
+
+    const prefijo =
+        `${evento}/`;
+
+    const resultado =
+        await bucket.list({
+            prefix: prefijo
+        });
 
     return resultado.objects
+
         .filter(objeto =>
-            /\.(mp4|webm|mov|m4v)$/i.test(objeto.key)
+            /\.(mp4|webm|mov|m4v)$/i
+                .test(objeto.key)
         )
+
         .map(objeto => {
-            const partes = objeto.key.split(".");
-            const formato = partes.length > 1
-                ? partes.pop().toLowerCase()
-                : "";
+
+            const partes =
+                objeto.key.split(".");
+
+            const formato =
+                partes.length > 1
+                    ? partes.pop().toLowerCase()
+                    : "";
 
             return {
-                public_id: objeto.key,
-                asset_folder: `${evento}/VIDEOS`,
-                resource_type: "video",
-                format: formato,
-                secure_url: `/api/video?key=${encodeURIComponent(objeto.key)}`,
-                filename: objeto.key.split("/").pop()
+
+                public_id:
+                    objeto.key,
+
+                asset_folder:
+                    `${evento}/VIDEOS`,
+
+                resource_type:
+                    "video",
+
+                format:
+                    formato,
+
+                secure_url:
+                    `/api/video?key=${encodeURIComponent(objeto.key)}`,
+
+                filename:
+                    objeto.key
+                        .split("/")
+                        .pop()
             };
         });
 }
 
-function convertirRecursos(recursos) {
+
+function convertirRecursos(
+    recursos
+) {
+
     return recursos.map(recurso => ({
-        public_id: recurso.public_id,
-        asset_folder: recurso.asset_folder,
-        resource_type: recurso.resource_type,
-        format: recurso.format,
-        secure_url: recurso.secure_url
+
+        public_id:
+            recurso.public_id,
+
+        asset_folder:
+            recurso.asset_folder,
+
+        resource_type:
+            recurso.resource_type,
+
+        format:
+            recurso.format,
+
+        secure_url:
+            recurso.secure_url
     }));
 }
