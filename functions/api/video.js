@@ -4,7 +4,7 @@ export async function onRequestGet(context) {
     const url = new URL(context.request.url);
     const key = url.searchParams.get("key");
 
-    const MAX_RANGE = 16 * 1024 * 1024; // 16 MB
+    const MAX_RANGE = 64 * 1024 * 1024; // 64 MB
 
     if (!bucket) {
         return new Response(
@@ -137,7 +137,7 @@ export async function onRequestGet(context) {
             let longitud = MAX_RANGE;
 
             // Si viene un final concreto, lo respetamos,
-            // pero nunca superamos 16 MB.
+            // pero nunca superamos 64 MB.
             if (finTexto !== "") {
 
                 const fin =
