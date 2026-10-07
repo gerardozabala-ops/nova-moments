@@ -1,1076 +1,155 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>NOVA MOMENTS | Tus momentos, una experiencia</title>
-
-  <meta
-    name="description"
-    content="NOVA MOMENTS transforma tus fotos y videos en una experiencia digital para recordar."
-  >
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet"
-  >
-
-  <style>
-
-    /* =====================================================
-       CONFIGURACIÓN GENERAL
-    ===================================================== */
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background: #101010;
-      color: #ffffff;
-
-      font-family: 'Inter', Arial, sans-serif;
-
-      overflow-x: hidden;
-    }
-
-    button,
-    a {
-      font-family: inherit;
-    }
-
-
-    /* =====================================================
-       HEADER
-    ===================================================== */
-
-    .topbar {
-      position: absolute;
-
-      top: 0;
-      left: 0;
-
-      width: 100%;
-
-      z-index: 20;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      padding: 25px 55px;
-
-      background: linear-gradient(
-        to bottom,
-        rgba(0,0,0,0.65),
-        rgba(0,0,0,0)
-      );
-    }
-
-
-    /* MARCA */
-
-    .brand {
-      color: #ffffff;
-      text-decoration: none;
-
-      display: flex;
-      flex-direction: column;
-
-      line-height: 1;
-    }
-
-    .brand-nova {
-      font-family: 'Montserrat', sans-serif;
-
-      font-size: 22px;
-      font-weight: 400;
-
-      letter-spacing: 7px;
-    }
-
-    .brand-moments {
-      margin-top: 6px;
-
-      font-family: 'Montserrat', sans-serif;
-
-      font-size: 9px;
-      font-weight: 400;
-
-      letter-spacing: 6px;
-
-      color: #b5b5b5;
-    }
-
-
-    /* NAVEGACIÓN */
-
-    .desktop-nav {
-      display: flex;
-
-      gap: 38px;
-
-      margin-left: auto;
-      margin-right: 35px;
-    }
-
-    .desktop-nav a {
-      color: #cfcfcf;
-
-      text-decoration: none;
-
-      font-size: 11px;
-
-      letter-spacing: 1.5px;
-
-      transition: color 0.25s;
-    }
-
-    .desktop-nav a:hover {
-      color: #ffffff;
-    }
-
-
-    /* BOTÓN INGRESAR */
-
-    .header-login {
-      background: transparent;
-
-      border: 1px solid rgba(255,255,255,0.75);
-
-      color: #ffffff;
-
-      padding: 10px 23px;
-
-      border-radius: 22px;
-
-      font-size: 10px;
-
-      letter-spacing: 1.5px;
-
-      cursor: pointer;
-
-      text-decoration: none;
-
-      transition:
-        background 0.25s,
-        color 0.25s;
-    }
-
-    .header-login:hover {
-      background: #ffffff;
-      color: #111111;
-    }
-
-
-    /* =====================================================
-       HERO
-    ===================================================== */
-
-    .hero {
-
-      position: relative;
-
-      min-height: 88vh;
-
-      display: flex;
-
-      align-items: center;
-      justify-content: center;
-
-      text-align: center;
-
-      overflow: hidden;
-    }
-
-
-    /* IMAGEN */
-
-    .hero-image {
-
-      position: absolute;
-
-      inset: 0;
-
-      background-image:
-        url("https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=2200&q=90");
-
-      background-size: cover;
-
-      background-position: center;
-
-      transform: scale(1.02);
-    }
-
-
-    /* OSCURECIMIENTO */
-
-    .hero-shade {
-
-      position: absolute;
-
-      inset: 0;
-
-      background:
-        linear-gradient(
-          to bottom,
-          rgba(0,0,0,0.70) 0%,
-          rgba(0,0,0,0.45) 45%,
-          rgba(0,0,0,0.82) 100%
-        );
-    }
-
-
-    /* CONTENIDO */
-
-    .hero-content {
-
-      position: relative;
-
-      z-index: 2;
-
-      width: 100%;
-
-      max-width: 850px;
-
-      padding: 100px 25px 60px;
-    }
-
-
-    .hero-small {
-
-      display: block;
-
-      margin-bottom: 20px;
-
-      color: #c8c8c8;
-
-      font-size: 11px;
-
-      letter-spacing: 4px;
-
-      text-transform: uppercase;
-    }
-
-
-    .hero-logo {
-
-      font-family: 'Montserrat', sans-serif;
-
-      font-size: 58px;
-
-      font-weight: 300;
-
-      letter-spacing: 12px;
-
-      line-height: 1;
-    }
-
-
-    .hero-logo-small {
-
-      margin-top: 12px;
-
-      color: #bcbcbc;
-
-      font-family: 'Montserrat', sans-serif;
-
-      font-size: 12px;
-
-      font-weight: 400;
-
-      letter-spacing: 9px;
-    }
-
-
-    .hero-title {
-
-      margin-top: 35px;
-
-      font-family: Georgia, 'Times New Roman', serif;
-
-      font-size: 35px;
-
-      font-weight: 400;
-
-      line-height: 1.25;
-    }
-
-
-    .hero-description {
-
-      max-width: 570px;
-
-      margin: 22px auto 0;
-
-      color: #c4c4c4;
-
-      font-size: 15px;
-
-      line-height: 1.7;
-
-      font-weight: 300;
-    }
-
-
-    /* BOTONES */
-
-    .hero-actions {
-
-      display: flex;
-
-      justify-content: center;
-
-      gap: 14px;
-
-      margin-top: 38px;
-    }
-
-
-    .btn {
-
-      display: inline-flex;
-
-      align-items: center;
-      justify-content: center;
-
-      min-width: 190px;
-
-      padding: 13px 25px;
-
-      border-radius: 28px;
-
-      font-size: 10px;
-
-      letter-spacing: 1.5px;
-
-      text-decoration: none;
-
-      cursor: pointer;
-
-      transition:
-        transform 0.2s,
-        background 0.2s;
-    }
-
-
-    .btn:hover {
-      transform: translateY(-2px);
-    }
-
-
-    .btn-primary {
-
-      background: rgba(255,255,255,0.92);
-
-      color: #111111;
-
-      border: 1px solid #ffffff;
-    }
-
-
-    .btn-primary:hover {
-      background: #ffffff;
-    }
-
-
-    .btn-secondary {
-
-      background: transparent;
-
-      color: #ffffff;
-
-      border: 1px solid rgba(255,255,255,0.75);
-    }
-
-
-    .btn-secondary:hover {
-      background: rgba(255,255,255,0.12);
-    }
-
-
-    /* =====================================================
-       PROPUESTA
-    ===================================================== */
-
-    .intro {
-
-      padding: 85px 30px;
-
-      text-align: center;
-
-      background: #151515;
-    }
-
-
-    .section-label {
-
-      color: #8f8f8f;
-
-      font-size: 10px;
-
-      letter-spacing: 3px;
-
-      text-transform: uppercase;
-
-      margin-bottom: 20px;
-    }
-
-
-    .intro h2 {
-
-      max-width: 750px;
-
-      margin: auto;
-
-      font-family: Georgia, 'Times New Roman', serif;
-
-      font-size: 31px;
-
-      font-weight: 400;
-
-      line-height: 1.35;
-    }
-
-
-    .intro p {
-
-      max-width: 620px;
-
-      margin: 22px auto 0;
-
-      color: #999999;
-
-      font-size: 14px;
-
-      line-height: 1.8;
-    }
-
-
-    /* =====================================================
-       CARACTERÍSTICAS
-    ===================================================== */
-
-    .features {
-
-      display: grid;
-
-      grid-template-columns:
-        repeat(3, 1fr);
-
-      background: #202223;
-
-      border-top: 1px solid #2e2e2e;
-
-      border-bottom: 1px solid #2e2e2e;
-    }
-
-
-    .feature {
-
-      padding: 55px 40px;
-
-      text-align: center;
-
-      border-right: 1px solid #333333;
-    }
-
-
-    .feature:last-child {
-      border-right: none;
-    }
-
-
-    .feature-number {
-
-      display: block;
-
-      margin-bottom: 18px;
-
-      color: #777777;
-
-      font-size: 10px;
-
-      letter-spacing: 3px;
-    }
-
-
-    .feature h3 {
-
-      margin-bottom: 12px;
-
-      font-family: 'Montserrat', sans-serif;
-
-      font-size: 14px;
-
-      font-weight: 500;
-
-      letter-spacing: 1px;
-    }
-
-
-    .feature p {
-
-      max-width: 270px;
-
-      margin: auto;
-
-      color: #999999;
-
-      font-size: 12px;
-
-      line-height: 1.7;
-    }
-
-
-    /* =====================================================
-       ACCESO
-    ===================================================== */
-
-    .access-section {
-
-      padding: 90px 25px;
-
-      text-align: center;
-
-      background: #111111;
-    }
-
-
-    .access-section h2 {
-
-      font-family: Georgia, 'Times New Roman', serif;
-
-      font-size: 29px;
-
-      font-weight: 400;
-    }
-
-
-    .access-section p {
-
-      max-width: 500px;
-
-      margin: 18px auto 30px;
-
-      color: #999999;
-
-      font-size: 13px;
-
-      line-height: 1.7;
-    }
-
-
-    .access-button {
-
-      display: inline-flex;
-
-      align-items: center;
-      justify-content: center;
-
-      padding: 13px 32px;
-
-      border-radius: 25px;
-
-      background: #ffffff;
-
-      color: #111111;
-
-      text-decoration: none;
-
-      font-size: 10px;
-
-      font-weight: 600;
-
-      letter-spacing: 1.5px;
-
-      transition: transform 0.2s;
-    }
-
-
-    .access-button:hover {
-
-      transform: translateY(-2px);
-    }
-
-
-    /* =====================================================
-       FOOTER
-    ===================================================== */
-
-    footer {
-
-      padding: 35px 25px;
-
-      text-align: center;
-
-      background: #0c0c0c;
-
-      border-top: 1px solid #242424;
-    }
-
-
-    .footer-brand {
-
-      font-size: 13px;
-
-      letter-spacing: 4px;
-    }
-
-
-    .footer-copy {
-
-      margin-top: 10px;
-
-      color: #666666;
-
-      font-size: 10px;
-    }
-
-
-    /* =====================================================
-       MOBILE
-    ===================================================== */
-
-    @media (max-width: 800px) {
-
-      .topbar {
-
-        padding: 20px 22px;
-      }
-
-
-      .desktop-nav {
-
-        display: none;
-      }
-
-
-      .header-login {
-
-        padding: 9px 17px;
-      }
-
-
-      .hero {
-
-        min-height: 88vh;
-      }
-
-
-      .hero-content {
-
-        padding-top: 120px;
-      }
-
-
-      .hero-logo {
-
-        font-size: 43px;
-
-        letter-spacing: 8px;
-      }
-
-
-      .hero-logo-small {
-
-        font-size: 9px;
-
-        letter-spacing: 6px;
-      }
-
-
-      .hero-title {
-
-        font-size: 28px;
-      }
-
-
-      .hero-description {
-
-        font-size: 13px;
-      }
-
-
-      .hero-actions {
-
-        flex-direction: column;
-
-        align-items: center;
-      }
-
-
-      .btn {
-
-        width: min(280px, 90%);
-      }
-
-
-      .features {
-
-        grid-template-columns: 1fr;
-      }
-
-
-      .feature {
-
-        border-right: none;
-
-        border-bottom: 1px solid #333333;
-
-        padding: 40px 25px;
-      }
-
-
-      .feature:last-child {
-
-        border-bottom: none;
-      }
-
-
-      .intro {
-
-        padding: 65px 25px;
-      }
-
-
-      .intro h2 {
-
-        font-size: 27px;
-      }
-
-    }
-
-
-    /* =====================================================
-       PANTALLAS MUY GRANDES / TV
-    ===================================================== */
-
-    @media (min-width: 1600px) {
-
-      .hero-logo {
-
-        font-size: 72px;
-      }
-
-
-      .hero-title {
-
-        font-size: 42px;
-      }
-
-
-      .hero-description {
-
-        font-size: 17px;
-      }
-
-
-      .btn {
-
-        font-size: 12px;
-
-        padding: 16px 32px;
-      }
-
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA MOMENTS | Tus momentos, una experiencia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:#090a0b;color:#fff;font-family:'Inter',Arial,sans-serif;overflow-x:hidden}
+button,a{font-family:inherit}
+.topbar{position:absolute;top:0;left:0;width:100%;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:25px 6vw;background:linear-gradient(to bottom,rgba(0,0,0,.72),rgba(0,0,0,0))}
+.brand{color:#fff;text-decoration:none;display:flex;flex-direction:column;line-height:1}
+.brand-nova{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:400;letter-spacing:7px}
+.brand-moments{margin-top:6px;font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:6px;color:#bdbdbd}
+.desktop-nav{display:flex;gap:34px;margin-left:auto;margin-right:35px}
+.desktop-nav a{color:#cfcfcf;text-decoration:none;font-size:10px;letter-spacing:1.5px;transition:.25s}
+.desktop-nav a:hover{color:#fff}
+.header-login{background:transparent;border:1px solid rgba(255,255,255,.8);color:#fff;padding:10px 23px;border-radius:22px;font-size:10px;letter-spacing:1.5px;text-decoration:none;transition:.25s}
+.header-login:hover{background:#fff;color:#111}
+.hero{position:relative;min-height:760px;height:88vh;max-height:900px;overflow:hidden;display:flex;align-items:center}
+.hero-image{position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.02);opacity:1;transition:opacity 1.1s ease,transform 8s ease}
+.hero-image.fade{opacity:.15}
+.hero-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,5,7,.96) 0%,rgba(4,5,7,.82) 29%,rgba(4,5,7,.20) 64%,rgba(4,5,7,.58) 100%),linear-gradient(0deg,rgba(5,6,7,.96) 0%,rgba(5,6,7,.05) 45%,rgba(5,6,7,.38) 100%)}
+.hero-content{position:relative;z-index:3;width:52%;max-width:650px;margin-left:8vw;padding-top:55px}
+.hero-small{display:block;margin-bottom:18px;color:#c7c7c7;font-size:10px;letter-spacing:4px;text-transform:uppercase}
+.hero-logo{font-family:'Montserrat',sans-serif;font-size:76px;font-weight:300;letter-spacing:14px;line-height:.92}
+.hero-logo-small{margin-top:13px;color:#c7c7c7;font-family:'Montserrat',sans-serif;font-size:13px;letter-spacing:10px}
+.hero-title{margin-top:34px;font-family:'Montserrat',sans-serif;font-size:34px;font-weight:400;line-height:1.3;letter-spacing:5px;text-transform:uppercase;max-width:600px}
+.hero-description{max-width:520px;margin:18px 0 0;color:#c5c5c5;font-size:14px;line-height:1.65;font-weight:300}
+.hero-actions{display:flex;gap:14px;margin-top:30px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-width:190px;padding:13px 25px;border-radius:28px;font-size:10px;letter-spacing:1.5px;text-decoration:none;cursor:pointer;transition:.25s}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:#fff;color:#111;border:1px solid #fff}
+.btn-secondary{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.75)}
+.btn-secondary:hover{background:rgba(255,255,255,.12)}
+.hero-controls{position:absolute;right:5.5vw;top:48%;z-index:4;display:flex;gap:10px}
+.hero-arrow{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.65);background:rgba(0,0,0,.18);color:#fff;font-size:23px;line-height:1;cursor:pointer;transition:.25s}
+.hero-arrow:hover{background:rgba(255,255,255,.14)}
+.hero-dots{position:absolute;right:6vw;bottom:190px;z-index:4;display:flex;gap:8px}
+.hero-dot{width:25px;height:2px;background:rgba(255,255,255,.35);transition:.35s}
+.hero-dot.active{background:#fff;width:38px}
+.showcase{position:absolute;left:5.5vw;right:5.5vw;bottom:38px;z-index:5;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.showcase-card{height:145px;position:relative;overflow:hidden;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:#17191a;box-shadow:0 12px 30px rgba(0,0,0,.28)}
+.showcase-card img{width:100%;height:100%;object-fit:cover;display:block;transition:.45s}
+.showcase-card:hover img{transform:scale(1.06)}
+.showcase-card::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.78),rgba(0,0,0,.05) 65%)}
+.showcase-title{position:absolute;left:18px;bottom:14px;z-index:2;font-size:11px;letter-spacing:2px;text-transform:uppercase}
+.play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;width:42px;height:42px;border:1px solid rgba(255,255,255,.8);border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.22)}
+.play::after{content:"";margin-left:3px;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:10px solid #fff}
+.intro{padding:90px 30px 70px;text-align:center;background:#0d0f10}
+.section-label{color:#8f8f8f;font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:18px}
+.intro h2{max-width:760px;margin:auto;font-family:'Montserrat',sans-serif;font-size:31px;font-weight:400;line-height:1.35;letter-spacing:3px;text-transform:uppercase}
+.intro p{max-width:620px;margin:20px auto 0;color:#999;font-size:14px;line-height:1.8}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:#0d0f10;padding:22px 5.5vw;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07)}
+.feature{min-height:175px;padding:32px 25px;text-align:center;border-right:1px solid rgba(255,255,255,.10);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.feature:last-child{border-right:none}
+.feature-icon{font-size:27px;margin-bottom:15px;opacity:.9}
+.feature h3{margin-bottom:11px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:500;letter-spacing:1.8px}
+.feature p{max-width:240px;margin:auto;color:#9b9b9b;font-size:12px;line-height:1.7}
+.access-section{padding:85px 25px;text-align:center;background:#0b0c0d}
+.access-section h2{font-family:'Montserrat',sans-serif;font-size:28px;font-weight:400;letter-spacing:3px}
+.access-section p{max-width:500px;margin:18px auto 28px;color:#999;font-size:13px;line-height:1.7}
+.access-button{display:inline-flex;align-items:center;justify-content:center;padding:13px 32px;border-radius:25px;background:#fff;color:#111;text-decoration:none;font-size:10px;font-weight:600;letter-spacing:1.5px;transition:.2s}
+.access-button:hover{transform:translateY(-2px)}
+footer{padding:35px 25px;text-align:center;background:#080909;border-top:1px solid #202223}
+.footer-brand{font-size:13px;letter-spacing:4px}.footer-copy{margin-top:10px;color:#666;font-size:10px}.footer-contact{margin-top:14px;color:#858585;font-size:11px;letter-spacing:.5px}
+@media(max-width:900px){.topbar{padding:20px 22px}.desktop-nav{display:none}.hero{min-height:800px;height:auto;padding-top:110px;padding-bottom:250px}.hero-content{width:auto;max-width:none;margin:0;padding:0 25px}.hero-logo{font-size:53px;letter-spacing:9px}.hero-title{font-size:25px;letter-spacing:3px}.hero-description{font-size:13px}.hero-controls{right:22px;top:44%}.hero-dots{right:25px;bottom:220px}.showcase{left:20px;right:20px;bottom:28px;grid-template-columns:repeat(2,1fr);gap:10px}.showcase-card{height:105px}.features{grid-template-columns:1fr 1fr;padding:14px 20px}.feature{border-bottom:1px solid rgba(255,255,255,.10);padding:28px 15px}.feature h3{font-size:12px}}
+@media(max-width:560px){.header-login{padding:9px 16px}.hero{min-height:850px;padding-bottom:245px}.hero-logo{font-size:43px;letter-spacing:7px}.hero-logo-small{font-size:9px;letter-spacing:6px}.hero-title{font-size:22px;line-height:1.35}.hero-actions{flex-direction:column;align-items:flex-start}.btn{width:250px}.showcase{grid-template-columns:repeat(2,1fr)}.showcase-card{height:100px}.showcase-title{left:11px;bottom:10px;font-size:9px;letter-spacing:1.4px}.play{width:34px;height:34px}.features{grid-template-columns:1fr;padding:8px 18px}.feature{border-right:none}.intro h2{font-size:24px}}
+@media(min-width:1600px){.hero-logo{font-size:90px}.hero-title{font-size:40px}}
+</style>
 </head>
-
-
 <body>
-
-
-  <!-- =====================================================
-       HEADER
-  ===================================================== -->
-
-  <header class="topbar">
-
-    <a
-      href="index.html"
-      class="brand"
-      aria-label="NOVA MOMENTS"
-    >
-
-      <span class="brand-nova">
-        NOVA
-      </span>
-
-      <span class="brand-moments">
-        MOMENTS
-      </span>
-
+<header class="topbar">
+  <a href="index.html" class="brand" aria-label="NOVA MOMENTS"><span class="brand-nova">NOVA</span><span class="brand-moments">MOMENTS</span></a>
+  <nav class="desktop-nav">
+    <a href="#inicio">INICIO</a><a href="#nosotros">CÓMO FUNCIONA</a><a href="#como-funciona">PARA QUIÉNES</a><a href="#experiencias">EXPERIENCIAS</a><a href="#contacto">CONTACTO</a>
+  </nav>
+  <a href="acceso.html" class="header-login">INGRESAR</a>
+</header>
+<main>
+<section class="hero" id="inicio">
+  <div id="heroImage" class="hero-image"></div><div class="hero-shade"></div>
+  <div class="hero-content">
+    <span class="hero-small">UNA NUEVA FORMA DE REVIVIR</span><div class="hero-logo">NOVA</div><div class="hero-logo-small">MOMENTS</div>
+    <h1 class="hero-title">Tus momentos. Una experiencia para volver a vivir.</h1>
+    <p class="hero-description">Fotos y videos de tus eventos en un solo lugar. Privado, simple y en la mejor calidad.</p>
+    <div class="hero-actions"><a href="#nosotros" class="btn btn-primary">▶&nbsp;&nbsp; DESCUBRIR NOVA</a><a href="acceso.html" class="btn btn-secondary">INGRESAR</a></div>
+  </div>
+  <div class="hero-controls"><button class="hero-arrow" id="prevHero" aria-label="Imagen anterior">‹</button><button class="hero-arrow" id="nextHero" aria-label="Imagen siguiente">›</button></div>
+  <div class="hero-dots" id="heroDots"></div>
+  <div class="showcase">
+    <a class="showcase-card" href="#como-funciona">
+      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=82" alt="Ceremonias">
+      <span class="play"></span><span class="showcase-title">CEREMONIAS</span>
     </a>
-
-
-    <nav class="desktop-nav">
-
-      <a href="#inicio">
-        INICIO
-      </a>
-
-      <a href="#nosotros">
-        NOVA MOMENTS
-      </a>
-
-      <a href="#como-funciona">
-        CÓMO FUNCIONA
-      </a>
-
-    </nav>
-
-
-    <a
-      href="acceso.html"
-      class="header-login"
-    >
-      INGRESAR
+    <a class="showcase-card" href="#como-funciona">
+      <img src="https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=900&q=82" alt="Salones">
+      <span class="play"></span><span class="showcase-title">SALONES</span>
     </a>
-
-  </header>
-
-
-
-  <!-- =====================================================
-       HERO
-  ===================================================== -->
-
-  <main>
-
-
-    <section
-      class="hero"
-      id="inicio"
-    >
-
-      <div class="hero-image"></div>
-
-      <div class="hero-shade"></div>
-
-
-      <div class="hero-content">
-
-        <span class="hero-small">
-          UNA NUEVA FORMA DE REVIVIR
-        </span>
-
-
-        <div class="hero-logo">
-          NOVA
-        </div>
-
-
-        <div class="hero-logo-small">
-          MOMENTS
-        </div>
-
-
-        <h1 class="hero-title">
-          “Tus momentos. Una experiencia para recordar.”
-        </h1>
-
-
-        <p class="hero-description">
-          Tus fotos, tus videos y la historia de tu evento
-          reunidos en un espacio creado para volver a vivir
-          cada momento.
-        </p>
-
-
-        <div class="hero-actions">
-
-          <a
-            href="#nosotros"
-            class="btn btn-primary"
-          >
-            DESCUBRIR NOVA MOMENTS
-          </a>
-
-
-          <a
-            href="acceso.html"
-            class="btn btn-secondary"
-          >
-            INGRESAR A MI EXPERIENCIA
-          </a>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         PRESENTACIÓN
-    ==================================================== -->
-
-    <section
-      class="intro"
-      id="nosotros"
-    >
-
-      <div class="section-label">
-        NOVA MOMENTS
-      </div>
-
-
-      <h2>
-        Más que una galería.
-        Una experiencia para volver a vivir.
-      </h2>
-
-
-      <p>
-        NOVA MOMENTS transforma el material de tu evento
-        en una experiencia digital privada, donde tus fotos
-        y videos pueden disfrutarse desde cualquier lugar
-        y en cualquier momento.
-      </p>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         CARACTERÍSTICAS
-    ==================================================== -->
-
-    <section
-      class="features"
-      id="como-funciona"
-    >
-
-
-      <div class="feature">
-
-        <span class="feature-number">
-          01
-        </span>
-
-        <h3>
-          TU EXPERIENCIA
-        </h3>
-
-        <p>
-          Cada evento cuenta con su propio espacio,
-          su portada y su contenido personalizado.
-        </p>
-
-      </div>
-
-
-
-      <div class="feature">
-
-        <span class="feature-number">
-          02
-        </span>
-
-        <h3>
-          TU CONTENIDO
-        </h3>
-
-        <p>
-          Fotos, videos y producciones editadas
-          reunidas en un solo lugar.
-        </p>
-
-      </div>
-
-
-
-      <div class="feature">
-
-        <span class="feature-number">
-          03
-        </span>
-
-        <h3>
-          DESDE CUALQUIER LUGAR
-        </h3>
-
-        <p>
-          Accedé desde tu celular, computadora,
-          tablet o Smart TV.
-        </p>
-
-      </div>
-
-
-    </section>
-
-
-
-    <!-- ===================================================
-         ACCESO
-    ==================================================== -->
-
-    <section class="access-section">
-
-      <div class="section-label">
-        ¿YA TENÉS UNA EXPERIENCIA?
-      </div>
-
-
-      <h2>
-        Volvé a tus momentos.
-      </h2>
-
-
-      <p>
-        Ingresá con el usuario y contraseña
-        que te proporcionamos para acceder
-        al contenido de tu evento.
-      </p>
-
-
-      <a
-        href="acceso.html"
-        class="access-button"
-      >
-        INGRESAR A MI EXPERIENCIA
-      </a>
-
-    </section>
-
-
-  </main>
-
-
-
-  <!-- =====================================================
-       FOOTER
-  ===================================================== -->
-
-  <footer>
-
-    <div class="footer-brand">
-      NOVA MOMENTS
-    </div>
-
-
-    <div class="footer-copy">
-      Tus momentos. Una experiencia para recordar.
-    </div>
-
-  </footer>
-
-
+    <a class="showcase-card" href="#como-funciona">
+      <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=900&q=82" alt="Eventos">
+      <span class="play"></span><span class="showcase-title">EVENTOS</span>
+    </a>
+    <a class="showcase-card" href="#como-funciona">
+      <img src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=900&q=82" alt="Eventos en vivo">
+      <span class="play"></span><span class="showcase-title">EVENTOS EN VIVO</span>
+    </a>
+  </div>
+</section>
+<section class="intro" id="nosotros"><div class="section-label">NOVA MOMENTS</div><h2>Más que una galería. Una experiencia completa.</h2><p>NOVA MOMENTS transforma el material de tu evento en una experiencia digital privada, donde tus fotos y videos pueden disfrutarse desde cualquier lugar y en cualquier momento.</p></section>
+<section class="features" id="como-funciona">
+  <div class="feature">
+    <div class="feature-icon">♢</div><h3>ACCESO PRIVADO</h3>
+    <p>Solo para vos y las personas que vos elijas.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">▧</div><h3>FOTOS EN ALTA CALIDAD</h3>
+    <p>Revive cada detalle tal como lo viviste.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">▷</div><h3>VIDEOS</h3>
+    <p>Tus momentos completos en la mejor calidad.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">▣</div><h3>TODOS TUS DISPOSITIVOS</h3>
+    <p>Disfrutá tus recuerdos cuando y donde quieras.</p>
+  </div>
+</section>
+<section class="access-section" id="experiencias"><div class="section-label">¿YA TENÉS UNA EXPERIENCIA?</div><h2>Volvé a tus momentos.</h2><p>Ingresá con el usuario y contraseña que te proporcionamos para acceder al contenido de tu evento.</p><a href="acceso.html" class="access-button">INGRESAR A MI EXPERIENCIA</a></section>
+</main>
+<footer id="contacto">
+  <div class="footer-brand">NOVA MOMENTS</div>
+  <div class="footer-copy">Tus momentos. Una experiencia para recordar.</div>
+  <div class="footer-contact">Gerardo Fabian Zabala · 358 601 0737 · Río Cuarto (CBA)</div>
+</footer>
+<script>
+const heroImages=[
+"https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=2200&q=90",
+"https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2200&q=90",
+"https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=2200&q=90",
+"https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=2200&q=90"];
+const heroImage=document.getElementById("heroImage"),heroDots=document.getElementById("heroDots");
+let heroIndex=0,heroTimer;
+heroImages.forEach((src,i)=>{const d=document.createElement("span");d.className="hero-dot"+(i===0?" active":"");heroDots.appendChild(d);const img=new Image();img.src=src});
+function renderHero(index,animate=true){heroIndex=(index+heroImages.length)%heroImages.length;if(animate)heroImage.classList.add("fade");setTimeout(()=>{heroImage.style.backgroundImage=`url("${heroImages[heroIndex]}")`;heroImage.classList.remove("fade");document.querySelectorAll(".hero-dot").forEach((d,i)=>d.classList.toggle("active",i===heroIndex))},animate?450:0)}
+function restartHeroTimer(){clearInterval(heroTimer);heroTimer=setInterval(()=>renderHero(heroIndex+1),8000)}
+document.getElementById("nextHero").addEventListener("click",()=>{renderHero(heroIndex+1);restartHeroTimer()});
+document.getElementById("prevHero").addEventListener("click",()=>{renderHero(heroIndex-1);restartHeroTimer()});
+renderHero(0,false);restartHeroTimer();
+</script>
 </body>
 </html>
-```
