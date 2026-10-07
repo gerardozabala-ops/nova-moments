@@ -835,13 +835,50 @@
                 ) || ""
             ).trim();
 
-        const origen =
-            parametros.get("origen") || "";
+        // =========================
+        // EXPERIENCIA DE ORIGEN
+        // =========================
+        // Guardamos el origen la primera vez que entramos a pago.html.
+        // Así, si Android abre Mercado Pago y luego vuelve a NOVA,
+        // conservamos la experiencia desde la que comenzó el pedido.
+        const origenGuardado =
+            sessionStorage.getItem("nova_pago_origen") || "";
 
-        const experienciaOrigen =
-            origen === "venta"
-                ? "experiencia-venta.html"
-                : "experiencia.html";
+        const origenParametro =
+            (
+                parametros.get("origen") || ""
+            ).trim();
+
+        let experienciaOrigen =
+            origenParametro ||
+            origenGuardado;
+
+        if (!experienciaOrigen) {
+            const referrerPath =
+                document.referrer
+                    ? new URL(
+                        document.referrer,
+                        window.location.origin
+                    ).pathname
+                    : "";
+
+            if (
+                referrerPath.includes("experiencia-venta.html")
+            ) {
+                experienciaOrigen = "venta";
+            } else if (
+                referrerPath.includes("experiencia.html")
+            ) {
+                experienciaOrigen = "recuerdos";
+            }
+        }
+
+        if (experienciaOrigen) {
+            sessionStorage.setItem(
+                "nova_pago_origen",
+                experienciaOrigen
+            );
+        }
 
 
         // =========================
@@ -857,12 +894,122 @@
 
 
         // =========================
-        // NUEVO:
-        // CONTROLAR SI EL PAGO FUE APROBADO
+        // CONTROLAR ESTADO REAL DEL PAGO
         // =========================
 
         let pagoAprobado =
             false;
+
+        let consultaEstadoEnCurso =
+            false;
+
+        async function consultarEstadoPedido(
+            intentos = 1,
+            espera = 1500
+        ) {
+            if (!pedidoId || consultaEstadoEnCurso) {
+                return false;
+            }
+
+            consultaEstadoEnCurso = true;
+
+            try {
+                for (
+                    let intento = 1;
+                    intento <= intentos;
+                    intento++
+                ) {
+                    try {
+                        const respuesta =
+                            await fetch(
+                                "/api/estado-pedido",
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+                                    body:
+                                        JSON.stringify({
+                                            pedido_id:
+                                                pedidoId
+                                        }),
+                                    cache: "no-store"
+                                }
+                            );
+
+                        const datosEstado =
+                            await respuesta.json();
+
+                        console.log(
+                            "Estado real del pedido:",
+                            datosEstado
+                        );
+
+                        if (
+                            respuesta.ok &&
+                            datosEstado.ok &&
+                            datosEstado.estado_pago ===
+                                "approved"
+                        ) {
+                            pagoAprobado = true;
+
+                            mostrarExito(
+                                "¡Pago aprobado! Tu pedido fue procesado correctamente."
+                            );
+
+                            return true;
+                        }
+
+                        if (
+                            intento < intentos
+                        ) {
+                            await new Promise(
+                                resolve =>
+                                    setTimeout(
+                                        resolve,
+                                        espera
+                                    )
+                            );
+                        }
+                    } catch (error) {
+                        console.warn(
+                            "No se pudo consultar el estado del pedido:",
+                            error
+                        );
+
+                        if (
+                            intento < intentos
+                        ) {
+                            await new Promise(
+                                resolve =>
+                                    setTimeout(
+                                        resolve,
+                                        espera
+                                    )
+                            );
+                        }
+                    }
+                }
+            } finally {
+                consultaEstadoEnCurso =
+                    false;
+            }
+
+            return false;
+        }
+
+        function volverAExperiencia() {
+            const destino =
+                experienciaOrigen === "venta"
+                    ? "experiencia-venta.html"
+                    : "experiencia.html";
+
+            window.location.href =
+                `${destino}?pago=approved&pedido=${encodeURIComponent(
+                    pedidoId
+                )}`;
+        }
 
 
         // =========================
@@ -965,57 +1112,6 @@
         // =========================
         // CARGAR PEDIDO Y BRICK
         // =========================
-
-
-        async function consultarEstadoPedido(
-            intentos = 8,
-            espera = 1500
-        ) {
-            for (let intento = 1; intento <= intentos; intento++) {
-                try {
-                    const respuesta = await fetch(
-                        "/api/estado-pedido",
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                pedido_id: pedidoId
-                            })
-                        }
-                    );
-
-                    const resultado = await respuesta.json();
-
-                    console.log("Estado real del pedido:", resultado);
-
-                    if (
-                        resultado &&
-                        resultado.estado_pago === "approved"
-                    ) {
-                        pagoAprobado = true;
-                        mostrarExito(
-                            "¡Pago aprobado! Tu pedido fue procesado correctamente."
-                        );
-                        return true;
-                    }
-                } catch (error) {
-                    console.warn(
-                        "No se pudo consultar el estado del pedido:",
-                        error
-                    );
-                }
-
-                if (intento < intentos) {
-                    await new Promise(
-                        resolve => setTimeout(resolve, espera)
-                    );
-                }
-            }
-
-            return false;
-        }
 
         async function cargarPago() {
 
@@ -1233,6 +1329,30 @@
                                 );
 
 
+                                // =========================
+                                // MERCADO PAGO / WALLET
+                                // =========================
+                                // Este método sale de NOVA y continúa el
+                                // pago directamente en Mercado Pago.
+                                // No enviamos formData a /api/procesar-pago.
+                                if (
+                                    selectedPaymentMethod ===
+                                    "wallet_purchase"
+                                ) {
+
+                                    mostrarEstado(
+                                        "Redirigiendo a Mercado Pago..."
+                                    );
+
+                                    console.log(
+                                        "Pago mediante Mercado Pago Wallet: se continúa fuera de NOVA."
+                                    );
+
+                                    return Promise.resolve();
+
+                                }
+
+
                                 try {
 
                                     // =========================
@@ -1280,24 +1400,6 @@
                                         "Respuesta del procesamiento:",
                                         resultadoPago
                                     );
-
-                                    // Mercado Pago puede completar la aprobación
-                                    // desde su aplicación después de esta respuesta.
-                                    // D1 es la fuente de verdad.
-                                    if (
-                                        resultadoPago.status !== "approved"
-                                    ) {
-                                        mostrarEstado(
-                                            "Esperando confirmación del pago..."
-                                        );
-
-                                        const aprobadoEnD1 =
-                                            await consultarEstadoPedido();
-
-                                        if (aprobadoEnD1) {
-                                            return;
-                                        }
-                                    }
 
 
                                     // =========================
@@ -1408,6 +1510,22 @@
                                     );
 
 
+                                    // El usuario puede haber pasado a la
+                                    // aplicación de Mercado Pago. Antes de
+                                    // mostrar un error definitivo, consultamos
+                                    // el estado real guardado por el webhook.
+                                    const aprobadoEnD1 =
+                                        await consultarEstadoPedido(
+                                            5,
+                                            1200
+                                        );
+
+                                    if (
+                                        aprobadoEnD1
+                                    ) {
+                                        return;
+                                    }
+
                                     mostrarError(
                                         error.message ||
                                         "No se pudo procesar el pago."
@@ -1426,9 +1544,20 @@
                                     error
                                 );
 
-
-                                mostrarError(
-                                    "No se pudo cargar correctamente el formulario de pago."
+                                // Si el usuario volvió desde Mercado Pago,
+                                // el Brick puede informar un error/interrupción
+                                // aunque el webhook ya haya aprobado el pedido.
+                                consultarEstadoPedido(
+                                    5,
+                                    1200
+                                ).then(
+                                    aprobado => {
+                                        if (!aprobado) {
+                                            mostrarError(
+                                                "No se pudo confirmar el estado del pago. Revisá el pedido e intentá nuevamente."
+                                            );
+                                        }
+                                    }
                                 );
 
                             }
@@ -1514,30 +1643,37 @@
                 }
 
 
-                // Última comprobación al volver de Mercado Pago.
-                if (!pagoAprobado) {
-                    await consultarEstadoPedido(
-                        3,
-                        1000
-                    );
-                }
-
                 // =========================
                 // SI EL PAGO FUE APROBADO
-                // VOLVER EXPLÍCITAMENTE A VENTA
+                // VOLVER A LA EXPERIENCIA DE ORIGEN
                 // =========================
 
                 if (
                     pagoAprobado
                 ) {
 
-                    window.location.href =
-                        `experiencia-venta.html?pago=approved&pedido=${encodeURIComponent(
-                            pedidoId
-                        )}`;
+                    volverAExperiencia();
 
                     return;
 
+                }
+
+
+                // =========================
+                // ÚLTIMA COMPROBACIÓN EN D1
+                // =========================
+
+                const aprobadoEnD1 =
+                    await consultarEstadoPedido(
+                        3,
+                        1000
+                    );
+
+                if (
+                    aprobadoEnD1
+                ) {
+                    volverAExperiencia();
+                    return;
                 }
 
 
@@ -1554,15 +1690,52 @@
 
                     window.history.back();
 
+                } else if (
+                    experienciaOrigen === "venta"
+                ) {
+
+                    window.location.href =
+                        "experiencia-venta.html";
+
                 } else {
 
                     window.location.href =
-                        `${experienciaOrigen}?pedido=${encodeURIComponent(
-                            pedidoId
-                        )}`;
+                        "experiencia.html";
 
                 }
 
+            }
+        );
+
+
+        // =========================
+        // VERIFICAR AL VOLVER A NOVA
+        // =========================
+        // pageshow cubre el regreso desde otra aplicación o desde
+        // el historial del navegador. visibilitychange cubre el
+        // caso habitual de Android al volver a esta pestaña/página.
+        window.addEventListener(
+            "pageshow",
+            function () {
+                consultarEstadoPedido(
+                    5,
+                    1200
+                );
+            }
+        );
+
+        document.addEventListener(
+            "visibilitychange",
+            function () {
+                if (
+                    document.visibilityState ===
+                    "visible"
+                ) {
+                    consultarEstadoPedido(
+                        5,
+                        1200
+                    );
+                }
             }
         );
 
@@ -1595,37 +1768,6 @@
 
                 }
 
-            }
-        );
-
-
-        async function verificarAlRegresar() {
-            if (!pedidoId || pagoAprobado) {
-                return;
-            }
-
-            console.log(
-                "NOVA recuperó el foco. Verificando estado del pedido..."
-            );
-
-            await consultarEstadoPedido();
-        }
-
-        document.addEventListener(
-            "visibilitychange",
-            function () {
-                if (
-                    document.visibilityState === "visible"
-                ) {
-                    verificarAlRegresar();
-                }
-            }
-        );
-
-        window.addEventListener(
-            "pageshow",
-            function () {
-                verificarAlRegresar();
             }
         );
 
