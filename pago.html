@@ -856,6 +856,125 @@
         let pagoAprobado =
             false;
 
+        let verificacionPagoActiva =
+            false;
+
+        let verificacionPagoTimer =
+            null;
+
+
+        // =========================
+        // CONSULTAR ESTADO REAL DEL PEDIDO
+        // =========================
+
+        async function consultarEstadoPedido() {
+
+            if (!pedidoId) {
+                return null;
+            }
+
+            try {
+
+                const respuesta =
+                    await fetch(
+                        "/api/estado-pedido",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+                            body: JSON.stringify({
+                                pedido_id: pedidoId
+                            })
+                        }
+                    );
+
+                const datos =
+                    await respuesta.json();
+
+                console.log(
+                    "Estado real del pedido:",
+                    datos
+                );
+
+                if (
+                    respuesta.ok &&
+                    datos.ok &&
+                    datos.estado_pago === "approved"
+                ) {
+
+                    pagoAprobado = true;
+
+                    mostrarExito(
+                        "¡Pago aprobado! Tu pedido fue procesado correctamente."
+                    );
+
+                    return "approved";
+                }
+
+                if (
+                    respuesta.ok &&
+                    datos.ok &&
+                    datos.estado_pago === "rejected"
+                ) {
+                    return "rejected";
+                }
+
+                return datos.estado_pago || null;
+
+            } catch (error) {
+
+                console.warn(
+                    "No se pudo consultar el estado real del pedido:",
+                    error
+                );
+
+                return null;
+            }
+        }
+
+
+        // =========================
+        // ESPERAR CONFIRMACIÓN DEL WEBHOOK
+        // =========================
+
+        async function verificarPagoHastaConfirmar() {
+
+            if (
+                verificacionPagoActiva ||
+                pagoAprobado
+            ) {
+                return;
+            }
+
+            verificacionPagoActiva = true;
+
+            for (let intento = 0; intento < 15; intento++) {
+
+                if (pagoAprobado) {
+                    break;
+                }
+
+                const estado =
+                    await consultarEstadoPedido();
+
+                if (estado === "approved") {
+                    break;
+                }
+
+                if (estado === "rejected") {
+                    break;
+                }
+
+                await new Promise(
+                    resolve => setTimeout(resolve, 2000)
+                );
+            }
+
+            verificacionPagoActiva = false;
+        }
+
 
         // =========================
         // FORMATEAR DINERO
@@ -1173,6 +1292,11 @@
                                     "Procesando el pago..."
                                 );
 
+                                // El webhook de Mercado Pago puede confirmar
+                                // el pago de forma independiente al resultado
+                                // inmediato del Payment Brick.
+                                verificarPagoHastaConfirmar();
+
 
                                 try {
 
@@ -1231,6 +1355,18 @@
                                         !respuestaPago.ok ||
                                         !resultadoPago.ok
                                     ) {
+
+                                        // Antes de mostrar un error, consultar
+                                        // el estado real en D1. Puede ocurrir
+                                        // que Mercado Pago ya haya aprobado el
+                                        // pago y el webhook ya haya actualizado
+                                        // el pedido.
+                                        const estadoReal =
+                                            await consultarEstadoPedido();
+
+                                        if (estadoReal === "approved") {
+                                            return;
+                                        }
 
                                         throw new Error(
                                             resultadoPago.error ||
@@ -1350,8 +1486,18 @@
                                 );
 
 
-                                mostrarError(
-                                    "No se pudo cargar correctamente el formulario de pago."
+                                // Si el usuario vuelve desde la app de
+                                // Mercado Pago, el pago puede estar aprobado
+                                // aunque el Brick informe un error de flujo.
+                                consultarEstadoPedido().then(
+                                    (estadoReal) => {
+
+                                        if (estadoReal !== "approved") {
+                                            mostrarError(
+                                                "No se pudo cargar correctamente el formulario de pago."
+                                            );
+                                        }
+                                    }
                                 );
 
                             }
@@ -1389,6 +1535,39 @@
             }
 
         }
+
+
+        // =========================
+        // VERIFICAR AL VOLVER DE MERCADO PAGO
+        // =========================
+
+        document.addEventListener(
+            "visibilitychange",
+            function () {
+
+                if (
+                    document.visibilityState === "visible" &&
+                    !pagoAprobado
+                ) {
+                    consultarEstadoPedido();
+                    verificarPagoHastaConfirmar();
+                }
+
+            }
+        );
+
+
+        window.addEventListener(
+            "pageshow",
+            function () {
+
+                if (!pagoAprobado) {
+                    consultarEstadoPedido();
+                    verificarPagoHastaConfirmar();
+                }
+
+            }
+        );
 
 
         // =========================
