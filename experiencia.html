@@ -470,6 +470,38 @@ main {
     letter-spacing: 3px;
 }
 
+.photo-subsection-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 15px;
+}
+
+.photo-subsection-header .photo-subtitle {
+    margin-bottom: 0;
+}
+
+.section-play-button {
+    flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 20px;
+    padding: 8px 13px;
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.82);
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.section-play-button:hover {
+    background: #ffffff;
+    color: #080808;
+    border-color: #ffffff;
+}
+
 
 /* ==================================================
    FOTOGRAFÍAS
@@ -903,6 +935,31 @@ footer {
 .lightbox-print:hover {
     background: #ffffff;
     color: #080808;
+}
+
+.slideshow-toggle {
+    position: absolute;
+    left: 50%;
+    bottom: 58px;
+    transform: translateX(-50%);
+    width: auto;
+    min-width: 132px;
+    height: auto;
+    padding: 11px 18px;
+    border-radius: 25px;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 1.3px;
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.slideshow-toggle.hidden {
+    display: none;
+}
+
+.slideshow-toggle:hover {
+    transform: translateX(-50%) scale(1.04);
 }
 
 
@@ -1835,11 +1892,22 @@ footer {
     }
 
     .photo-subtitle {
-        margin-bottom: 10px;
+        margin-bottom: 0;
 
         font-size: 8px;
 
         letter-spacing: 2.5px;
+    }
+
+    .photo-subsection-header {
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .section-play-button {
+        padding: 7px 9px;
+        font-size: 7px;
+        letter-spacing: 0.5px;
     }
 
     .photo-grid {
@@ -1934,6 +2002,13 @@ footer {
         padding:
             9px 18px;
 
+        font-size: 8px;
+    }
+
+    .slideshow-toggle {
+        bottom: 52px;
+        min-width: 122px;
+        padding: 10px 15px;
         font-size: 8px;
     }
 
@@ -2208,6 +2283,16 @@ footer {
         id="lightboxPrintButton"
     >
         IMPRIMIR ESTA FOTO
+    </button>
+
+
+    <button
+        type="button"
+        class="lightbox-button slideshow-toggle hidden"
+        id="slideshowToggleButton"
+        aria-label="Pausar reproducción"
+    >
+        Ⅱ PAUSAR
     </button>
 
 
@@ -3846,6 +3931,15 @@ footer {
                     "photo-subsection";
 
 
+                const subsectionHeader =
+                    document.createElement(
+                        "div"
+                    );
+
+                subsectionHeader.className =
+                    "photo-subsection-header";
+
+
                 const subtitle =
                     document.createElement(
                         "div"
@@ -3856,6 +3950,29 @@ footer {
 
                 subtitle.textContent =
                     seccion.nombre;
+
+
+                const playSectionButton =
+                    document.createElement(
+                        "button"
+                    );
+
+                playSectionButton.type =
+                    "button";
+
+                playSectionButton.className =
+                    "section-play-button";
+
+                playSectionButton.textContent =
+                    "▶ REPRODUCIR";
+
+                playSectionButton.setAttribute(
+                    "aria-label",
+                    "Reproducir sección " + seccion.nombre
+                );
+
+
+                const fotosSeccion = [];
 
 
                 const grid =
@@ -3888,14 +4005,40 @@ footer {
                                 elemento
                             );
 
+                            fotosSeccion.push(
+                                foto
+                            );
+
                         }
 
                     }
                 );
 
 
-                subsection.appendChild(
+                playSectionButton.addEventListener(
+                    "click",
+                    function (event) {
+
+                        event.stopPropagation();
+
+                        iniciarPresentacion(
+                            fotosSeccion
+                        );
+
+                    }
+                );
+
+
+                subsectionHeader.appendChild(
                     subtitle
+                );
+
+                subsectionHeader.appendChild(
+                    playSectionButton
+                );
+
+                subsection.appendChild(
+                    subsectionHeader
                 );
 
                 subsection.appendChild(
@@ -4140,8 +4283,201 @@ footer {
             "lightboxPrintButton"
         );
 
+    const slideshowToggleButton =
+        document.getElementById(
+            "slideshowToggleButton"
+        );
+
 
     let fotoActual = 0;
+    let presentacionActiva = false;
+    let presentacionPausada = false;
+    let fotosPresentacion = [];
+    let temporizadorPresentacion = null;
+
+    const duracionDiapositiva = 8000;
+
+
+    function obtenerFotosVisibles() {
+
+        return presentacionActiva
+            ? fotosPresentacion
+            : listaFotos;
+
+    }
+
+
+    function detenerTemporizadorPresentacion() {
+
+        if (
+            temporizadorPresentacion !== null
+        ) {
+
+            clearInterval(
+                temporizadorPresentacion
+            );
+
+            temporizadorPresentacion = null;
+
+        }
+
+    }
+
+
+    function actualizarBotonPresentacion(texto, etiqueta) {
+
+        slideshowToggleButton.textContent =
+            texto;
+
+        slideshowToggleButton.setAttribute(
+            "aria-label",
+            etiqueta
+        );
+
+    }
+
+
+    function programarAvancePresentacion() {
+
+        detenerTemporizadorPresentacion();
+
+        temporizadorPresentacion =
+            setInterval(
+                function () {
+
+                    if (
+                        !presentacionActiva ||
+                        presentacionPausada
+                    ) {
+
+                        return;
+
+                    }
+
+                    if (
+                        fotoActual >= fotosPresentacion.length - 1
+                    ) {
+
+                        detenerTemporizadorPresentacion();
+
+                        presentacionPausada = true;
+
+                        actualizarBotonPresentacion(
+                            "↻ REPETIR",
+                            "Repetir presentación desde el principio"
+                        );
+
+                        return;
+
+                    }
+
+                    fotoActual++;
+                    mostrarFoto();
+
+                },
+                duracionDiapositiva
+            );
+
+    }
+
+
+    function iniciarPresentacion(fotos) {
+
+        if (
+            !Array.isArray(fotos) ||
+            fotos.length === 0
+        ) {
+
+            return;
+
+        }
+
+        detenerTemporizadorPresentacion();
+
+        presentacionActiva = true;
+        presentacionPausada = false;
+        fotosPresentacion = fotos;
+        fotoActual = 0;
+
+        lightboxPrintButton.style.display =
+            "none";
+
+        slideshowToggleButton.classList.remove(
+            "hidden"
+        );
+
+        actualizarBotonPresentacion(
+            "Ⅱ PAUSAR",
+            "Pausar presentación"
+        );
+
+        mostrarFoto();
+
+        lightbox.classList.add(
+            "active"
+        );
+
+        document.body.style.overflow =
+            "hidden";
+
+        programarAvancePresentacion();
+
+    }
+
+
+    function alternarPresentacion() {
+
+        if (!presentacionActiva) {
+            return;
+        }
+
+        if (!presentacionPausada) {
+
+            detenerTemporizadorPresentacion();
+            presentacionPausada = true;
+
+            actualizarBotonPresentacion(
+                "▶ REANUDAR",
+                "Reanudar presentación"
+            );
+
+            return;
+
+        }
+
+        if (
+            fotoActual >= fotosPresentacion.length - 1
+        ) {
+
+            fotoActual = 0;
+            mostrarFoto();
+
+        }
+
+        presentacionPausada = false;
+
+        actualizarBotonPresentacion(
+            "Ⅱ PAUSAR",
+            "Pausar presentación"
+        );
+
+        programarAvancePresentacion();
+
+    }
+
+
+    function reiniciarTemporizadorSiReproduciendo() {
+
+        if (
+            presentacionActiva &&
+            !presentacionPausada
+        ) {
+
+            programarAvancePresentacion();
+
+        }
+
+    }
 
 
     function abrirLightbox(
@@ -4156,18 +4492,24 @@ footer {
 
         }
 
+        detenerTemporizadorPresentacion();
+        presentacionActiva = false;
+        presentacionPausada = false;
+        fotosPresentacion = [];
+        slideshowToggleButton.classList.add(
+            "hidden"
+        );
+        lightboxPrintButton.style.display =
+            "";
 
         fotoActual =
             indice;
 
-
         mostrarFoto();
-
 
         lightbox.classList.add(
             "active"
         );
-
 
         document.body.style.overflow =
             "hidden";
@@ -4177,34 +4519,36 @@ footer {
 
     function mostrarFoto() {
 
+        const fotosVisibles =
+            obtenerFotosVisibles();
+
         if (
-            listaFotos.length === 0
+            fotosVisibles.length === 0
         ) {
 
             return;
 
         }
 
-
         const foto =
-            listaFotos[
+            fotosVisibles[
                 fotoActual
             ];
 
+        if (!foto) {
+            return;
+        }
 
         lightboxImage.src =
             foto.secure_url;
 
-
         photoCounter.textContent =
-            `${fotoActual + 1} / ${listaFotos.length}`;
-
+            `${fotoActual + 1} / ${fotosVisibles.length}`;
 
         const fotoId =
             foto.public_id ||
             foto.filename ||
             foto.secure_url;
-
 
         const seleccionada =
             seleccion.find(
@@ -4216,7 +4560,6 @@ footer {
                 }
             );
 
-
         lightboxPrintButton.textContent =
             seleccionada
                 ? `IMPRIMIR · ${seleccionada.cantidad}`
@@ -4227,27 +4570,38 @@ footer {
 
     function fotoAnterior() {
 
+        const fotosVisibles =
+            obtenerFotosVisibles();
+
         if (
-            listaFotos.length === 0
+            fotosVisibles.length === 0
         ) {
 
             return;
 
         }
 
+        if (presentacionActiva) {
+
+            fotoActual =
+                Math.max(0, fotoActual - 1);
+
+            mostrarFoto();
+            reiniciarTemporizadorSiReproduciendo();
+            return;
+
+        }
 
         fotoActual--;
-
 
         if (
             fotoActual < 0
         ) {
 
             fotoActual =
-                listaFotos.length - 1;
+                fotosVisibles.length - 1;
 
         }
-
 
         mostrarFoto();
 
@@ -4256,26 +4610,51 @@ footer {
 
     function fotoSiguiente() {
 
+        const fotosVisibles =
+            obtenerFotosVisibles();
+
         if (
-            listaFotos.length === 0
+            fotosVisibles.length === 0
         ) {
 
             return;
 
         }
 
+        if (presentacionActiva) {
+
+            if (
+                fotoActual >= fotosVisibles.length - 1
+            ) {
+
+                detenerTemporizadorPresentacion();
+                presentacionPausada = true;
+
+                actualizarBotonPresentacion(
+                    "↻ REPETIR",
+                    "Repetir presentación desde el principio"
+                );
+
+                return;
+
+            }
+
+            fotoActual++;
+            mostrarFoto();
+            reiniciarTemporizadorSiReproduciendo();
+            return;
+
+        }
 
         fotoActual++;
 
-
         if (
-            fotoActual >= listaFotos.length
+            fotoActual >= fotosVisibles.length
         ) {
 
             fotoActual = 0;
 
         }
-
 
         mostrarFoto();
 
@@ -4283,6 +4662,19 @@ footer {
 
 
     function cerrarLightbox() {
+
+        detenerTemporizadorPresentacion();
+
+        presentacionActiva = false;
+        presentacionPausada = false;
+        fotosPresentacion = [];
+
+        slideshowToggleButton.classList.add(
+            "hidden"
+        );
+
+        lightboxPrintButton.style.display =
+            "";
 
         lightbox.classList.remove(
             "active"
@@ -4327,6 +4719,17 @@ footer {
     );
 
 
+    slideshowToggleButton.addEventListener(
+        "click",
+        function (event) {
+
+            event.stopPropagation();
+            alternarPresentacion();
+
+        }
+    );
+
+
     lightbox.addEventListener(
         "click",
         function (event) {
@@ -4355,8 +4758,11 @@ footer {
             event.stopPropagation();
 
 
+            const fotosVisibles =
+                obtenerFotosVisibles();
+
             const foto =
-                listaFotos[
+                fotosVisibles[
                     fotoActual
                 ];
 
