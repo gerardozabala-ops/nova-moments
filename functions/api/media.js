@@ -1,3 +1,4 @@
+
 export async function onRequestGet(context) {
 
     const cloudName =
@@ -79,9 +80,11 @@ export async function onRequestGet(context) {
             );
 
         const fotos =
-            recursosImagen.filter(recurso =>
-                (recurso.asset_folder || "")
-                    .startsWith(`${prefijo}FOTOS`)
+            ordenarFotosNumericamente(
+                recursosImagen.filter(recurso =>
+                    (recurso.asset_folder || "")
+                        .startsWith(`${prefijo}FOTOS`)
+                )
             );
 
         const listaVideos =
@@ -205,6 +208,71 @@ async function obtenerRecursos(
 }
 
 
+// Ordena las fotos por el último número
+// que aparece en el nombre del archivo.
+function ordenarFotosNumericamente(
+    fotos
+) {
+
+    return [...fotos].sort((a, b) => {
+
+        const nombreA =
+            obtenerNombreArchivo(a);
+
+        const nombreB =
+            obtenerNombreArchivo(b);
+
+        const numeroA =
+            obtenerNumeroArchivo(nombreA);
+
+        const numeroB =
+            obtenerNumeroArchivo(nombreB);
+
+        if (numeroA !== numeroB) {
+            return numeroA - numeroB;
+        }
+
+        return nombreA.localeCompare(
+            nombreB,
+            undefined,
+            {
+                numeric: true,
+                sensitivity: "base"
+            }
+        );
+    });
+}
+
+
+// Obtiene el nombre del archivo sin la carpeta.
+function obtenerNombreArchivo(recurso) {
+
+    const identificador =
+        recurso.public_id || "";
+
+    return identificador
+        .split("/")
+        .pop() || "";
+}
+
+
+// Extrae el último grupo numérico del nombre.
+// Los archivos sin números quedan al final.
+function obtenerNumeroArchivo(nombre) {
+
+    const coincidencias =
+        nombre.match(/\d+/g);
+
+    if (!coincidencias) {
+        return Number.MAX_SAFE_INTEGER;
+    }
+
+    return Number(
+        coincidencias[coincidencias.length - 1]
+    );
+}
+
+
 function agruparFotosPorSeccion(
     fotos,
     prefijo
@@ -246,7 +314,9 @@ function agruparFotosPorSeccion(
 
             fotos:
                 convertirRecursos(
-                    grupos[nombre]
+                    ordenarFotosNumericamente(
+                        grupos[nombre]
+                    )
                 )
         }));
 }
