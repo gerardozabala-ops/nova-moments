@@ -76,7 +76,48 @@
  document.getElementById('about-tile').addEventListener('click',()=>showNotice('about'));
  document.getElementById('close-notice').addEventListener('click',closeNotice);
  modal.addEventListener('click',e=>{if(e.target===modal)closeNotice()});
- document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))closeNotice()});
+ const focusSelector='a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
+ function visibleFocusable(){
+  return [...document.querySelectorAll(focusSelector)].filter(el=>{
+   if(modal.classList.contains('open')) return modal.contains(el) && el.getClientRects().length>0;
+   return !modal.contains(el) && el.getClientRects().length>0 && getComputedStyle(el).visibility!=='hidden';
+  });
+ }
+ function moveFocus(direction){
+  const items=visibleFocusable();
+  if(!items.length)return;
+  const active=document.activeElement;
+  if(!items.includes(active)){
+   const first=items.find(el=>el.matches('.action.primary'))||items[0];
+   first.focus();return;
+  }
+  const a=active.getBoundingClientRect();
+  const ax=a.left+a.width/2, ay=a.top+a.height/2;
+  let best=null,bestScore=Infinity;
+  for(const el of items){
+   if(el===active)continue;
+   const r=el.getBoundingClientRect();
+   const x=r.left+r.width/2, y=r.top+r.height/2;
+   const dx=x-ax,dy=y-ay;
+   let primary,secondary;
+   if(direction==='ArrowRight'){if(dx<=8)continue;primary=dx;secondary=Math.abs(dy);}
+   else if(direction==='ArrowLeft'){if(dx>=-8)continue;primary=-dx;secondary=Math.abs(dy);}
+   else if(direction==='ArrowDown'){if(dy<=8)continue;primary=dy;secondary=Math.abs(dx);}
+   else {if(dy>=-8)continue;primary=-dy;secondary=Math.abs(dx);}
+   const score=primary+secondary*1.65;
+   if(score<bestScore){bestScore=score;best=el;}
+  }
+  if(best){best.focus({preventScroll:true});best.scrollIntoView({behavior:'smooth',block:'nearest',inline:'nearest'});}
+ }
+ document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&modal.classList.contains('open')){e.preventDefault();closeNotice();return;}
+  if(modal.classList.contains('open')&&e.key==='Backspace'){e.preventDefault();closeNotice();return;}
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){
+   const tag=(document.activeElement?.tagName||'').toLowerCase();
+   if(['input','textarea','select'].includes(tag))return;
+   e.preventDefault();moveFocus(e.key);
+  }
+ });
 })();
 </script>
 </body>
