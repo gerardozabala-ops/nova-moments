@@ -1,5 +1,5 @@
-export async function onRequestGet(context) {
 
+export async function onRequestGet(context) {
     const bucket = context.env.VIDEOS;
     const url = new URL(context.request.url);
     const key = url.searchParams.get("key");
@@ -7,253 +7,176 @@ export async function onRequestGet(context) {
     const MAX_RANGE = 64 * 1024 * 1024; // 64 MB
 
     if (!bucket) {
-        return new Response(
-            "R2 no está configurado.",
-            { status: 500 }
-        );
+        return new Response("R2 no está configurado.", {
+            status: 500
+        });
     }
 
     if (!key) {
-        return new Response(
-            "Falta indicar el video.",
-            { status: 400 }
-        );
+        return new Response("Falta indicar el video.", {
+            status: 400
+        });
     }
 
     try {
+        const rangeHeader = context.request.headers.get("Range");
 
-        const rangeHeader =
-            context.request.headers.get("Range");
-
-        // Sin Range: mantenemos el comportamiento anterior
+        // Conservamos la respuesta completa cuando no hay Range.
         if (!rangeHeader) {
-
-            const objeto =
-                await bucket.get(key);
+            const objeto = await bucket.get(key);
 
             if (!objeto) {
-                return new Response(
-                    "Video no encontrado.",
-                    { status: 404 }
-                );
+                return new Response("Video no encontrado.", {
+                    status: 404
+                });
             }
 
             const headers = new Headers();
-
             objeto.writeHttpMetadata(headers);
 
-            headers.set(
-                "Accept-Ranges",
-                "bytes"
-            );
+            headers.set("Accept-Ranges", "bytes");
+            headers.set("Cache-Control", "private, max-age=3600");
+            headers.set("Content-Length", objeto.size.toString());
 
-            headers.set(
-                "Cache-Control",
-                "private, max-age=3600"
-            );
-
-            headers.set(
-                "Content-Length",
-                objeto.size.toString()
-            );
-
-            return new Response(
-                objeto.body,
-                {
-                    status: 200,
-                    headers
-                }
-            );
+            return new Response(objeto.body, {
+                status: 200,
+                headers
+            });
         }
 
-        // Procesamos bytes=INICIO-, bytes=INICIO-FIN o bytes=-SUFIJO
-        const match =
-            rangeHeader.match(
-                /^bytes=(\d*)-(\d*)$/
-            );
+        // Admitimos un único rango de bytes.
+        const match = rangeHeader.match(/^bytes=(\d*)-(\d*)$/);
 
-        if (!match) {
-            return new Response(
-                "Range no válido.",
-                {
-                    status: 416,
-                    headers: {
-                        "Content-Range": "bytes */*"
-                    }
+        if (!match || (!match[1] && !match[2])) {
+            return new Response("Range no válido.", {
+                status: 416,
+                headers: {
+                    "Content-Range": "bytes */*"
                 }
-            );
+            });
+        }
+
+        // Consultamos el tamaño total real del archivo.
+        const metadata = await bucket.head(key);
+
+        if (!metadata) {
+            return new Response("Video no encontrado.", {
+                status: 404
+            });
+        }
+
+        const totalSize = metadata.size;
+
+        if (totalSize <= 0) {
+            return new Response("Range fuera de los límites del video.", {
+                status: 416,
+                headers: {
+                    "Content-Range": `bytes */${totalSize}`
+                }
+            });
         }
 
         const inicioTexto = match[1];
         const finTexto = match[2];
 
-        let objeto;
+        let inicio;
+        let fin;
 
-        // Range por sufijo: bytes=-500000
         if (inicioTexto === "") {
+            // Rango por sufijo: bytes=-500000
+            const sufijo = Number(finTexto);
 
-            const sufijo =
-                Number(finTexto);
-
-            if (
-                !Number.isSafeInteger(sufijo) ||
-                sufijo <= 0
-            ) {
-                return new Response(
-                    "Range no válido.",
-                    { status: 416 }
-                );
-            }
-
-            objeto =
-                await bucket.get(
-                    key,
-                    {
-                        range: {
-                            suffix:
-                                Math.min(
-                                    sufijo,
-                                    MAX_RANGE
-                                )
-                        }
-                    }
-                );
-
-        } else {
-
-            const inicio =
-                Number(inicioTexto);
-
-            if (
-                !Number.isSafeInteger(inicio) ||
-                inicio < 0
-            ) {
-                return new Response(
-                    "Range no válido.",
-                    { status: 416 }
-                );
-            }
-
-            let longitud = MAX_RANGE;
-
-            // Si viene un final concreto, lo respetamos,
-            // pero nunca superamos 64 MB.
-            if (finTexto !== "") {
-
-                const fin =
-                    Number(finTexto);
-
-                if (
-                    !Number.isSafeInteger(fin) ||
-                    fin < inicio
-                ) {
-                    return new Response(
-                        "Range no válido.",
-                        { status: 416 }
-                    );
-                }
-
-                longitud =
-                    Math.min(
-                        fin - inicio + 1,
-                        MAX_RANGE
-                    );
-            }
-
-            // R2 recibe ahora un rango limitado
-            objeto =
-                await bucket.get(
-                    key,
-                    {
-                        range: {
-                            offset: inicio,
-                            length: longitud
-                        }
-                    }
-                );
-        }
-
-        if (!objeto) {
-
-            const metadata =
-                await bucket.head(key);
-
-            if (!metadata) {
-                return new Response(
-                    "Video no encontrado.",
-                    { status: 404 }
-                );
-            }
-
-            return new Response(
-                "Range fuera de los límites del video.",
-                {
+            if (!Number.isSafeInteger(sufijo) || sufijo <= 0) {
+                return new Response("Range no válido.", {
                     status: 416,
                     headers: {
-                        "Content-Range":
-                            `bytes */${metadata.size}`
+                        "Content-Range": `bytes */${totalSize}`
                     }
-                }
+                });
+            }
+
+            const longitud = Math.min(
+                sufijo,
+                MAX_RANGE,
+                totalSize
             );
+
+            inicio = totalSize - longitud;
+            fin = totalSize - 1;
+        } else {
+            inicio = Number(inicioTexto);
+
+            if (!Number.isSafeInteger(inicio) || inicio < 0) {
+                return new Response("Range no válido.", {
+                    status: 416,
+                    headers: {
+                        "Content-Range": `bytes */${totalSize}`
+                    }
+                });
+            }
+
+            if (inicio >= totalSize) {
+                return new Response("Range fuera de los límites del video.", {
+                    status: 416,
+                    headers: {
+                        "Content-Range": `bytes */${totalSize}`
+                    }
+                });
+            }
+
+            const finSolicitado = finTexto === ""
+                ? totalSize - 1
+                : Number(finTexto);
+
+            if (
+                !Number.isSafeInteger(finSolicitado) ||
+                finSolicitado < inicio
+            ) {
+                return new Response("Range no válido.", {
+                    status: 416,
+                    headers: {
+                        "Content-Range": `bytes */${totalSize}`
+                    }
+                });
+            }
+
+            // Limitamos el rango a 64 MB y al final real del archivo.
+            fin = Math.min(
+                finSolicitado,
+                inicio + MAX_RANGE - 1,
+                totalSize - 1
+            );
+        }
+
+        const longitud = fin - inicio + 1;
+
+        const objeto = await bucket.get(key, {
+            range: {
+                offset: inicio,
+                length: longitud
+            }
+        });
+
+        if (!objeto) {
+            return new Response("No se pudo recuperar el rango solicitado.", {
+                status: 500
+            });
         }
 
         const headers = new Headers();
-
         objeto.writeHttpMetadata(headers);
 
-        headers.set(
-            "Accept-Ranges",
-            "bytes"
-        );
+        headers.set("Accept-Ranges", "bytes");
+        headers.set("Cache-Control", "private, max-age=3600");
+        headers.set("Content-Range", `bytes ${inicio}-${fin}/${totalSize}`);
+        headers.set("Content-Length", longitud.toString());
 
-        headers.set(
-            "Cache-Control",
-            "private, max-age=3600"
-        );
-
-        let status = 200;
-
-        if (objeto.range) {
-
-            const inicio =
-                objeto.range.offset;
-
-            const longitud =
-                objeto.range.length;
-
-            const fin =
-                inicio + longitud - 1;
-
-            headers.set(
-                "Content-Range",
-                `bytes ${inicio}-${fin}/${objeto.size}`
-            );
-
-            headers.set(
-                "Content-Length",
-                longitud.toString()
-            );
-
-            status = 206;
-
-        } else {
-
-            headers.set(
-                "Content-Length",
-                objeto.size.toString()
-            );
-        }
-
-        return new Response(
-            objeto.body,
-            {
-                status,
-                headers
-            }
-        );
+        return new Response(objeto.body, {
+            status: 206,
+            headers
+        });
 
     } catch (error) {
-
         return new Response(
             JSON.stringify({
                 ok: false,
@@ -262,8 +185,7 @@ export async function onRequestGet(context) {
             {
                 status: 500,
                 headers: {
-                    "Content-Type":
-                        "application/json"
+                    "Content-Type": "application/json"
                 }
             }
         );
