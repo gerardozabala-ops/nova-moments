@@ -212,6 +212,14 @@ header {
   background: #000000;
 }
 
+.videoTarjeta iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  background: #000000;
+}
+
 .videoNombre {
   margin-top: 10px;
   color: #d8bd8a;
@@ -824,6 +832,10 @@ header {
     var reproductor;
     var titulo;
     var texto;
+    var nombreVideo;
+    var playbackId;
+    var iframe;
+    var urlPlayer;
 
     limpiarElemento(videos);
 
@@ -851,28 +863,57 @@ header {
 
     for (i = 0; i < lista.length; i++) {
       recurso = lista[i];
-
+      nombreVideo = nombreArchivo(recurso, i);
       tarjeta = document.createElement("div");
       tarjeta.className = "videoTarjeta";
 
-      reproductor = document.createElement("video");
-      reproductor.controls = true;
-      reproductor.preload = "none";
-      reproductor.setAttribute("playsinline", "playsinline");
-      reproductor.setAttribute("tabindex", "0");
-
-      reproductor.src = recurso.secure_url;
-
       titulo = document.createElement("div");
       titulo.className = "videoNombre";
-      titulo.innerHTML = nombreArchivo(recurso, i);
+      titulo.innerHTML = nombreVideo;
 
-      tarjeta.appendChild(reproductor);
+      /*
+       * PRUEBA MUX LIMITADA:
+       * Solo reemplaza el reproductor del video de prueba de EVT-0007.
+       * El resto de los videos continúa usando su URL actual (Cloudinary/R2).
+       * El ID corresponde al Playback ID facilitado para esta prueba.
+       */
+      playbackId = "";
+      if (
+        String(eventoId).toUpperCase() === "EVT-0007" &&
+        nombreVideo.toLowerCase().indexOf("video clip danna y angi") !== -1
+      ) {
+        playbackId = "VSwiKeakFgWX2cxrp8YHGxhWpaqk34orVD01zDtJ009bE";
+      }
+
+      if (playbackId) {
+        iframe = document.createElement("iframe");
+        urlPlayer = "https://player.mux.com/" + playbackId +
+          "?metadata-video-title=" + encodeURIComponent(nombreVideo) +
+          "&video-title=" + encodeURIComponent(nombreVideo);
+        iframe.src = urlPlayer;
+        iframe.title = "Reproductor Mux: " + nombreVideo;
+        iframe.setAttribute("allow", "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;");
+        iframe.setAttribute("allowfullscreen", "allowfullscreen");
+        iframe.setAttribute("loading", "lazy");
+        tarjeta.appendChild(iframe);
+      } else {
+        reproductor = document.createElement("video");
+        reproductor.controls = true;
+        reproductor.preload = "none";
+        reproductor.setAttribute("playsinline", "playsinline");
+        reproductor.setAttribute("tabindex", "0");
+        reproductor.src = recurso.secure_url;
+        tarjeta.appendChild(reproductor);
+      }
+
       tarjeta.appendChild(titulo);
       videos.appendChild(tarjeta);
     }
 
-    estado.innerHTML = "Videos disponibles: " + lista.length;
+    estado.innerHTML = "Videos disponibles: " + lista.length +
+      (String(eventoId).toUpperCase() === "EVT-0007"
+        ? " — el video de prueba seleccionado utiliza Mux."
+        : "");
   }
 
   function cargarExperiencia() {
