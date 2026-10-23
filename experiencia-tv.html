@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -18,11 +19,23 @@ body {
   font-family: Arial, sans-serif;
 }
 
+button {
+  font-family: Arial, sans-serif;
+  cursor: pointer;
+}
+
+button:focus,
+video:focus {
+  outline: 4px solid #d8bd8a;
+  outline-offset: 3px;
+}
+
 header {
-  height: 65px;
+  min-height: 65px;
   padding: 12px 24px;
   background: #11151b;
   border-bottom: 1px solid #383838;
+  overflow: hidden;
 }
 
 .logo {
@@ -42,49 +55,122 @@ header {
   font-size: 16px;
 }
 
-#cerrar:focus,
-.foto:focus,
-.control:focus,
-#volver:focus {
-  outline: 4px solid #d8bd8a;
-  outline-offset: 3px;
+#portada {
+  position: relative;
+  min-height: 290px;
+  overflow: hidden;
+  background: #151922;
+  border-bottom: 1px solid #343944;
 }
 
-#informacion {
-  padding: 28px 24px 18px;
-  background: #151922;
+#portadaFondo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.42;
+}
+
+#portadaCapa {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(8,10,14,0.98),
+    rgba(8,10,14,0.75),
+    rgba(8,10,14,0.35)
+  );
+}
+
+#portadaContenido {
+  position: relative;
+  z-index: 2;
+  padding: 35px 30px;
+  min-height: 290px;
+}
+
+#logoEvento {
+  display: none;
+  max-width: 150px;
+  max-height: 75px;
+  object-fit: contain;
+  object-position: left center;
+  margin-bottom: 15px;
 }
 
 #nombre {
   color: #d8bd8a;
-  font-size: 34px;
+  font-size: 38px;
   font-weight: normal;
   margin: 0 0 12px;
 }
 
 #evento,
 #fecha {
-  color: #c2c5cc;
+  color: #e0e0e0;
   font-size: 18px;
   margin-top: 8px;
 }
 
 #estado {
-  padding: 20px 24px;
+  padding: 18px 24px;
   color: #d8bd8a;
   font-size: 18px;
+  min-height: 54px;
+}
+
+#secciones {
+  padding: 10px 20px 20px;
+  text-align: center;
+}
+
+.tituloSeccion {
+  color: #d8bd8a;
+  font-size: 20px;
+  text-align: left;
+  margin: 5px 0 15px;
+  font-weight: normal;
+}
+
+.botonSeccion {
+  display: inline-block;
+  min-width: 155px;
+  max-width: 280px;
+  margin: 7px;
+  padding: 16px 20px;
+  background: #191e27;
+  color: #ffffff;
+  border: 2px solid #454b57;
+  font-size: 17px;
+  text-align: center;
+}
+
+.botonSeccion:focus,
+.botonSeccion.seleccionada {
+  border-color: #d8bd8a;
+  color: #d8bd8a;
+  background: #252a33;
+  outline: 3px solid #d8bd8a;
+  outline-offset: 2px;
 }
 
 #galeria {
-  padding: 10px 18px 35px;
+  padding: 5px 16px 25px;
   text-align: center;
 }
 
 .foto {
   display: inline-block;
   vertical-align: top;
-  width: 30%;
-  height: 190px;
+  width: 22%;
+  height: 145px;
   margin: 1%;
   padding: 4px;
   background: #171b22;
@@ -97,6 +183,40 @@ header {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.foto:focus {
+  border-color: #d8bd8a;
+}
+
+#videos {
+  padding: 5px 18px 30px;
+  text-align: center;
+}
+
+.videoTarjeta {
+  display: inline-block;
+  vertical-align: top;
+  width: 46%;
+  margin: 1%;
+  padding: 12px;
+  background: #171b22;
+  border: 2px solid #343944;
+  text-align: left;
+}
+
+.videoTarjeta video {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  background: #000000;
+}
+
+.videoNombre {
+  margin-top: 10px;
+  color: #d8bd8a;
+  font-size: 16px;
+  word-wrap: break-word;
 }
 
 #visor {
@@ -118,9 +238,11 @@ header {
 #fotoGrande {
   display: block;
   width: 100%;
-  height: 76%;
+  height: calc(100% - 100px);
   margin: 0 auto;
   object-fit: contain;
+  opacity: 1;
+  transition: opacity 0.75s ease;
 }
 
 #barraVisor {
@@ -128,24 +250,25 @@ header {
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 12px;
+  min-height: 100px;
+  padding: 10px;
   background: #151922;
   text-align: center;
 }
 
 .control {
-  min-width: 90px;
+  min-width: 75px;
   margin: 5px;
-  padding: 13px 18px;
+  padding: 12px 15px;
   background: #252a33;
   border: 2px solid #777777;
   color: #ffffff;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 #contador {
   display: inline-block;
-  min-width: 90px;
+  min-width: 85px;
   color: #d8bd8a;
   font-size: 18px;
 }
@@ -162,19 +285,37 @@ header {
   font-size: 17px;
 }
 
-@media screen and (max-width: 700px) {
-  .foto {
-    width: 46%;
-    height: 140px;
-  }
+.oculto {
+  display: none !important;
+}
 
+@media screen and (max-width: 900px) {
   #nombre {
-    font-size: 26px;
+    font-size: 30px;
   }
 
-  #cerrar {
+  .foto {
+    width: 30%;
+    height: 130px;
+  }
+
+  .botonSeccion {
+    min-width: 125px;
+    font-size: 15px;
+  }
+
+  .control {
+    min-width: 60px;
     padding: 10px;
-    font-size: 13px;
+    font-size: 16px;
+  }
+
+  #barraVisor {
+    padding: 6px;
+  }
+
+  .videoTarjeta {
+    width: 90%;
   }
 }
 </style>
@@ -187,15 +328,27 @@ header {
   <button id="cerrar" type="button">SALIR</button>
 </header>
 
-<section id="informacion">
-  <h1 id="nombre">Cargando...</h1>
-  <div id="evento"></div>
-  <div id="fecha"></div>
+<section id="portada">
+  <div id="portadaFondo"></div>
+  <div id="portadaCapa"></div>
+
+  <div id="portadaContenido">
+    <img id="logoEvento" src="" alt="Logotipo del evento">
+    <h1 id="nombre">Cargando...</h1>
+    <div id="evento"></div>
+    <div id="fecha"></div>
+  </div>
 </section>
 
 <div id="estado">Conectando con NOVA MOMENTS...</div>
 
+<section id="secciones" class="oculto">
+  <h2 class="tituloSeccion">EXPLORAR RECUERDOS</h2>
+  <div id="botonesSecciones"></div>
+</section>
+
 <div id="galeria"></div>
+<div id="videos" class="oculto"></div>
 
 <button id="volver" type="button">VOLVER A NOVA TV</button>
 
@@ -206,18 +359,27 @@ header {
     <button class="control" id="anterior" type="button">◀</button>
     <span id="contador">0 / 0</span>
     <button class="control" id="siguiente" type="button">▶</button>
+    <button class="control" id="presentacion" type="button">
+      PAUSAR
+    </button>
     <button class="control" id="cerrarVisor" type="button">CERRAR</button>
   </div>
 </div>
 
 <script>
 (function () {
+  "use strict";
 
   var usuario = "";
   var eventoId = "";
   var fotos = [];
   var posicion = 0;
   var botonesFotos = [];
+  var temporizador = null;
+  var presentacionActiva = false;
+  var cambiandoFoto = false;
+  var numeroCambio = 0;
+  var seccionActual = null;
 
   var nombre = document.getElementById("nombre");
   var evento = document.getElementById("evento");
@@ -227,6 +389,9 @@ header {
   var visor = document.getElementById("visor");
   var fotoGrande = document.getElementById("fotoGrande");
   var contador = document.getElementById("contador");
+  var secciones = document.getElementById("secciones");
+  var botonesSecciones = document.getElementById("botonesSecciones");
+  var videos = document.getElementById("videos");
 
   function leerDato(clave) {
     var valor = "";
@@ -248,8 +413,24 @@ header {
     estado.innerHTML = texto;
   }
 
+  function limpiarElemento(elemento) {
+    while (elemento.firstChild) {
+      elemento.removeChild(elemento.firstChild);
+    }
+  }
+
   function pedir(url, callback) {
     var xhr = new XMLHttpRequest();
+    var respondido = false;
+
+    function responder(error, datos) {
+      if (respondido) {
+        return;
+      }
+
+      respondido = true;
+      callback(error, datos);
+    }
 
     xhr.open("GET", url, true);
     xhr.timeout = 20000;
@@ -265,32 +446,125 @@ header {
         try {
           datos = JSON.parse(xhr.responseText);
         } catch (e) {
-          callback("La respuesta del servidor no es válida.", null);
+          responder("La respuesta del servidor no es válida.", null);
           return;
         }
 
-        callback(null, datos);
+        responder(null, datos);
       } else {
-        callback("Error del servidor: " + xhr.status, null);
+        responder("Error del servidor: " + xhr.status, null);
       }
     };
 
     xhr.onerror = function () {
-      callback("No se pudo conectar con NOVA MOMENTS.", null);
+      responder("No se pudo conectar con NOVA MOMENTS.", null);
     };
 
     xhr.ontimeout = function () {
-      callback("La conexión tardó demasiado. Intentá nuevamente.", null);
+      responder("La conexión tardó demasiado. Intentá nuevamente.", null);
     };
 
     try {
       xhr.send(null);
     } catch (e) {
-      callback("El televisor no pudo enviar la solicitud.", null);
+      responder("El televisor no pudo enviar la solicitud.", null);
     }
   }
 
-  function abrirFoto(indice) {
+  function nombreArchivo(recurso, indice) {
+    var nombre = "";
+
+    if (recurso && recurso.filename) {
+      nombre = recurso.filename;
+    } else if (recurso && recurso.public_id) {
+      nombre = recurso.public_id;
+      nombre = nombre.substring(nombre.lastIndexOf("/") + 1);
+
+      if (recurso.format) {
+        nombre += "." + recurso.format;
+      }
+    }
+
+    if (!nombre) {
+      nombre = "Video " + (indice + 1);
+    }
+
+    return nombre;
+  }
+
+  function primeraUrl(lista) {
+    var i;
+
+    if (!lista || !lista.length) {
+      return "";
+    }
+
+    for (i = 0; i < lista.length; i++) {
+      if (lista[i] && lista[i].secure_url) {
+        return lista[i].secure_url;
+      }
+    }
+
+    return "";
+  }
+
+  function configurarPortada(media) {
+    var portadaUrl = primeraUrl(media.portada || []);
+    var logoUrl = primeraUrl(media.logo || []);
+    var imagenPortada = document.getElementById("portadaFondo");
+    var logo = document.getElementById("logoEvento");
+
+    if (portadaUrl) {
+      imagenPortada.style.backgroundImage =
+        'url("' + portadaUrl.replace(/"/g, "%22") + '")';
+    }
+
+    if (logoUrl) {
+      logo.onload = function () {
+        logo.style.display = "block";
+      };
+
+      logo.onerror = function () {
+        logo.style.display = "none";
+      };
+
+      logo.src = logoUrl;
+    }
+  }
+
+  function detenerPresentacion() {
+    if (temporizador !== null) {
+      window.clearInterval(temporizador);
+      temporizador = null;
+    }
+
+    presentacionActiva = false;
+
+    document.getElementById("presentacion").innerHTML = "REANUDAR";
+  }
+
+  function iniciarPresentacion() {
+    if (!fotos.length || visor.className !== "activo") {
+      return;
+    }
+
+    if (temporizador !== null) {
+      window.clearInterval(temporizador);
+    }
+
+    presentacionActiva = true;
+    document.getElementById("presentacion").innerHTML = "PAUSAR";
+
+    temporizador = window.setInterval(function () {
+      if (!presentacionActiva || cambiandoFoto) {
+        return;
+      }
+
+      abrirFoto(posicion + 1, true);
+    }, 8000);
+  }
+
+  function abrirFoto(indice, automatico) {
     if (!fotos.length) {
       return;
     }
@@ -305,35 +579,99 @@ header {
 
     posicion = indice;
 
-    fotoGrande.src = fotos[posicion];
+    numeroCambio++;
+    var cambioActual = numeroCambio;
+
+    fotoGrande.style.opacity = "0";
+    cambiandoFoto = true;
+
+    if (visor.className !== "activo") {
+      visor.className = "activo";
+    }
+
     contador.innerHTML = (posicion + 1) + " / " + fotos.length;
 
-    visor.className = "activo";
+    window.setTimeout(function () {
+      if (cambioActual !== numeroCambio) {
+        return;
+      }
 
-    document.getElementById("anterior").focus();
+      fotoGrande.src = fotos[posicion];
+
+      fotoGrande.onload = function () {
+        if (cambioActual !== numeroCambio) {
+          return;
+        }
+
+        fotoGrande.style.opacity = "1";
+
+        window.setTimeout(function () {
+          if (cambioActual === numeroCambio) {
+            cambiandoFoto = false;
+          }
+        }, 750);
+      };
+
+      fotoGrande.onerror = function () {
+        if (cambioActual !== numeroCambio) {
+          return;
+        }
+
+        fotoGrande.style.opacity = "1";
+        cambiandoFoto = false;
+      };
+
+      fotoGrande.src = fotos[posicion];
+
+      if (fotoGrande.complete && fotoGrande.naturalWidth > 0) {
+        fotoGrande.style.opacity = "1";
+
+        window.setTimeout(function () {
+          if (cambioActual === numeroCambio) {
+            cambiandoFoto = false;
+          }
+        }, 750);
+      }
+    }, 750);
+
+    if (!automatico) {
+      iniciarPresentacion();
+      document.getElementById("anterior").focus();
+    }
   }
 
   function cerrarFoto() {
+    detenerPresentacion();
+
+    numeroCambio++;
+    cambiandoFoto = false;
+
     visor.className = "";
+    fotoGrande.onload = null;
+    fotoGrande.onerror = null;
     fotoGrande.src = "";
+    fotoGrande.style.opacity = "1";
 
     if (botonesFotos[posicion]) {
       botonesFotos[posicion].focus();
     }
   }
 
-  function mostrarFotos(lista) {
+  function mostrarFotos(lista, titulo) {
     var i;
     var boton;
     var imagen;
     var url;
 
-    galeria.innerHTML = "";
+    limpiarElemento(galeria);
     fotos = [];
     botonesFotos = [];
+    seccionActual = titulo || null;
+
+    galeria.className = "";
 
     if (!lista || !lista.length) {
-      estado.innerHTML = "Todavía no hay fotografías disponibles.";
+      estado.innerHTML = "Todavía no hay fotografías en esta sección.";
       return;
     }
 
@@ -352,7 +690,10 @@ header {
       boton.type = "button";
       boton.className = "foto";
       boton.setAttribute("data-indice", fotos.length - 1);
-      boton.setAttribute("aria-label", "Abrir fotografía " + fotos.length);
+      boton.setAttribute(
+        "aria-label",
+        "Abrir fotografía " + fotos.length
+      );
 
       imagen = document.createElement("img");
       imagen.src = url;
@@ -361,7 +702,7 @@ header {
       boton.appendChild(imagen);
 
       boton.onclick = function () {
-        abrirFoto(parseInt(this.getAttribute("data-indice"), 10));
+        abrirFoto(parseInt(this.getAttribute("data-indice"), 10), false);
       };
 
       galeria.appendChild(boton);
@@ -373,11 +714,156 @@ header {
       return;
     }
 
-    estado.innerHTML = "Fotografías disponibles: " + fotos.length;
+    estado.innerHTML =
+      (titulo ? titulo + " — " : "") +
+      "Fotografías disponibles: " + fotos.length;
 
     if (botonesFotos.length) {
       botonesFotos[0].focus();
     }
+  }
+
+  function crearBotonSeccion(texto, accion) {
+    var boton = document.createElement("button");
+
+    boton.type = "button";
+    boton.className = "botonSeccion";
+    boton.innerHTML = texto;
+
+    boton.onclick = function () {
+      var todos = botonesSecciones.getElementsByTagName("button");
+      var i;
+
+      for (i = 0; i < todos.length; i++) {
+        todos[i].className = "botonSeccion";
+      }
+
+      boton.className = "botonSeccion seleccionada";
+      accion();
+    };
+
+    botonesSecciones.appendChild(boton);
+
+    return boton;
+  }
+
+  function mostrarSecciones(media) {
+    var agrupadas = media.fotos_secciones || [];
+    var fotosGenerales = media.fotos || [];
+    var i;
+    var seccion;
+    var lista;
+    var boton;
+
+    limpiarElemento(botonesSecciones);
+
+    secciones.className = "";
+    galeria.innerHTML = "";
+    videos.className = "oculto";
+
+    if (agrupadas.length) {
+      for (i = 0; i < agrupadas.length; i++) {
+        seccion = agrupadas[i];
+
+        if (!seccion) {
+          continue;
+        }
+
+        lista = seccion.fotos || [];
+        var nombreSeccion = seccion.nombre || "FOTOS";
+
+        crearBotonSeccion(nombreSeccion, (function (fotosSeccion, titulo) {
+          return function () {
+            videos.className = "oculto";
+            mostrarFotos(fotosSeccion, titulo);
+          };
+        })(lista, nombreSeccion));
+      }
+    } else if (fotosGenerales.length) {
+      crearBotonSeccion("FOTOS", function () {
+        videos.className = "oculto";
+        mostrarFotos(fotosGenerales, "FOTOS");
+      });
+    }
+
+    boton = crearBotonSeccion("VIDEOS", function () {
+      galeria.innerHTML = "";
+      videos.className = "";
+      mostrarVideos(media);
+    });
+
+    if (!agrupadas.length && !fotosGenerales.length) {
+      estado.innerHTML = "No hay fotografías cargadas para este evento.";
+    } else {
+      estado.innerHTML = "Elegí una sección con el control remoto.";
+    }
+
+    var botones = botonesSecciones.getElementsByTagName("button");
+
+    if (botones.length) {
+      botones[0].focus();
+    }
+  }
+
+  function mostrarVideos(media) {
+    var lista = [];
+    var cloudinary = media.videos || [];
+    var r2 = media.r2_videos || [];
+    var i;
+    var recurso;
+    var tarjeta;
+    var reproductor;
+    var titulo;
+    var texto;
+
+    limpiarElemento(videos);
+
+    for (i = 0; i < cloudinary.length; i++) {
+      if (cloudinary[i] && cloudinary[i].secure_url) {
+        lista.push(cloudinary[i]);
+      }
+    }
+
+    for (i = 0; i < r2.length; i++) {
+      if (r2[i] && r2[i].secure_url) {
+        lista.push(r2[i]);
+      }
+    }
+
+    if (!lista.length) {
+      texto = document.createElement("div");
+      texto.className = "tituloSeccion";
+      texto.innerHTML = "Todavía no hay videos disponibles.";
+      videos.appendChild(texto);
+
+      estado.innerHTML = "No se encontraron videos para este evento.";
+      return;
+    }
+
+    for (i = 0; i < lista.length; i++) {
+      recurso = lista[i];
+
+      tarjeta = document.createElement("div");
+      tarjeta.className = "videoTarjeta";
+
+      reproductor = document.createElement("video");
+      reproductor.controls = true;
+      reproductor.preload = "none";
+      reproductor.setAttribute("playsinline", "playsinline");
+      reproductor.setAttribute("tabindex", "0");
+
+      reproductor.src = recurso.secure_url;
+
+      titulo = document.createElement("div");
+      titulo.className = "videoNombre";
+      titulo.innerHTML = nombreArchivo(recurso, i);
+
+      tarjeta.appendChild(reproductor);
+      tarjeta.appendChild(titulo);
+      videos.appendChild(tarjeta);
+    }
+
+    estado.innerHTML = "Videos disponibles: " + lista.length;
   }
 
   function cargarExperiencia() {
@@ -390,7 +876,6 @@ header {
     if (!usuario || !eventoId) {
       mostrarError("No encontramos la sesión. Volvé a ingresar al evento.");
       nombre.innerHTML = "Sesión no encontrada";
-
       return;
     }
 
@@ -406,9 +891,12 @@ header {
       }
 
       if (!datos || !datos.ok) {
-        mostrarError(datos && datos.error
-          ? datos.error
-          : "No se pudo encontrar el evento.");
+        mostrarError(
+          datos && datos.error
+            ? datos.error
+            : "No se pudo encontrar el evento."
+        );
+
         nombre.innerHTML = "Error de acceso";
         return;
       }
@@ -417,7 +905,7 @@ header {
       evento.innerHTML = datos.evento_nombre || "";
       fecha.innerHTML = datos.fecha || "";
 
-      estado.innerHTML = "Cargando fotografías...";
+      estado.innerHTML = "Cargando contenido del evento...";
 
       urlMedia = "/api/media?evento=" + encodeURIComponent(eventoId);
 
@@ -428,28 +916,41 @@ header {
         }
 
         if (!media || !media.ok) {
-          mostrarError(media && media.error
-            ? media.error
-            : "No se pudo cargar el contenido.");
+          mostrarError(
+            media && media.error
+              ? media.error
+              : "No se pudo cargar el contenido."
+          );
           return;
         }
 
-        mostrarFotos(media.fotos || []);
+        configurarPortada(media);
+        mostrarSecciones(media);
       });
     });
   }
 
   document.getElementById("anterior").onclick = function () {
-    abrirFoto(posicion - 1);
+    abrirFoto(posicion - 1, false);
   };
 
   document.getElementById("siguiente").onclick = function () {
-    abrirFoto(posicion + 1);
+    abrirFoto(posicion + 1, false);
+  };
+
+  document.getElementById("presentacion").onclick = function () {
+    if (presentacionActiva) {
+      detenerPresentacion();
+    } else {
+      iniciarPresentacion();
+    }
   };
 
   document.getElementById("cerrarVisor").onclick = cerrarFoto;
 
   document.getElementById("cerrar").onclick = function () {
+    detenerPresentacion();
+
     try {
       sessionStorage.removeItem("nova_usuario");
       sessionStorage.removeItem("nova_evento");
@@ -461,6 +962,7 @@ header {
   };
 
   document.getElementById("volver").onclick = function () {
+    detenerPresentacion();
     window.location.href = "nova-tv.html";
   };
 
@@ -471,16 +973,16 @@ header {
 
     if (visor.className === "activo") {
       if (tecla === 37) {
-        abrirFoto(posicion - 1);
+        abrirFoto(posicion - 1, false);
         return false;
       }
 
       if (tecla === 39) {
-        abrirFoto(posicion + 1);
+        abrirFoto(posicion + 1, false);
         return false;
       }
 
-      if (tecla === 27 || tecla === 8) {
+      if (tecla === 27 || tecla === 8 || tecla === 461) {
         cerrarFoto();
         return false;
       }
