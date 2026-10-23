@@ -57,7 +57,7 @@ header {
 
 #portada {
   position: relative;
-  min-height: 290px;
+  min-height: 370px;
   overflow: hidden;
   background: #151922;
   border-bottom: 1px solid #343944;
@@ -72,7 +72,7 @@ header {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  opacity: 0.42;
+  opacity: 0.68;
 }
 
 #portadaCapa {
@@ -83,23 +83,23 @@ header {
   height: 100%;
   background: linear-gradient(
     to right,
-    rgba(8,10,14,0.98),
-    rgba(8,10,14,0.75),
-    rgba(8,10,14,0.35)
+    rgba(8,10,14,0.82),
+    rgba(8,10,14,0.48),
+    rgba(8,10,14,0.12)
   );
 }
 
 #portadaContenido {
   position: relative;
   z-index: 2;
-  padding: 35px 30px;
-  min-height: 290px;
+  padding: 48px 36px;
+  min-height: 370px;
 }
 
 #logoEvento {
   display: none;
-  max-width: 150px;
-  max-height: 75px;
+  max-width: 190px;
+  max-height: 90px;
   object-fit: contain;
   object-position: left center;
   margin-bottom: 15px;
@@ -107,7 +107,7 @@ header {
 
 #nombre {
   color: #d8bd8a;
-  font-size: 38px;
+  font-size: 44px;
   font-weight: normal;
   margin: 0 0 12px;
 }
@@ -290,8 +290,17 @@ header {
 }
 
 @media screen and (max-width: 900px) {
+  #portada {
+    min-height: 330px;
+  }
+
+  #portadaContenido {
+    min-height: 330px;
+    padding: 36px 24px;
+  }
+
   #nombre {
-    font-size: 30px;
+    font-size: 32px;
   }
 
   .foto {
