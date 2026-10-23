@@ -1,0 +1,21 @@
+{
+  "id": "/tv",
+  "name": "NOVA TV",
+  "short_name": "NOVA TV",
+  "description": "Tus momentos, en pantalla grande",
+  "start_url": "/tv",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#080a0e",
+  "theme_color": "#080a0e",
+  "lang": "es",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/nova-tv-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
