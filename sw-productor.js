@@ -1,21 +1,15 @@
+```javascript
 self.addEventListener("install", function (event) {
-
     self.skipWaiting();
-
 });
 
-
 self.addEventListener("activate", function (event) {
-
     event.waitUntil(
         self.clients.claim()
     );
-
 });
 
-
 self.addEventListener("push", function (event) {
-
     let datos = {};
 
     try {
@@ -24,7 +18,7 @@ self.addEventListener("push", function (event) {
             : {};
     } catch (error) {
         datos = {
-            titulo: "NOVA MOMENTS",
+            titulo: "NOVA Productores",
             mensaje: event.data
                 ? event.data.text()
                 : "Tenés una nueva notificación."
@@ -33,10 +27,9 @@ self.addEventListener("push", function (event) {
 
     const titulo =
         datos.titulo ||
-        "NOVA MOMENTS";
+        "NOVA Productores";
 
     const opciones = {
-
         body:
             datos.mensaje ||
             "Tenés un nuevo pedido.",
@@ -52,25 +45,19 @@ self.addEventListener("push", function (event) {
                 datos.url ||
                 "/productor.html"
         }
-
     };
 
     event.waitUntil(
-
         self.registration.showNotification(
             titulo,
             opciones
         )
-
     );
-
 });
-
 
 self.addEventListener(
     "notificationclick",
     function (event) {
-
         event.notification.close();
 
         const url =
@@ -80,33 +67,22 @@ self.addEventListener(
                 : "/productor.html";
 
         event.waitUntil(
-
             clients.matchAll({
                 type: "window",
                 includeUncontrolled: true
             }).then(function (ventanas) {
-
                 for (const ventana of ventanas) {
-
                     if ("focus" in ventana) {
-
                         ventana.navigate(url);
-
                         return ventana.focus();
-
                     }
-
                 }
 
                 if (clients.openWindow) {
-
                     return clients.openWindow(url);
-
                 }
-
             })
-
         );
-
     }
 );
+```
