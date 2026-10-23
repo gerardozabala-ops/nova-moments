@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOVA TV - Mis recuerdos</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #080a0e;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  height: 65px;
+  padding: 12px 24px;
+  background: #11151b;
+  border-bottom: 1px solid #383838;
+}
+
+.logo {
+  display: inline-block;
+  color: #d8bd8a;
+  font-size: 25px;
+  letter-spacing: 7px;
+  padding-top: 5px;
+}
+
+#cerrar {
+  float: right;
+  padding: 12px 18px;
+  background: #252a33;
+  color: #ffffff;
+  border: 2px solid #777777;
+  font-size: 16px;
+}
+
+#cerrar:focus,
+.foto:focus,
+.control:focus,
+#volver:focus {
+  outline: 4px solid #d8bd8a;
+  outline-offset: 3px;
+}
+
+#informacion {
+  padding: 28px 24px 18px;
+  background: #151922;
+}
+
+#nombre {
+  color: #d8bd8a;
+  font-size: 34px;
+  font-weight: normal;
+  margin: 0 0 12px;
+}
+
+#evento,
+#fecha {
+  color: #c2c5cc;
+  font-size: 18px;
+  margin-top: 8px;
+}
+
+#estado {
+  padding: 20px 24px;
+  color: #d8bd8a;
+  font-size: 18px;
+}
+
+#galeria {
+  padding: 10px 18px 35px;
+  text-align: center;
+}
+
+.foto {
+  display: inline-block;
+  vertical-align: top;
+  width: 30%;
+  height: 190px;
+  margin: 1%;
+  padding: 4px;
+  background: #171b22;
+  border: 3px solid #343944;
+  overflow: hidden;
+  text-align: center;
+}
+
+.foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+#visor {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #000000;
+  z-index: 1000;
+  text-align: center;
+}
+
+#visor.activo {
+  display: block;
+}
+
+#fotoGrande {
+  display: block;
+  width: 100%;
+  height: 76%;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+#barraVisor {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 12px;
+  background: #151922;
+  text-align: center;
+}
+
+.control {
+  min-width: 90px;
+  margin: 5px;
+  padding: 13px 18px;
+  background: #252a33;
+  border: 2px solid #777777;
+  color: #ffffff;
+  font-size: 20px;
+}
+
+#contador {
+  display: inline-block;
+  min-width: 90px;
+  color: #d8bd8a;
+  font-size: 18px;
+}
+
+#volver {
+  display: block;
+  width: 90%;
+  max-width: 360px;
+  margin: 10px auto 30px;
+  padding: 15px;
+  background: #252a33;
+  color: #ffffff;
+  border: 2px solid #777777;
+  font-size: 17px;
+}
+
+@media screen and (max-width: 700px) {
+  .foto {
+    width: 46%;
+    height: 140px;
+  }
+
+  #nombre {
+    font-size: 26px;
+  }
+
+  #cerrar {
+    padding: 10px;
+    font-size: 13px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <span class="logo">NOVA</span>
+  <button id="cerrar" type="button">SALIR</button>
+</header>
+
+<section id="informacion">
+  <h1 id="nombre">Cargando...</h1>
+  <div id="evento"></div>
+  <div id="fecha"></div>
+</section>
+
+<div id="estado">Conectando con NOVA MOMENTS...</div>
+
+<div id="galeria"></div>
+
+<button id="volver" type="button">VOLVER A NOVA TV</button>
+
+<div id="visor">
+  <img id="fotoGrande" src="" alt="Fotografía del evento">
+
+  <div id="barraVisor">
+    <button class="control" id="anterior" type="button">◀</button>
+    <span id="contador">0 / 0</span>
+    <button class="control" id="siguiente" type="button">▶</button>
+    <button class="control" id="cerrarVisor" type="button">CERRAR</button>
+  </div>
+</div>
+
+<script>
+(function () {
+
+  var usuario = "";
+  var eventoId = "";
+  var fotos = [];
+  var posicion = 0;
+  var botonesFotos = [];
+
+  var nombre = document.getElementById("nombre");
+  var evento = document.getElementById("evento");
+  var fecha = document.getElementById("fecha");
+  var estado = document.getElementById("estado");
+  var galeria = document.getElementById("galeria");
+  var visor = document.getElementById("visor");
+  var fotoGrande = document.getElementById("fotoGrande");
+  var contador = document.getElementById("contador");
+
+  function leerDato(clave) {
+    var valor = "";
+
+    try {
+      valor = sessionStorage.getItem(clave) || "";
+    } catch (e) {}
+
+    if (!valor) {
+      try {
+        valor = localStorage.getItem(clave) || "";
+      } catch (e) {}
+    }
+
+    return valor;
+  }
+
+  function mostrarError(texto) {
+    estado.innerHTML = texto;
+  }
+
+  function pedir(url, callback) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("GET", url, true);
+    xhr.timeout = 20000;
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4) {
+        return;
+      }
+
+      if (xhr.status >= 200 && xhr.status < 300) {
+        var datos;
+
+        try {
+          datos = JSON.parse(xhr.responseText);
+        } catch (e) {
+          callback("La respuesta del servidor no es válida.", null);
+          return;
+        }
+
+        callback(null, datos);
+      } else {
+        callback("Error del servidor: " + xhr.status, null);
+      }
+    };
+
+    xhr.onerror = function () {
+      callback("No se pudo conectar con NOVA MOMENTS.", null);
+    };
+
+    xhr.ontimeout = function () {
+      callback("La conexión tardó demasiado. Intentá nuevamente.", null);
+    };
+
+    try {
+      xhr.send(null);
+    } catch (e) {
+      callback("El televisor no pudo enviar la solicitud.", null);
+    }
+  }
+
+  function abrirFoto(indice) {
+    if (!fotos.length) {
+      return;
+    }
+
+    if (indice < 0) {
+      indice = fotos.length - 1;
+    }
+
+    if (indice >= fotos.length) {
+      indice = 0;
+    }
+
+    posicion = indice;
+
+    fotoGrande.src = fotos[posicion];
+    contador.innerHTML = (posicion + 1) + " / " + fotos.length;
+
+    visor.className = "activo";
+
+    document.getElementById("anterior").focus();
+  }
+
+  function cerrarFoto() {
+    visor.className = "";
+    fotoGrande.src = "";
+
+    if (botonesFotos[posicion]) {
+      botonesFotos[posicion].focus();
+    }
+  }
+
+  function mostrarFotos(lista) {
+    var i;
+    var boton;
+    var imagen;
+    var url;
+
+    galeria.innerHTML = "";
+    fotos = [];
+    botonesFotos = [];
+
+    if (!lista || !lista.length) {
+      estado.innerHTML = "Todavía no hay fotografías disponibles.";
+      return;
+    }
+
+    for (i = 0; i < lista.length; i++) {
+      url = lista[i] && lista[i].secure_url
+        ? lista[i].secure_url
+        : "";
+
+      if (!url) {
+        continue;
+      }
+
+      fotos.push(url);
+
+      boton = document.createElement("button");
+      boton.type = "button";
+      boton.className = "foto";
+      boton.setAttribute("data-indice", fotos.length - 1);
+      boton.setAttribute("aria-label", "Abrir fotografía " + fotos.length);
+
+      imagen = document.createElement("img");
+      imagen.src = url;
+      imagen.alt = "Fotografía " + fotos.length;
+
+      boton.appendChild(imagen);
+
+      boton.onclick = function () {
+        abrirFoto(parseInt(this.getAttribute("data-indice"), 10));
+      };
+
+      galeria.appendChild(boton);
+      botonesFotos.push(boton);
+    }
+
+    if (!fotos.length) {
+      estado.innerHTML = "No encontramos fotografías para mostrar.";
+      return;
+    }
+
+    estado.innerHTML = "Fotografías disponibles: " + fotos.length;
+
+    if (botonesFotos.length) {
+      botonesFotos[0].focus();
+    }
+  }
+
+  function cargarExperiencia() {
+    var urlEvento;
+    var urlMedia;
+
+    usuario = leerDato("nova_usuario");
+    eventoId = leerDato("nova_evento");
+
+    if (!usuario || !eventoId) {
+      mostrarError("No encontramos la sesión. Volvé a ingresar al evento.");
+      nombre.innerHTML = "Sesión no encontrada";
+
+      return;
+    }
+
+    estado.innerHTML = "Consultando los datos del evento...";
+
+    urlEvento = "/api/evento?evento=" + encodeURIComponent(eventoId);
+
+    pedir(urlEvento, function (error, datos) {
+      if (error) {
+        mostrarError(error);
+        nombre.innerHTML = "No se pudo cargar el evento";
+        return;
+      }
+
+      if (!datos || !datos.ok) {
+        mostrarError(datos && datos.error
+          ? datos.error
+          : "No se pudo encontrar el evento.");
+        nombre.innerHTML = "Error de acceso";
+        return;
+      }
+
+      nombre.innerHTML = datos.nombre || "Mis recuerdos";
+      evento.innerHTML = datos.evento_nombre || "";
+      fecha.innerHTML = datos.fecha || "";
+
+      estado.innerHTML = "Cargando fotografías...";
+
+      urlMedia = "/api/media?evento=" + encodeURIComponent(eventoId);
+
+      pedir(urlMedia, function (errorMedia, media) {
+        if (errorMedia) {
+          mostrarError(errorMedia);
+          return;
+        }
+
+        if (!media || !media.ok) {
+          mostrarError(media && media.error
+            ? media.error
+            : "No se pudo cargar el contenido.");
+          return;
+        }
+
+        mostrarFotos(media.fotos || []);
+      });
+    });
+  }
+
+  document.getElementById("anterior").onclick = function () {
+    abrirFoto(posicion - 1);
+  };
+
+  document.getElementById("siguiente").onclick = function () {
+    abrirFoto(posicion + 1);
+  };
+
+  document.getElementById("cerrarVisor").onclick = cerrarFoto;
+
+  document.getElementById("cerrar").onclick = function () {
+    try {
+      sessionStorage.removeItem("nova_usuario");
+      sessionStorage.removeItem("nova_evento");
+      localStorage.removeItem("nova_usuario");
+      localStorage.removeItem("nova_evento");
+    } catch (e) {}
+
+    window.location.href = "nova-tv.html";
+  };
+
+  document.getElementById("volver").onclick = function () {
+    window.location.href = "nova-tv.html";
+  };
+
+  document.onkeydown = function (e) {
+    e = e || window.event;
+
+    var tecla = e.keyCode || e.which;
+
+    if (visor.className === "activo") {
+      if (tecla === 37) {
+        abrirFoto(posicion - 1);
+        return false;
+      }
+
+      if (tecla === 39) {
+        abrirFoto(posicion + 1);
+        return false;
+      }
+
+      if (tecla === 27 || tecla === 8) {
+        cerrarFoto();
+        return false;
+      }
+    }
+  };
+
+  cargarExperiencia();
+
+})();
+</script>
+
+</body>
+</html>
