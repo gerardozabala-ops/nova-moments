@@ -842,20 +842,19 @@
 
                             </div>
 
+<div class="dato-label">
+    Evento
+</div>
 
-                            <div class="dato">
-
-                                <div class="dato-label">
-                                    Evento
-                                </div>
-
-                                <div class="dato-valor">
-                                    ${
-                                        pedido.evento_id ||
-                                        "—"
-                                    }
-                                </div>
-
+<div class="dato-valor">
+    ${
+        pedido.evento_nombre ||
+        pedido.evento_descripcion ||
+        pedido.evento_id ||
+        "—"
+    }
+</div>
+                           
                             </div>
 
                         </div>
