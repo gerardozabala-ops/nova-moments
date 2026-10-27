@@ -848,10 +848,12 @@
 
 <div class="dato-valor">
     ${
-        pedido.evento_nombre ||
-        pedido.evento_descripcion ||
-        pedido.evento_id ||
-        "—"
+        pedido.evento_nombre
+            ? "Evento " + pedido.evento_nombre +
+              (pedido.evento_descripcion
+                  ? " " + pedido.evento_descripcion
+                  : "")
+            : pedido.evento_id || "—"
     }
 </div>
                            
