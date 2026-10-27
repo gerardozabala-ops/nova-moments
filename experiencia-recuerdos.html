@@ -2082,6 +2082,28 @@ footer {
 
 }
 
+
+/* Selector visual de secciones RECUERDOS */
+.section-browser {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:18px;
+}
+.section-card {
+  display:flex; flex-direction:column; overflow:hidden; cursor:pointer;
+  border:1px solid rgba(255,255,255,.12); border-radius:12px;
+  background:rgba(255,255,255,.035); transition:transform .2s ease,border-color .2s ease;
+}
+.section-card:hover { transform:translateY(-3px); border-color:rgba(255,255,255,.4); }
+.section-card-image { width:100%; aspect-ratio:4/3; object-fit:cover; background:#171717; }
+.section-card-info { padding:15px 16px 17px; }
+.section-card-name { margin:0 0 7px; color:#fff; font-size:13px; letter-spacing:2px; text-transform:uppercase; }
+.section-card-count { color:rgba(255,255,255,.55); font-size:11px; letter-spacing:.5px; }
+.section-back-button { margin:0 0 22px; border:1px solid rgba(255,255,255,.28); border-radius:22px; padding:10px 16px; background:transparent; color:#fff; font-size:10px; letter-spacing:1px; cursor:pointer; }
+.section-back-button:hover { background:#fff; color:#111; }
+.section-detail-title { margin:0 0 20px; color:#fff; font-size:13px; letter-spacing:3px; text-transform:uppercase; }
+@media(max-width:520px) { .section-browser { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .section-card-info { padding:11px; } .section-card-name { font-size:10px; letter-spacing:1px; } .section-card-count { font-size:10px; } }
+
 </style>
 
 </head>
@@ -3885,292 +3907,112 @@ footer {
 
 
     /* ==================================================
-       FOTOGRAFÍAS POR SECCIÓN
+       SELECTOR DE SECCIONES Y FOTOGRAFÍAS
     ================================================== */
 
-    if (
-        Array.isArray(
-            datosMedia.fotos_secciones
-        ) &&
-        datosMedia.fotos_secciones.length > 0
-    ) {
-
-        const ordenPreferido = [
-            "EXTERIORES",
-            "COTILLON",
-            "SALON",
-            "VALS"
-        ];
-
-
-        const secciones =
-            [...datosMedia.fotos_secciones];
-
-
-        secciones.sort(
-            function (a, b) {
-
-                const ia =
-                    ordenPreferido.indexOf(
-                        String(
-                            a.nombre
-                        ).toUpperCase()
-                    );
-
-                const ib =
-                    ordenPreferido.indexOf(
-                        String(
-                            b.nombre
-                        ).toUpperCase()
-                    );
-
-
-                if (
-                    ia !== -1 &&
-                    ib !== -1
-                ) {
-
-                    return ia - ib;
-
-                }
-
-
-                if (
-                    ia !== -1
-                ) {
-
-                    return -1;
-
-                }
-
-
-                if (
-                    ib !== -1
-                ) {
-
-                    return 1;
-
-                }
-
-
-                return String(
-                    a.nombre
-                ).localeCompare(
-                    String(
-                        b.nombre
-                    )
-                );
-
-            }
-        );
-
-
-        secciones.forEach(
-            function (
-                seccion
-            ) {
-
-                if (
-                    !Array.isArray(
-                        seccion.fotos
-                    ) ||
-                    seccion.fotos.length === 0
-                ) {
-
-                    return;
-
-                }
-
-
-                const subsection =
-                    document.createElement(
-                        "div"
-                    );
-
-                subsection.className =
-                    "photo-subsection";
-
-
-                const subsectionHeader =
-                    document.createElement(
-                        "div"
-                    );
-
-                subsectionHeader.className =
-                    "photo-subsection-header";
-
-
-                const subtitle =
-                    document.createElement(
-                        "div"
-                    );
-
-                subtitle.className =
-                    "photo-subtitle";
-
-                subtitle.textContent =
-                    seccion.nombre;
-
-
-                const playSectionButton =
-                    document.createElement(
-                        "button"
-                    );
-
-                playSectionButton.type =
-                    "button";
-
-                playSectionButton.className =
-                    "section-play-button";
-
-                playSectionButton.textContent =
-                    "▶ REPRODUCIR";
-
-                playSectionButton.setAttribute(
-                    "aria-label",
-                    "Reproducir sección " + seccion.nombre
-                );
-
-
-                const fotosSeccion = [];
-
-
-                const grid =
-                    document.createElement(
-                        "div"
-                    );
-
-                grid.className =
-                    "photo-grid";
-
-
-                seccion.fotos.forEach(
-                    function (
-                        foto,
-                        index
-                    ) {
-
-                        const elemento =
-                            crearFoto(
-                                foto,
-                                index
-                            );
-
-
-                        if (
-                            elemento
-                        ) {
-
-                            grid.appendChild(
-                                elemento
-                            );
-
-                            fotosSeccion.push(
-                                foto
-                            );
-
-                        }
-
-                    }
-                );
-
-
-                playSectionButton.addEventListener(
-                    "click",
-                    function (event) {
-
-                        event.stopPropagation();
-
-                        iniciarPresentacion(
-                            fotosSeccion
-                        );
-
-                    }
-                );
-
-
-                subsectionHeader.appendChild(
-                    subtitle
-                );
-
-                subsectionHeader.appendChild(
-                    playSectionButton
-                );
-
-                subsection.appendChild(
-                    subsectionHeader
-                );
-
-                subsection.appendChild(
-                    grid
-                );
-
-
-                photoSections.appendChild(
-                    subsection
-                );
-
-            }
-        );
-
-
-    } else if (
-        Array.isArray(
-            datosMedia.fotos
-        ) &&
-        datosMedia.fotos.length > 0
-    ) {
-
-        const grid =
-            document.createElement(
-                "div"
-            );
-
-        grid.className =
-            "photo-grid";
-
-
-        datosMedia.fotos.forEach(
-            function (
-                foto,
-                index
-            ) {
-
-                const elemento =
-                    crearFoto(
-                        foto,
-                        index
-                    );
-
-
-                if (
-                    elemento
-                ) {
-
-                    grid.appendChild(
-                        elemento
-                    );
-
-                }
-
-            }
-        );
-
-
-        photoSections.appendChild(
-            grid
-        );
-
-
+    const seccionesOriginales = Array.isArray(datosMedia.fotos_secciones)
+        ? datosMedia.fotos_secciones.filter(s => Array.isArray(s.fotos) && s.fotos.length > 0)
+        : [];
+
+    const ordenPreferido = ["EXTERIORES", "COTILLON", "SALON", "VALS"];
+    seccionesOriginales.sort(function(a, b) {
+        const nombreA = String(a.nombre || "").toUpperCase();
+        const nombreB = String(b.nombre || "").toUpperCase();
+        const ia = ordenPreferido.indexOf(nombreA);
+        const ib = ordenPreferido.indexOf(nombreB);
+        if (ia !== -1 || ib !== -1) {
+            if (ia === -1) return 1;
+            if (ib === -1) return -1;
+            return ia - ib;
+        }
+        return nombreA.localeCompare(nombreB);
+    });
+
+    function mostrarSelectorSecciones() {
+        photoSections.innerHTML = "";
+        listaFotos.length = 0;
+        const browser = document.createElement("div");
+        browser.className = "section-browser";
+
+        seccionesOriginales.forEach(function(seccion) {
+            const card = document.createElement("button");
+            card.type = "button";
+            card.className = "section-card";
+            card.setAttribute("aria-label", "Abrir sección " + seccion.nombre);
+            card.style.textAlign = "left";
+            card.style.padding = "0";
+            card.style.color = "inherit";
+
+            const thumb = document.createElement("img");
+            thumb.className = "section-card-image";
+            thumb.src = seccion.fotos[0].secure_url;
+            thumb.alt = "Fotos de " + seccion.nombre;
+            thumb.loading = "lazy";
+
+            const info = document.createElement("div");
+            info.className = "section-card-info";
+            const name = document.createElement("h3");
+            name.className = "section-card-name";
+            name.textContent = seccion.nombre || "Sección";
+            const count = document.createElement("div");
+            count.className = "section-card-count";
+            count.textContent = seccion.fotos.length + (seccion.fotos.length === 1 ? " fotografía" : " fotografías");
+            info.appendChild(name);
+            info.appendChild(count);
+            card.appendChild(thumb);
+            card.appendChild(info);
+            card.addEventListener("click", function() { mostrarSeccion(seccion); });
+            browser.appendChild(card);
+        });
+        photoSections.appendChild(browser);
+    }
+
+    function mostrarSeccion(seccion) {
+        photoSections.innerHTML = "";
+        listaFotos.length = 0;
+
+        const back = document.createElement("button");
+        back.type = "button";
+        back.className = "section-back-button";
+        back.textContent = "← TODAS LAS SECCIONES";
+        back.addEventListener("click", mostrarSelectorSecciones);
+        photoSections.appendChild(back);
+
+        const header = document.createElement("div");
+        header.className = "photo-subsection-header";
+        const title = document.createElement("h3");
+        title.className = "section-detail-title";
+        title.textContent = seccion.nombre || "FOTOGRAFÍAS";
+        const play = document.createElement("button");
+        play.type = "button";
+        play.className = "section-play-button";
+        play.textContent = "▶ REPRODUCIR";
+        play.addEventListener("click", function() { iniciarPresentacion(seccion.fotos); });
+        header.appendChild(title);
+        header.appendChild(play);
+        photoSections.appendChild(header);
+
+        const grid = document.createElement("div");
+        grid.className = "photo-grid";
+        seccion.fotos.forEach(function(foto, index) {
+            const elemento = crearFoto(foto, index);
+            if (elemento) grid.appendChild(elemento);
+        });
+        photoSections.appendChild(grid);
+    }
+
+    if (seccionesOriginales.length > 0) {
+        mostrarSelectorSecciones();
+    } else if (Array.isArray(datosMedia.fotos) && datosMedia.fotos.length > 0) {
+        const grid = document.createElement("div");
+        grid.className = "photo-grid";
+        datosMedia.fotos.forEach(function(foto, index) {
+            const elemento = crearFoto(foto, index);
+            if (elemento) grid.appendChild(elemento);
+        });
+        photoSections.appendChild(grid);
     } else {
-
-        photoSections.innerHTML =
-            `
-            <div class="empty">
-                Todavía no hay fotografías disponibles.
-            </div>
-            `;
-
+        photoSections.innerHTML = '<div class="empty">Todavía no hay fotografías disponibles.</div>';
     }
 
 
