@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1.0"
 >
 
-<title>NOVA MOMENTS</title>
+<title>NOVA MOMENTS — Recuerdos</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link
@@ -502,6 +502,75 @@ main {
     border-color: #ffffff;
 }
 
+
+/* ==================================================
+   MENÚ DE GALERÍAS (carga bajo demanda)
+================================================== */
+
+.gallery-menu {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin: 8px 0 34px;
+}
+
+.gallery-card {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    text-align: left;
+    color: #fff;
+    background: #111;
+    border: 1px solid rgba(255,255,255,.13);
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color .2s ease, transform .2s ease;
+}
+
+.gallery-card:hover, .gallery-card:focus-visible {
+    border-color: #d6bd8a;
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.gallery-card img {
+    display: block;
+    width: 100%;
+    height: 145px;
+    object-fit: cover;
+    background: #191919;
+}
+
+.gallery-card-copy { padding: 15px; }
+.gallery-card-title { font: 400 20px Georgia, serif; }
+.gallery-card-meta { margin-top: 7px; color: #aaa; font-size: 11px; }
+.gallery-back {
+    margin: 0 0 20px;
+    padding: 9px 13px;
+    color: #eee;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: 3px;
+    cursor: pointer;
+}
+.gallery-back:hover { border-color: #d6bd8a; }
+.gallery-panel { display: none; }
+.gallery-panel.active { display: block; animation: contentIn .25s ease both; }
+.gallery-menu-heading { margin: 0 0 20px; font: 400 28px Georgia, serif; }
+.gallery-menu-subtitle { margin-top: 7px; color: #aaa; font-size: 12px; }
+
+@media (max-width: 760px) {
+    .gallery-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .gallery-card img { height: 120px; }
+    .gallery-card-copy { padding: 12px; }
+    .gallery-card-title { font-size: 17px; }
+}
+@media (max-width: 390px) {
+    .gallery-menu { grid-template-columns: 1fr; }
+    .gallery-card img { height: 155px; }
+}
 
 /* ==================================================
    FOTOGRAFÍAS
@@ -3773,7 +3842,7 @@ footer {
             );
 
         image.src =
-            foto.secure_url;
+            urlMiniatura(foto.secure_url, 700);
 
         image.alt =
             "Fotografía del evento";
@@ -3825,294 +3894,144 @@ footer {
 
 
     /* ==================================================
-       FOTOGRAFÍAS POR SECCIÓN
+       GALERÍAS: mostrar menú primero y cargar una sección
+       solamente cuando el visitante la abre.
     ================================================== */
 
-    if (
-        Array.isArray(
-            datosMedia.fotos_secciones
-        ) &&
-        datosMedia.fotos_secciones.length > 0
-    ) {
-
-        const ordenPreferido = [
-            "EXTERIORES",
-            "COTILLON",
-            "SALON",
-            "VALS"
-        ];
-
-
-        const secciones =
-            [...datosMedia.fotos_secciones];
-
-
-        secciones.sort(
-            function (a, b) {
-
-                const ia =
-                    ordenPreferido.indexOf(
-                        String(
-                            a.nombre
-                        ).toUpperCase()
-                    );
-
-                const ib =
-                    ordenPreferido.indexOf(
-                        String(
-                            b.nombre
-                        ).toUpperCase()
-                    );
-
-
-                if (
-                    ia !== -1 &&
-                    ib !== -1
-                ) {
-
-                    return ia - ib;
-
-                }
-
-
-                if (
-                    ia !== -1
-                ) {
-
-                    return -1;
-
-                }
-
-
-                if (
-                    ib !== -1
-                ) {
-
-                    return 1;
-
-                }
-
-
-                return String(
-                    a.nombre
-                ).localeCompare(
-                    String(
-                        b.nombre
-                    )
-                );
-
-            }
-        );
-
-
-        secciones.forEach(
-            function (
-                seccion
-            ) {
-
-                if (
-                    !Array.isArray(
-                        seccion.fotos
-                    ) ||
-                    seccion.fotos.length === 0
-                ) {
-
-                    return;
-
-                }
-
-
-                const subsection =
-                    document.createElement(
-                        "div"
-                    );
-
-                subsection.className =
-                    "photo-subsection";
-
-
-                const subsectionHeader =
-                    document.createElement(
-                        "div"
-                    );
-
-                subsectionHeader.className =
-                    "photo-subsection-header";
-
-
-                const subtitle =
-                    document.createElement(
-                        "div"
-                    );
-
-                subtitle.className =
-                    "photo-subtitle";
-
-                subtitle.textContent =
-                    seccion.nombre;
-
-
-                const playSectionButton =
-                    document.createElement(
-                        "button"
-                    );
-
-                playSectionButton.type =
-                    "button";
-
-                playSectionButton.className =
-                    "section-play-button";
-
-                playSectionButton.textContent =
-                    "▶ REPRODUCIR";
-
-                playSectionButton.setAttribute(
-                    "aria-label",
-                    "Reproducir sección " + seccion.nombre
-                );
-
-
-                const fotosSeccion = [];
-
-
-                const grid =
-                    document.createElement(
-                        "div"
-                    );
-
-                grid.className =
-                    "photo-grid";
-
-
-                seccion.fotos.forEach(
-                    function (
-                        foto,
-                        index
-                    ) {
-
-                        const elemento =
-                            crearFoto(
-                                foto,
-                                index
-                            );
-
-
-                        if (
-                            elemento
-                        ) {
-
-                            grid.appendChild(
-                                elemento
-                            );
-
-                            fotosSeccion.push(
-                                foto
-                            );
-
-                        }
-
-                    }
-                );
-
-
-                playSectionButton.addEventListener(
-                    "click",
-                    function (event) {
-
-                        event.stopPropagation();
-
-                        iniciarPresentacion(
-                            fotosSeccion
-                        );
-
-                    }
-                );
-
-
-                subsectionHeader.appendChild(
-                    subtitle
-                );
-
-                subsectionHeader.appendChild(
-                    playSectionButton
-                );
-
-                subsection.appendChild(
-                    subsectionHeader
-                );
-
-                subsection.appendChild(
-                    grid
-                );
-
-
-                photoSections.appendChild(
-                    subsection
-                );
-
-            }
-        );
-
-
-    } else if (
-        Array.isArray(
-            datosMedia.fotos
-        ) &&
-        datosMedia.fotos.length > 0
-    ) {
-
-        const grid =
-            document.createElement(
-                "div"
-            );
-
-        grid.className =
-            "photo-grid";
-
-
-        datosMedia.fotos.forEach(
-            function (
-                foto,
-                index
-            ) {
-
-                const elemento =
-                    crearFoto(
-                        foto,
-                        index
-                    );
-
-
-                if (
-                    elemento
-                ) {
-
-                    grid.appendChild(
-                        elemento
-                    );
-
-                }
-
-            }
-        );
-
-
-        photoSections.appendChild(
-            grid
-        );
-
-
-    } else {
-
-        photoSections.innerHTML =
-            `
-            <div class="empty">
-                Todavía no hay fotografías disponibles.
-            </div>
-            `;
-
+    function urlMiniatura(url, ancho) {
+        if (!url || typeof url !== "string") return url || "";
+        // Cloudinary: solicitar una versión pequeña para las tarjetas.
+        if (url.includes("res.cloudinary.com/") && url.includes("/image/upload/")) {
+            return url.replace("/image/upload/", "/image/upload/f_auto,q_auto,w_" + ancho + ",c_limit/");
+        }
+        return url;
     }
 
+    function ordenarSecciones(lista) {
+        const ordenPreferido = ["EXTERIORES", "COTILLON", "SALON", "VALS"];
+        return [...lista].sort(function (a, b) {
+            const ia = ordenPreferido.indexOf(String(a.nombre || "").toUpperCase());
+            const ib = ordenPreferido.indexOf(String(b.nombre || "").toUpperCase());
+            if (ia !== -1 && ib !== -1) return ia - ib;
+            if (ia !== -1) return -1;
+            if (ib !== -1) return 1;
+            return String(a.nombre || "").localeCompare(String(b.nombre || ""));
+        });
+    }
+
+    function mostrarMenuGalerias(menu, paneles) {
+        menu.style.display = "grid";
+        paneles.forEach(function (panel) { panel.classList.remove("active"); });
+        const titulo = document.getElementById("galleryMenuHeading");
+        if (titulo) titulo.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function crearPanelGaleria(seccion, nombre, menu, paneles) {
+        const fotos = Array.isArray(seccion.fotos) ? seccion.fotos.filter(function (foto) {
+            return foto && foto.secure_url;
+        }) : [];
+        if (!fotos.length) return;
+
+        const tarjeta = document.createElement("button");
+        tarjeta.type = "button";
+        tarjeta.className = "gallery-card";
+        tarjeta.setAttribute("aria-label", "Abrir galería " + nombre);
+
+        const miniatura = document.createElement("img");
+        miniatura.loading = "lazy";
+        miniatura.alt = "";
+        miniatura.src = urlMiniatura(fotos[0].secure_url, 500);
+        tarjeta.appendChild(miniatura);
+
+        const copia = document.createElement("div");
+        copia.className = "gallery-card-copy";
+        const titulo = document.createElement("div");
+        titulo.className = "gallery-card-title";
+        titulo.textContent = nombre;
+        const meta = document.createElement("div");
+        meta.className = "gallery-card-meta";
+        meta.textContent = fotos.length + (fotos.length === 1 ? " fotografía · Abrir galería ↗" : " fotografías · Abrir galería ↗");
+        copia.appendChild(titulo);
+        copia.appendChild(meta);
+        tarjeta.appendChild(copia);
+        menu.appendChild(tarjeta);
+
+        const panel = document.createElement("div");
+        panel.className = "gallery-panel";
+        const volver = document.createElement("button");
+        volver.type = "button";
+        volver.className = "gallery-back";
+        volver.textContent = "← Volver a secciones";
+        volver.addEventListener("click", function () { mostrarMenuGalerias(menu, paneles); });
+        panel.appendChild(volver);
+
+        const encabezado = document.createElement("div");
+        encabezado.className = "section-header";
+        const h2 = document.createElement("h2");
+        h2.className = "section-title";
+        h2.textContent = nombre;
+        const linea = document.createElement("div");
+        linea.className = "section-line";
+        encabezado.appendChild(h2);
+        encabezado.appendChild(linea);
+        panel.appendChild(encabezado);
+
+        const controles = document.createElement("div");
+        controles.className = "photo-subsection-header";
+        const subtitulo = document.createElement("div");
+        subtitulo.className = "photo-subtitle";
+        subtitulo.textContent = fotos.length + (fotos.length === 1 ? " FOTOGRAFÍA" : " FOTOGRAFÍAS");
+        const reproducir = document.createElement("button");
+        reproducir.type = "button";
+        reproducir.className = "section-play-button";
+        reproducir.textContent = "▶ REPRODUCIR";
+        reproducir.setAttribute("aria-label", "Reproducir sección " + nombre);
+        reproducir.addEventListener("click", function () { iniciarPresentacion(fotos); });
+        controles.appendChild(subtitulo);
+        controles.appendChild(reproducir);
+        panel.appendChild(controles);
+
+        const grid = document.createElement("div");
+        grid.className = "photo-grid";
+        // Las etiquetas img se crean solo al abrir la sección: las demás fotos no se descargan.
+        fotos.forEach(function (foto, index) {
+            const elemento = crearFoto(foto, index);
+            if (elemento) grid.appendChild(elemento);
+        });
+        panel.appendChild(grid);
+        photoSections.appendChild(panel);
+        paneles.push(panel);
+
+        tarjeta.addEventListener("click", function () {
+            menu.style.display = "none";
+            paneles.forEach(function (otro) { otro.classList.toggle("active", otro === panel); });
+            panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+    }
+
+    const menuGalerias = document.createElement("div");
+    menuGalerias.className = "gallery-menu";
+    const tituloMenu = document.createElement("h2");
+    tituloMenu.id = "galleryMenuHeading";
+    tituloMenu.className = "gallery-menu-heading";
+    tituloMenu.textContent = "Explorá las galerías";
+    const subtituloMenu = document.createElement("p");
+    subtituloMenu.className = "gallery-menu-subtitle";
+    subtituloMenu.textContent = "Elegí una sección para ver sus fotografías.";
+    photoSections.appendChild(tituloMenu);
+    photoSections.appendChild(subtituloMenu);
+    photoSections.appendChild(menuGalerias);
+    const panelesGaleria = [];
+
+    if (Array.isArray(datosMedia.fotos_secciones) && datosMedia.fotos_secciones.length > 0) {
+        ordenarSecciones(datosMedia.fotos_secciones).forEach(function (seccion) {
+            crearPanelGaleria(seccion, seccion.nombre || "Galería", menuGalerias, panelesGaleria);
+        });
+    } else if (Array.isArray(datosMedia.fotos) && datosMedia.fotos.length > 0) {
+        crearPanelGaleria({ fotos: datosMedia.fotos }, "Fotografías", menuGalerias, panelesGaleria);
+    } else {
+        photoSections.innerHTML = '<div class="empty">Todavía no hay fotografías disponibles.</div>';
+    }
 
     /* ==================================================
        VIDEOS CLOUDINARY
@@ -4540,7 +4459,7 @@ footer {
         }
 
         lightboxImage.src =
-            foto.secure_url;
+            urlMiniatura(foto.secure_url, 1600);
 
         photoCounter.textContent =
             `${fotoActual + 1} / ${fotosVisibles.length}`;
