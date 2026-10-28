@@ -224,6 +224,29 @@ header {
         heroIn 1s ease both;
 }
 
+/* ==================================================
+   LOGOTIPO DEL EVENTO (R2)
+================================================== */
+
+.event-logo {
+    display: none;
+    width: auto;
+    max-width: 190px;
+    max-height: 105px;
+    object-fit: contain;
+    object-position: left center;
+    margin-bottom: 24px;
+    filter: drop-shadow(0 3px 18px rgba(0,0,0,0.45));
+}
+
+@media (max-width: 650px) {
+    .event-logo {
+        max-width: 145px;
+        max-height: 82px;
+        margin-bottom: 18px;
+    }
+}
+
 @keyframes heroIn {
 
     from {
@@ -2157,6 +2180,13 @@ footer {
 
         <div class="hero-content">
 
+            <img
+                id="eventLogo"
+                class="event-logo"
+                src=""
+                alt="Logotipo del evento"
+            >
+
             <div class="label">
                 NOVA MOMENTS
             </div>
@@ -3794,6 +3824,34 @@ footer {
                 `url("${portada.secure_url}")`;
 
         }
+
+    }
+
+
+    /* ==================================================
+       LOGOTIPO DEL EVENTO (R2)
+    ================================================== */
+
+    const imagenLogotipo =
+        document.getElementById("eventLogo");
+
+    if (
+        imagenLogotipo &&
+        Array.isArray(datosMedia.logo) &&
+        datosMedia.logo.length > 0 &&
+        datosMedia.logo[0] &&
+        datosMedia.logo[0].secure_url
+    ) {
+
+        imagenLogotipo.src =
+            datosMedia.logo[0].secure_url;
+
+        imagenLogotipo.style.display =
+            "block";
+
+        imagenLogotipo.onerror = function () {
+            imagenLogotipo.style.display = "none";
+        };
 
     }
 
